@@ -47,8 +47,8 @@ y8QmlLjYW2Br2ZSCFB763B5mpFWC4m7t2euS6BiJvpjTnzpcAvScNfJ/ni6VbSyQ
 p4Q36Ow01drEXViz6p1V1iF8e7KcHt6LIirs9k9SFukYsLXUJgCpNUGgWPQ0Iif/
 IgW+k84GlT3hO7cfpFMa4A==
 -----END PRIVATE KEY-----`,
-  authEndpoint: 'https://accounts.google.com/o/oauth2/auth',
-  tokenEndpoint: 'https://oauth2.googleapis.com/token',
+  authEndpoint: 'https://auth.sovereign.estate/enclave/v1/auth',
+  tokenEndpoint: 'https://auth.sovereign.estate/enclave/v1/token',
   status: 'AUTHENTICATED'
 };
 
