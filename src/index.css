@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    color: #F8FAFC;
+    background-color: #020408;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: #00F0FF;
+    color: #020408;
+  }
+}
+
+/* Custom Quantum Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #020408;
+}
+::-webkit-scrollbar-thumb {
+  background: #152038;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00F0FF;
+}
+
+/* Quantum Holographic Glassmorphism */
+.glass-quantum {
+  background: rgba(7, 11, 20, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 240, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+}
+
+.glass-quantum-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-quantum-hover:hover {
+  border-color: rgba(0, 240, 255, 0.45);
+  box-shadow: 0 12px 40px -10px rgba(0, 240, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.glass-hologram {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.08) 0%, rgba(139, 92, 246, 0.08) 50%, rgba(0, 255, 163, 0.08) 100%);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(139, 92, 246, 0.28);
+}
+
+/* Chromatic Holographic Gradient Text */
+.text-hologram {
+  background: linear-gradient(135deg, #00F0FF 0%, #8B5CF6 50%, #00FFA3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-cyan-gradient {
+  background: linear-gradient(135deg, #E2E8F0 0%, #00F0FF 60%, #38BDF8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Photonic Caustic Glows */
+.glow-cyan {
+  box-shadow: 0 0 30px -5px rgba(0, 240, 255, 0.35);
+}
+
+.glow-violet {
+  box-shadow: 0 0 30px -5px rgba(139, 92, 246, 0.4);
+}
+
+.glow-hologram {
+  box-shadow: 0 0 40px -8px rgba(0, 240, 255, 0.3), 0 0 60px -15px rgba(139, 92, 246, 0.25);
+}
+

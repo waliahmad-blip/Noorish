@@ -1,0 +1,15 @@
+/* TEAM */
+Executive Subject: Noorish Sabah, PAS
+Role: Director, Pakistan Sports Board (Punjab)
+Service Group: Pakistan Administrative Service (40th Common Training Program)
+Credentials: KU Leuven (AI Law & Ethics), HP (AI in Society), IDB (Data for Policy), IMF (Macroeconomic Programming)
+Official Node: https://noorish.org
+Contact: noorish@nooriva.co
+
+/* SITE */
+Standards: HTML5, CSS3, ES2026, WebGL, Web Audio API
+Architecture: Concept 2: The Chromatic Hyper-Prism
+Engine: Three.js, React 19, Vite, Tailwind CSS
+Design Language: Quantum Holographic
+Zero Em Dashes Enforced: Yes
+Language: English Only

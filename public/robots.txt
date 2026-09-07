@@ -1,0 +1,32 @@
+# robots.txt for noorish.org
+# Robots.txt for Noorish Sabah Sovereign Digital Estate (https://noorish.org)
+# Comprehensive crawler directives for international search indexing
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+
+# Explicit permissions for major international search crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Canonical XML Sitemap & Host declaration
+Host: https://noorish.org
+Sitemap: https://noorish.org/sitemap.xml

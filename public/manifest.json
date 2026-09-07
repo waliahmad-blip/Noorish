@@ -1,0 +1,19 @@
+{
+  "name": "Noorish Sabah, PAS | Official Sovereign Estate",
+  "short_name": "Noorish Sabah",
+  "description": "Official sovereign digital estate of Noorish Sabah, Pakistan Administrative Service officer, Director of the Pakistan Sports Board (Punjab), and macroeconomist.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020408",
+  "theme_color": "#00F0FF",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["government", "education", "leadership", "policy"],
+  "lang": "en-US"
+}
