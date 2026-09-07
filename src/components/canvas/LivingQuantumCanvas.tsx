@@ -356,7 +356,10 @@ export const LivingQuantumCanvas: React.FC<LivingQuantumCanvasProps> = ({ active
   const activeInfo = facetTelemetry[activeFacet] || facetTelemetry.convergence;
 
   return (
-    <div className="relative w-full h-[380px] sm:h-[440px] lg:h-[480px] flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing select-none">
+    <div 
+      className="relative w-full h-[380px] sm:h-[440px] lg:h-[480px] flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing select-none"
+      style={{ touchAction: 'pan-y' }}
+    >
       <div ref={containerRef} className="w-full h-full" />
       
       {/* Dynamic Telemetry HUD */}

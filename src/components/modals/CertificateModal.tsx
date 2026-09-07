@@ -18,7 +18,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({ certId, onCl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-obsidian-950/85 backdrop-blur-xl">
-      <div className="relative w-full max-w-xl glass-quantum rounded-3xl p-6 sm:p-8 border border-cyan-500/40 text-slate-100 shadow-2xl space-y-6">
+      <div className="relative w-full max-w-xl glass-quantum rounded-3xl p-6 sm:p-8 border border-cyan-500/40 text-slate-100 shadow-2xl space-y-6 max-h-[88vh] overflow-y-auto">
         
         {/* Close Button */}
         <button

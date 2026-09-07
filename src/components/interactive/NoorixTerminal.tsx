@@ -259,7 +259,7 @@ export const NoorixTerminal: React.FC = () => {
             </div>
 
             {/* Terminal Input Form */}
-            <form onSubmit={handleExecute} className="flex gap-2.5">
+            <form onSubmit={handleExecute} className="flex flex-col sm:flex-row gap-2.5">
               <input
                 type="text"
                 value={queryInput}
@@ -269,7 +269,7 @@ export const NoorixTerminal: React.FC = () => {
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-obsidian-950 rounded-xl font-mono text-xs font-bold flex items-center gap-2 transition-all shadow-lg hover:shadow-cyan-500/30"
+                className="px-5 sm:px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-obsidian-950 rounded-xl font-mono text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-cyan-500/30 shrink-0"
               >
                 <span>Execute</span>
                 <Send className="w-3.5 h-3.5" />

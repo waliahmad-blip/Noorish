@@ -23,8 +23,8 @@ export const HeroPrism: React.FC<HeroPrismProps> = ({ activeFacet, onFacetChange
         
         {/* Cadre Badge & Header */}
         <div className="text-center space-y-3 mb-2">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-quantum text-xs font-mono text-cyan-400 border border-cyan-500/30">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-3.5 rounded-full glass-quantum text-[10px] sm:text-xs font-mono text-cyan-400 border border-cyan-500/30 text-center leading-tight">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shrink-0" />
             <span>PAKISTAN ADMINISTRATIVE SERVICE • 40TH COMMON TRAINING PROGRAM</span>
           </div>
 

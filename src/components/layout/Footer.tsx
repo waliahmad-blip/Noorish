@@ -7,7 +7,7 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-obsidian-950 text-slate-300 border-t border-cyan-500/20 pt-16 pb-12">
+    <footer className="bg-obsidian-950 text-slate-300 border-t border-cyan-500/20 pt-16 pb-28 md:pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
           
