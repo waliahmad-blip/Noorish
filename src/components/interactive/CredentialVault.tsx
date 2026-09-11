@@ -122,7 +122,7 @@ export const CredentialVault: React.FC<CredentialVaultProps> = ({ onInspectCerti
                     </button>
                   </>
                 ) : (
-                  <span className="text-xs font-mono text-slate-400">MIT DEDP Active Enrollment</span>
+                  <span className="text-xs font-mono text-cyan-400/80">Active Multilateral Specialization</span>
                 )}
               </div>
             </div>

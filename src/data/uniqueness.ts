@@ -4,7 +4,7 @@ export const UNIQUENESS_ROWS: UniquenessRow[] = [
   {
     dimension: "Multilateral Credential Density",
     womenInPAS: "Standard in-service domestic courses (CSA, NIM, NDU). Rare multilateral certifications.",
-    noorishSabah: "Triple verified multilateral credentials: IMF (A+), IDB (95% A+), HP (100% A+), KU Leuven HUMANAIx (2026), plus MIT MicroMasters candidate.",
+    noorishSabah: "Six verified multilateral credentials: Oxford XFLSP01, IMF FPP.1x (A+) & ESRx, KU Leuven HUMANAIx (2026), IDB (95% A+), HP (100% A+), plus MIT DEDP Advanced Policy Fellow (2026 – Onwards).",
     verifiedStatus: "Public Record: Singular in cohort"
   },
   {

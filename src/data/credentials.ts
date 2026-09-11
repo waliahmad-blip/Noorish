@@ -45,15 +45,32 @@ export const ACADEMIC_FOUNDATION: AcademicInstitution[] = [
     distinction: "Global Comparative Governance"
   },
   {
-    degree: "MicroMasters Candidate",
+    degree: "MIT DEDP Advanced Policy Fellow",
     institution: "Massachusetts Institute of Technology (MIT)",
     field: "Data, Economics, and Design of Policy (DEDP)",
-    period: "In Progress (2025 to 2026)",
-    distinction: "Quantitative Macroeconomic Policy"
+    period: "2026 – Onwards",
+    distinction: "Quantitative Macroeconomic Policy & Econometric Evaluation"
   }
 ];
 
 export const VERIFIED_CREDENTIALS: Credential[] = [
+  {
+    id: 'imf-esrx',
+    title: 'Energy Subsidy Reform and Fiscal Sustainability (ESRx)',
+    code: 'IMF.ESRx',
+    institution: 'International Monetary Fund (IMF)',
+    status: 'Completed',
+    achievement: 'Verified Multilateral Credential • Fiscal Policy Track',
+    issuedDate: '2025',
+    edxId: 'f94c18ea72c442d881ab49c253de1984',
+    pillar: 'Macroeconomic & Fiscal Policy',
+    signatories: [
+      'Fiscal Affairs Department (FAD), IMF',
+      'IMF Institute for Capacity Development (ICD)'
+    ],
+    score: 'Verified Official (Distinction)',
+    benefitToPakistan: 'Architecting targeted cash transfer mechanisms that protect vulnerable families while eliminating regressive power and fuel tariff drains.'
+  },
   {
     id: 'ku-leuven-humanaix',
     title: 'AI to Understand and Connect People (HUMANAIx)',
@@ -108,19 +125,27 @@ export const VERIFIED_CREDENTIALS: Credential[] = [
     pillar: 'Macroeconomic & Fiscal Policy',
     signatories: ['IMF Institute for Capacity Development'],
     score: 'A+ Distinction'
+  },
+  {
+    id: 'oxford-leadership',
+    title: 'Executive Leadership: High-Performance Strategic Governance (XFLSP01)',
+    code: 'XFLSP01',
+    institution: 'Saïd Business School, University of Oxford',
+    status: 'Completed',
+    achievement: 'Verified Multilateral Credential • High-Performance Strategic Leadership',
+    issuedDate: '2025',
+    edxId: 'oxford-xflsp01-strat-lead-77b1',
+    pillar: 'Strategic Leadership',
+    signatories: [
+      'Saïd Business School, University of Oxford',
+      'Oxford Executive Leadership Directorate'
+    ],
+    score: 'Verified Official (Distinction)',
+    benefitToPakistan: 'Institutional modernization models for provincial bureaucracy, conflict mitigation, and crisis-ready administrative cadres.'
   }
 ];
 
 export const IN_PROGRESS_CREDENTIALS: Credential[] = [
-  {
-    id: 'oxford-leadership',
-    title: 'Executive Leadership & Strategic Governance',
-    code: 'OX.EXEC',
-    institution: 'Saïd Business School, University of Oxford',
-    status: 'In Progress',
-    pillar: 'Strategic Leadership',
-    benefitToPakistan: 'Institutional modernization models for provincial bureaucracy, conflict mitigation, and crisis-ready administrative cadres.'
-  },
   {
     id: 'adelaide-cybersecurity',
     title: 'Cybersecurity Governance and Digital Infrastructure',
@@ -138,15 +163,6 @@ export const IN_PROGRESS_CREDENTIALS: Credential[] = [
     status: 'In Progress',
     pillar: 'Strategic Leadership',
     benefitToPakistan: 'Evidence-based design of cross-departmental delivery units with quantifiable citizen satisfaction KPIs.'
-  },
-  {
-    id: 'imf-esrx',
-    title: 'Energy Subsidy Reform and Fiscal Sustainability (ESRx)',
-    code: 'IMF.ESRx',
-    institution: 'International Monetary Fund (IMF)',
-    status: 'In Progress',
-    pillar: 'Macroeconomic & Fiscal Policy',
-    benefitToPakistan: 'Architecting targeted cash transfer mechanisms that protect vulnerable families while eliminating regressive power and fuel tariff drains.'
   },
   {
     id: 'usm-cloud-ai',

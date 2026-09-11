@@ -12,16 +12,16 @@ export const GROWTH_MILESTONES = [
   { year: "2022", event: "Pioneered the Hafizabad Model for inter-agency child protection." },
   { year: "2023", event: "Governed PKR 2.0B municipal ADP portfolio across 36 districts in LG&CD." },
   { year: "2024", event: "Appointed Director Pakistan Sports Board (Punjab); founded NOORIVA." },
-  { year: "2026", event: "Earned KU Leuven Human-Centred AI credential; MIT MicroMasters final milestone." }
+  { year: "2026", event: "Earned KU Leuven Human-Centred AI credential; MIT DEDP Advanced Policy Fellow milestone." }
 ];
 
 export const LEGACY_KPIS: LegacyKPI[] = [
-  { label: "Credentials Completed", target: "9 Total (4 Done, 5 Converting)", current: "4 Verified, 5 Active", timeframe: "2026" },
+  { label: "Credentials Completed", target: "9 Total (6 Done, 3 Active)", current: "6 Verified, 3 Active", timeframe: "2026" },
   { label: "Policy Analysis Notes", target: "52 Bi-Weekly Dispatches", current: "18 Published", timeframe: "Weekly" },
   { label: "Noorix Sovereign Queries", target: "10,000+ Queries Resolved", current: "3,400+ Serviced", timeframe: "Active" },
   { label: "Academic Whitepapers", target: "3 Multilateral Submissions", current: "2 Under Review", timeframe: "2026" },
   { label: "Global Sovereign Knowledge Panel", target: "Verified Sovereign Entity", current: "Indexed & Active", timeframe: "2026" },
   { label: "Wikipedia / Wikidata", target: "Biographical Record Active", current: "8 Statements Graph", timeframe: "2026" },
-  { label: "MIT MicroMasters DEDP", target: "Final Credential Completion", current: "Advanced Candidate", timeframe: "2026" },
+  { label: "MIT DEDP Policy Specialization", target: "Advanced Fellow Program", current: "MIT DEDP Advanced Policy Fellow", timeframe: "2026 – Onwards" },
   { label: "Sovereign AI Pilot", target: "Municipal Predictive Workflow", current: "Field Deployed", timeframe: "Punjab" }
 ];

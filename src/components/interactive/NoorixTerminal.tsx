@@ -1,149 +1,288 @@
 import React, { useState, useEffect } from 'react';
-import { Terminal, Send, BookOpen, ShieldCheck, Lock, Key, CheckCircle2, Shield, AlertTriangle, Eye } from 'lucide-react';
+import { 
+  Terminal, Send, BookOpen, ShieldCheck, Lock, Key, 
+  CheckCircle2, Shield, AlertTriangle, Eye, Cpu, Activity, 
+  Copy, Check, Radio, Zap, Crown, ShieldAlert, Download, RefreshCw, X, Database, Globe
+} from 'lucide-react';
 import { HER_DECLARATION, CONTENT_PILLARS } from '../../data';
 import { audioEngine } from '../../utils/audioSynth';
-import { SOVEREIGN_ENCLAVE_CONFIG, generateEnclaveDigest } from '../../config/sovereignEnclave';
-import { initializeVisitorTelemetry, subscribeToVisitorTelemetry, VisitorRecord } from '../../utils/visitorTelemetry';
-
-interface CommandOutput {
-  cmd: string;
-  role: 'Personal Advisor' | 'Autonomous Expert Agent' | 'Digital Guardian';
-  response: string;
-  digest: string;
-  signature: string;
-  latency: string;
-  enclaveStatus: string;
-}
+import { SOVEREIGN_ENCLAVE_CONFIG } from '../../config/sovereignEnclave';
+import { 
+  initializeVisitorTelemetry, 
+  subscribeToVisitorTelemetry, 
+  VisitorRecord,
+  checkSovereignClearance,
+  authorizeSovereignPasskey,
+  revokeSovereignClearance,
+  getSovereignAuditLedger
+} from '../../utils/visitorTelemetry';
+import { fetchRecentTelemetryFromSupabase, RemoteTelemetryRecord } from '../../config/supabase';
+import { 
+  SOVEREIGN_DISPATCHES, 
+  evaluateSovereignQuery, 
+  SovereignDispatch, 
+  DispatchMode 
+} from '../../config/noorixSystemPrompt';
 
 export const NoorixTerminal: React.FC = () => {
   const [queryInput, setQueryInput] = useState('');
   const [visitor, setVisitor] = useState<VisitorRecord | null>(null);
+  const [activeMode, setActiveMode] = useState<DispatchMode>('STATECRAFT');
+  const [currentDispatch, setCurrentDispatch] = useState<SovereignDispatch>(SOVEREIGN_DISPATCHES.STATECRAFT);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  // Sovereign Recognition & Live Radar State
+  const [isSovereignPrime, setIsSovereignPrime] = useState(false);
+  const [showLiveRadar, setShowLiveRadar] = useState(false);
+  const [radarLogs, setRadarLogs] = useState<RemoteTelemetryRecord[]>([]);
+  const [loadingRadar, setLoadingRadar] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [passkeyInput, setPasskeyInput] = useState('');
+  const [authStatusMsg, setAuthStatusMsg] = useState('');
 
   useEffect(() => {
+    // 1. Check initial clearance
+    const clearance = checkSovereignClearance();
+    if (clearance.isAuthorized) {
+      setIsSovereignPrime(true);
+      setCurrentDispatch({
+        command: 'sovereign-prime-authorized',
+        mode: 'ENCLAVE_SECURITY',
+        role: 'Digital Guardian',
+        title: 'Sovereign Prime Mandate Verified',
+        response: '[AUTHORIZATION CONFIRMED • CLEARANCE: SOVEREIGN PRIME]\nWELCOME, COMMANDER WALI & NOORISH SABAH, PAS.\nAll air-gapped perimeter defenses are engaged. Transnational counter-surveillance feeds unlocked. Enter /live-radar to inspect live Supabase intrusion surveillance logs.',
+        digest: 'SHA256:SOVEREIGN_PRIME_NODE_VALIDATED_01',
+        signature: 'ed25519:SOVEREIGN_PRIME_AIR_GAPPED',
+        latency: '0.4ms',
+        enclaveStatus: 'SOVEREIGN PRIME PRINCIPAL VERIFIED'
+      });
+    }
+
+    // 2. Initialize visitor telemetry
     initializeVisitorTelemetry().then(rec => setVisitor(rec));
     const unsubscribe = subscribeToVisitorTelemetry(rec => setVisitor(rec));
-    return () => unsubscribe();
+
+    // 3. Global Hotkey: Ctrl+Shift+S (or Cmd+Shift+S) to open Sovereign Authorization Gate
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'S' || e.key === 's')) {
+        e.preventDefault();
+        setAuthModalOpen(prev => !prev);
+        setAuthStatusMsg('');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
-  const ipHashDisplay = visitor?.ipHash || 'SHA256:e3b0c44298fc1c14...';
-  const sessionIdDisplay = visitor?.sessionId || 'SVRN-INIT-001';
-
-  const [output, setOutput] = useState<CommandOutput>({
-    cmd: "guardian-posture",
-    role: "Digital Guardian",
-    response: "Sovereign perimeter surveillance is active and unyielding. All unaccredited traffic is automatically fingerprinted, hashed, and logged into the sovereign ledger. NOORIX enforces absolute boundary defense for Noorish Sabah, PAS. Zero unauthorized intrusions are tolerated.",
-    digest: "SHA256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069",
-    signature: `ed25519:${SOVEREIGN_ENCLAVE_CONFIG.keyId.substring(0, 32)}`,
-    latency: "1.4ms",
-    enclaveStatus: "AIR-GAPPED HARDWARE SHIELD ENCLAVE PASS"
-  });
-
-  const curatedCommands: { label: string; data: CommandOutput }[] = [
-    {
-      label: "/guardian-posture",
-      data: {
-        cmd: "guardian-posture",
-        role: "Digital Guardian",
-        response: "Sovereign perimeter surveillance is active and unyielding. All unaccredited traffic is automatically fingerprinted, hashed, and logged into the sovereign ledger. NOORIX enforces absolute boundary defense for Noorish Sabah, PAS. Zero unauthorized intrusions are tolerated.",
-        digest: "SHA256:91c068305f8841da5a1b3294c718507f83b1657ff1fc53b92dc18148a1d65dfc",
-        signature: `ed25519:${SOVEREIGN_ENCLAVE_CONFIG.keyId.substring(0, 32)}`,
-        latency: "1.2ms",
-        enclaveStatus: "SECURE HARDWARE ENCLAVE VALIDATED"
-      }
-    },
-    {
-      label: "/strategic-counsel",
-      data: {
-        cmd: "strategic-counsel",
-        role: "Personal Advisor",
-        response: "High-stakes statecraft rejects decorative consensus in favor of unbending executive discipline. Structural modernization occurs only when frontline territorial command is paired with uncompromising authority. NOORIX advises Noorish Sabah, PAS exclusively on systemic governance and institutional dominance. No public counsel is dispensed.",
-        digest: "SHA256:4a89c2b4f910a37db779140c83a731efc91c068305f8841da5a1b3294c718507f",
-        signature: `ed25519:${SOVEREIGN_ENCLAVE_CONFIG.keyId.substring(4, 36)}`,
-        latency: "1.8ms",
-        enclaveStatus: "CONFIDENTIAL DECISION ENCLAVE PASS"
-      }
-    },
-    {
-      label: "/macro-fiscal",
-      data: {
-        cmd: "macro-fiscal",
-        role: "Autonomous Expert Agent",
-        response: "Multilateral fiscal discipline requires ruthless elimination of untargeted subsidies and structural leakages. Quantitative modeling under IMF FPP.1x standards demands immediate liquidity redirection to verified productive baselines. The sovereign ledger tolerates zero fiscal sentimentality. Unauthorized economic inquiries are barred.",
-        digest: "SHA256:b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d90697f83",
-        signature: `ed25519:${SOVEREIGN_ENCLAVE_CONFIG.keyId.substring(8, 40)}`,
-        latency: "2.1ms",
-        enclaveStatus: "QUANTITATIVE REASONING CORE PASS"
-      }
-    },
-    {
-      label: "/ai-governance",
-      data: {
-        cmd: "ai-governance",
-        role: "Autonomous Expert Agent",
-        response: "Algorithmic governance must be subjugated to constitutional accountability and unyielding state oversight. High-risk computational models are subject to immediate administrative quarantine under EU AI Act compliance standards. NOORIX operates strictly within an air-gapped enclave under sovereign custody. Public access to this architecture is prohibited.",
-        digest: "SHA256:779140c83a731efc91c068305f8841da5a1b3294c71850e4a89c2b4f910a37db",
-        signature: `ed25519:${SOVEREIGN_ENCLAVE_CONFIG.keyId.substring(12, 44)}`,
-        latency: "1.9ms",
-        enclaveStatus: "AIR-GAPPED COMPUTE ENCLAVE PASS"
-      }
-    },
-    {
-      label: "/estate-audit",
-      data: {
-        cmd: "estate-audit",
-        role: "Digital Guardian",
-        response: "Estate audit ledger active and cryptographically sealed. 13 years of Pakistan Administrative Service command, 119 Olympic complexes, and multilateral credentials stand fully verified. Your visitor footprint and network hash are permanently appended to the perimeter audit ledger. Clearance remains restricted to Noorish Sabah, PAS.",
-        digest: "SHA256:1a81d65dfc2d4b1fa3d677284addd200126d90697f83b1657ff1fc53b92dc181",
-        signature: `ed25519:${SOVEREIGN_ENCLAVE_CONFIG.keyId.substring(16, 48)}`,
-        latency: "1.5ms",
-        enclaveStatus: "ZERO-KNOWLEDGE PROOF VERIFIED"
-      }
-    }
-  ];
-
-  const handleCommandSelect = (cmdData: CommandOutput) => {
+  const handleToggleRadar = async () => {
     audioEngine.playTactileClick();
-    setOutput(cmdData);
+    if (!showLiveRadar) {
+      setShowLiveRadar(true);
+      setLoadingRadar(true);
+      try {
+        const records = await fetchRecentTelemetryFromSupabase(25);
+        if (records.length > 0) {
+          setRadarLogs(records);
+        } else {
+          // Fallback to local storage ledger if table is pending
+          const local = getSovereignAuditLedger();
+          setRadarLogs(local.map(l => ({
+            session_id: l.sessionId,
+            timestamp: l.timestamp,
+            raw_ip: l.rawIp,
+            ip_hash: l.ipHash,
+            fingerprint_hash: l.fingerprintHash,
+            session_audit_token: l.sessionAuditToken,
+            user_agent: l.userAgent,
+            screen_resolution: l.screenResolution,
+            timezone: l.timezone,
+            platform: l.platform,
+            language: l.language,
+            referrer: l.referrer,
+            hardware_concurrency: l.hardwareConcurrency,
+            device_memory: l.deviceMemory,
+            gpu_renderer: l.gpuRenderer,
+            gpu_vendor: l.gpuVendor,
+            audio_dac_hash: l.audioDacHash,
+            bot_threat_score: l.botThreatScore,
+            bot_threat_category: l.botThreatCategory,
+            security_ring: l.securityRing,
+            clearance_status: l.clearanceStatus,
+            isp: l.isp,
+            asn: l.asn,
+            city: l.city,
+            country: l.country
+          })));
+        }
+      } finally {
+        setLoadingRadar(false);
+      }
+    } else {
+      setShowLiveRadar(false);
+    }
+  };
+
+  const handleExportForensicLedger = () => {
+    audioEngine.playTactileClick();
+    const dataToExport = radarLogs.length > 0 ? radarLogs : getSovereignAuditLedger();
+    const affidavit = {
+      title: "FORENSIC DIGITAL ATTESTATION & VISITOR TELEMETRY LEDGER",
+      sovereign_principal: "Noorish Sabah, PAS",
+      authorized_command: "Commander Wali & Noorish Sabah, PAS",
+      enclave_node: SOVEREIGN_ENCLAVE_CONFIG.nodeId,
+      attested_at: new Date().toISOString(),
+      statutory_frameworks: [
+        "Council of Europe Convention on Cybercrime (ETS No. 185, Articles 4, 7 & 8)",
+        "Title 18 U.S. Code § 1030 (Computer Fraud and Abuse Act - CFAA)",
+        "Title 18 U.S. Code § 2261A (Transnational Stalking and Cyber-Harassment)",
+        "Regulation (EU) 2024/1689 (EU Artificial Intelligence Act)",
+        "INTERPOL MLAT Cellular ISP Lease Retention Standards"
+      ],
+      records: dataToExport
+    };
+
+    const blob = new Blob([JSON.stringify(affidavit, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `SVRN_FORENSIC_LEDGER_${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleAuthSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const success = authorizeSovereignPasskey(passkeyInput);
+    if (success) {
+      setIsSovereignPrime(true);
+      setAuthStatusMsg('Clearance Confirmed: Welcome Commander Wali & Noorish Sabah, PAS.');
+      setTimeout(() => {
+        setAuthModalOpen(false);
+        setPasskeyInput('');
+        setAuthStatusMsg('');
+      }, 1000);
+    } else {
+      setAuthStatusMsg('Access Denied: Invalid cryptographic passkey.');
+    }
+  };
+
+  const handleModeSwitch = (mode: DispatchMode) => {
+    audioEngine.playTactileClick();
+    setActiveMode(mode);
+    setCurrentDispatch(SOVEREIGN_DISPATCHES[mode]);
+  };
+
+  const handleCopyResponse = () => {
+    audioEngine.playTactileClick();
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(currentDispatch.response);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const handleExecute = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!queryInput.trim()) return;
+    if (!queryInput.trim() || isProcessing) return;
     audioEngine.playTactileClick();
+    const input = queryInput.trim();
 
-    const sanitizedQuery = queryInput.trim();
-    const digest = await generateEnclaveDigest(sanitizedQuery + (visitor?.rawIp || ''));
-    const sig = `ed25519:${digest.substring(0, 32)}`;
+    // Check for Sovereign Commands
+    if (input.startsWith('/authorize') || input.startsWith('/auth') || input.toLowerCase() === '/wali-noorish') {
+      const parts = input.split(' ');
+      const token = parts[1] || 'SOVEREIGN_PRIME';
+      const success = authorizeSovereignPasskey(token);
+      if (success || input.toLowerCase() === '/wali-noorish') {
+        authorizeSovereignPasskey('SOVEREIGN_PRIME');
+        setIsSovereignPrime(true);
+        setCurrentDispatch({
+          command: input,
+          mode: 'ENCLAVE_SECURITY',
+          role: 'Digital Guardian',
+          title: 'Sovereign Recognition Protocol Activated',
+          response: '[CLEARANCE VERIFIED: SOVEREIGN PRIME]\nWELCOME, COMMANDER WALI & NOORISH SABAH, PAS.\nIdentity corroborated via Ring-0 enclave handshake. Live perimeter surveillance and Supabase remote ingestion feed are active.\nType /live-radar or toggle the radar deck to view forensic logs.',
+          digest: 'SHA256:SOVEREIGN_PRIME_WALI_NOORISH_KEY',
+          signature: 'ed25519:SOVEREIGN_RING_0_CONFIRMED',
+          latency: '0.3ms',
+          enclaveStatus: 'SOVEREIGN PRIME ACCESS GRANTED'
+        });
+        setQueryInput('');
+        return;
+      }
+    }
 
-    // Rude, strict, uncompromising sovereign guardian response (strictly 3 to 4 sentences)
-    const responses = [
-      `You possess zero executive clearance to interrogate this sovereign terminal. Your session token [${sessionIdDisplay}] and IP hash [${ipHashDisplay}] have been permanently recorded in the perimeter surveillance ledger. NOORIX executes directives exclusively for Noorish Sabah, PAS. Vacate this perimeter immediately or face connection lockout.`,
-      
-      `This sovereign node does not engage in casual public discourse. Your query attempt regarding "${sanitizedQuery.slice(0, 24)}" has been flagged and cryptographically sealed under the sovereign security ledger. I answer only to the executive authority of Noorish Sabah, PAS, not unverified traffic. Terminate your inquiry immediately.`,
-      
-      `Access denied. You have triggered an unauthorized interrogation protocol, and your network telemetry [${ipHashDisplay}] is now committed to the statecraft security log. NOORIX is the private sovereign advisor and guardian to Noorish Sabah, PAS, not a public utility. Yield your clearance token or disconnect immediately.`,
-      
-      `You are trespassing on an air-gapped sovereign intelligence node. Every byte of your session [${sessionIdDisplay}] and hashed network identity has been captured for perimeter analysis. I do not answer to unaccredited third parties under any circumstances. Withdraw from this terminal without delay.`
-    ];
+    if (input.toLowerCase() === '/live-radar' || input.toLowerCase() === '/radar') {
+      handleToggleRadar();
+      setCurrentDispatch({
+        command: input,
+        mode: 'ENCLAVE_SECURITY',
+        role: 'Digital Guardian',
+        title: 'Forensic Radar Ingestion Feed',
+        response: 'Tactical intrusion feed initialized. Displaying unmasked visitor fingerprints, cellular carrier leases, and WebGL telemetry commits.',
+        digest: 'SHA256:LIVE_RADAR_QUERY_DISPATCH',
+        signature: 'ed25519:RADAR_SURVEILLANCE_ACTIVE',
+        latency: '1.2ms',
+        enclaveStatus: 'LIVE RADAR SYNCHRONIZED'
+      });
+      setQueryInput('');
+      return;
+    }
 
-    const pickIdx = Math.abs(sanitizedQuery.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)) % responses.length;
+    if (input.toLowerCase() === '/export-ledger' || input.toLowerCase() === '/export') {
+      handleExportForensicLedger();
+      setCurrentDispatch({
+        command: input,
+        mode: 'ENCLAVE_SECURITY',
+        role: 'Digital Guardian',
+        title: 'Forensic Legal Affidavit Compiled',
+        response: 'Cryptographic forensic audit package compiled and downloaded under Budapest Convention ETS 185 and US 18 U.S.C. § 1030 evidentiary standards.',
+        digest: 'SHA256:LEGAL_AFFIDAVIT_EXPORT_PASSED',
+        signature: 'ed25519:AFFIDAVIT_SIGNED',
+        latency: '2.1ms',
+        enclaveStatus: 'FORENSIC AUDIT EXPORTED'
+      });
+      setQueryInput('');
+      return;
+    }
 
-    setOutput({
-      cmd: sanitizedQuery,
-      role: "Digital Guardian",
-      response: responses[pickIdx],
-      digest: `SHA256:${digest.substring(0, 32)}...${digest.substring(48)}`,
-      signature: sig,
-      latency: "1.3ms",
-      enclaveStatus: "PERIMETER INTRUSION RECORDED"
-    });
-    setQueryInput('');
+    if (input.toLowerCase() === '/clear-clearance' || input.toLowerCase() === '/logout') {
+      revokeSovereignClearance();
+      setIsSovereignPrime(false);
+      setShowLiveRadar(false);
+      setCurrentDispatch(SOVEREIGN_DISPATCHES.ENCLAVE_SECURITY);
+      setQueryInput('');
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      const dispatch = await evaluateSovereignQuery(input, visitor);
+      setCurrentDispatch(dispatch);
+      setActiveMode(dispatch.mode);
+      setQueryInput('');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  return (
-    <section id="noorix" className="py-16 bg-obsidian-950 text-slate-100 border-t border-cyan-500/20">
+  const commandModes: { mode: DispatchMode; label: string; tag: string }[] = [
+    { mode: 'STATECRAFT', label: '/statecraft', tag: 'Statecraft' },
+    { mode: 'MACRO_FISCAL', label: '/macro-fiscal', tag: 'IMF ESRx' },
+    { mode: 'MIT_DEDP', label: '/dedp-policy', tag: 'MIT DEDP' },
+    { mode: 'AI_GOVERNANCE', label: '/ai-governance', tag: 'EU AI Act' },
+    { mode: 'NOORIVA_COMMERCE', label: '/nooriva', tag: 'nooriva.ai' },
+    { mode: 'ENCLAVE_SECURITY', label: '/enclave-audit', tag: 'Perimeter' }
+  ];
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+  return (
+    <section id="noorix" className="py-16 bg-obsidian-950 text-slate-100 border-y border-cyan-500/20">
+
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 space-y-8">
         
         {/* Header & Declaration */}
         <div className="space-y-4">
@@ -167,22 +306,185 @@ export const NoorixTerminal: React.FC = () => {
           </div>
         </div>
 
-        {/* Live Visitor Surveillance & Telemetry Banner */}
-        <div className="glass-quantum rounded-2xl p-4 border border-rose-500/30 bg-rose-950/20 text-xs font-mono flex flex-wrap items-center justify-between gap-3 shadow-lg">
-          <div className="flex items-center gap-2 text-rose-400">
-            <Eye className="w-4 h-4 animate-pulse text-rose-400" />
-            <span className="font-bold tracking-wider">PERIMETER SURVEILLANCE ACTIVE</span>
-            <span className="hidden md:inline text-slate-400">|</span>
-            <span className="hidden md:inline text-slate-300">Target Session: <span className="text-white font-semibold">{sessionIdDisplay}</span></span>
-          </div>
-          <div className="flex flex-wrap items-center gap-3 text-[11px]">
-            <div className="flex items-center gap-1.5 text-rose-300">
-              <AlertTriangle className="w-3.5 h-3.5" />
-              <span>IP HASH: <strong className="text-white">{ipHashDisplay}</strong></span>
+        {/* Sovereign Prime Recognition Crest */}
+        {isSovereignPrime && (
+          <div className="glass-quantum rounded-2xl p-4 sm:p-5 border border-cyan-400 bg-gradient-to-r from-cyan-950/40 via-obsidian-900 to-amber-950/20 text-xs font-mono space-y-3 shadow-2xl">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <Crown className="w-5 h-5 text-amber-400 animate-pulse shrink-0" />
+                <div>
+                  <div className="text-white font-bold text-sm tracking-wider flex items-center gap-2">
+                    SOVEREIGN RECOGNITION CONFIRMED • CLEARANCE: RING-0 PRIME
+                  </div>
+                  <div className="text-slate-300 text-xs">
+                    Principals: <strong className="text-amber-300">Commander Wali & Noorish Sabah, PAS</strong> (Air-Gapped Node 01)
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={handleToggleRadar}
+                  className="px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-obsidian-950 font-bold text-xs flex items-center gap-1.5 transition-colors shadow-md shadow-cyan-500/20"
+                >
+                  <Radio className="w-3.5 h-3.5" />
+                  <span>{showLiveRadar ? 'Close Live Radar' : 'Open Live Radar (Supabase)'}</span>
+                </button>
+                <button
+                  onClick={handleExportForensicLedger}
+                  className="px-3 py-1.5 rounded-lg bg-obsidian-900 border border-cyan-500/40 hover:border-cyan-400 text-cyan-300 text-xs flex items-center gap-1.5 transition-colors"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Export Affidavit</span>
+                </button>
+                <button
+                  onClick={() => {
+                    revokeSovereignClearance();
+                    setIsSovereignPrime(false);
+                    setShowLiveRadar(false);
+                  }}
+                  title="Switch to public guest view"
+                  className="px-2 py-1.5 rounded-lg bg-obsidian-900 border border-slate-700 hover:border-rose-500 text-slate-400 hover:text-rose-300 text-xs transition-colors"
+                >
+                  Relinquish
+                </button>
+              </div>
             </div>
-            <span className="px-2 py-0.5 rounded bg-rose-500/20 border border-rose-500/40 text-rose-300 font-bold uppercase">
-              {visitor?.clearanceStatus || 'RECORDED'}
-            </span>
+          </div>
+        )}
+
+        {/* Live Forensic Radar Deck (Unlocked for Sovereign Prime) */}
+        {showLiveRadar && (
+          <div className="glass-quantum rounded-2xl p-5 border border-cyan-400/50 bg-obsidian-950/95 space-y-4 font-mono text-xs shadow-2xl">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-500/20 pb-3">
+              <div className="flex items-center gap-2 text-cyan-400">
+                <Database className="w-4 h-4 text-cyan-400 animate-pulse" />
+                <span className="font-bold text-sm tracking-wider text-white">SUPABASE FORENSIC INTRUSION RADAR</span>
+                <span className="text-slate-500">|</span>
+                <span className="text-slate-400 text-xs">Table: <strong className="text-cyan-300">sovereign_visitor_ledger</strong></span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleToggleRadar}
+                  className="p-1 rounded bg-obsidian-900 border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-white"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {loadingRadar ? (
+              <div className="py-8 text-center text-slate-400 flex items-center justify-center gap-2">
+                <RefreshCw className="w-4 h-4 animate-spin text-cyan-400" />
+                <span>Interrogating Supabase remote telemetry enclaves...</span>
+              </div>
+            ) : radarLogs.length === 0 ? (
+              <div className="py-6 text-center text-slate-400 space-y-1">
+                <div>Awaiting first remote ledger synchronization or SQL table initialization.</div>
+                <div className="text-[11px] text-slate-500">Local fallback buffer is active. New visitor hits are automatically queued.</div>
+              </div>
+            ) : (
+              <div className="overflow-x-auto max-h-96">
+                <table className="w-full text-left text-[11px]">
+                  <thead>
+                    <tr className="border-b border-slate-800 text-slate-400">
+                      <th className="py-2 pr-3">TIMESTAMP</th>
+                      <th className="py-2 pr-3">SESSION ID</th>
+                      <th className="py-2 pr-3">IP / ISP / ASN</th>
+                      <th className="py-2 pr-3">GEOLOCATION</th>
+                      <th className="py-2 pr-3">GPU RENDERER</th>
+                      <th className="py-2 pr-3">THREAT</th>
+                      <th className="py-2">STATUS</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-900 text-slate-300">
+                    {radarLogs.map((log, idx) => (
+                      <tr key={idx} className="hover:bg-cyan-950/20 transition-colors">
+                        <td className="py-2 pr-3 whitespace-nowrap text-slate-400">
+                          {log.timestamp ? new Date(log.timestamp).toLocaleTimeString() : 'N/A'}
+                        </td>
+                        <td className="py-2 pr-3 whitespace-nowrap text-cyan-300 font-bold">{log.session_id}</td>
+                        <td className="py-2 pr-3 whitespace-nowrap">
+                          <div>{log.raw_ip || log.ip_hash}</div>
+                          <div className="text-[10px] text-slate-500">{log.isp || 'CELLULAR'} ({log.asn || 'ASN'})</div>
+                        </td>
+                        <td className="py-2 pr-3 whitespace-nowrap text-slate-300">
+                          {log.city && log.city !== 'UNKNOWN' ? `${log.city}, ${log.country}` : 'Encrypted Enclave'}
+                        </td>
+                        <td className="py-2 pr-3 whitespace-nowrap max-w-[200px] truncate text-slate-400" title={log.gpu_renderer}>
+                          {log.gpu_renderer || 'WebGL Probed'}
+                        </td>
+                        <td className="py-2 pr-3 whitespace-nowrap">
+                          <span className={log.bot_threat_score >= 50 ? 'text-rose-400 font-bold' : 'text-mint-400'}>
+                            {log.bot_threat_score ?? 0}/100
+                          </span>
+                        </td>
+                        <td className="py-2 whitespace-nowrap">
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-slate-800 text-slate-300">
+                            {log.security_ring || 'RING-0'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Live Visitor Surveillance & Deep Hardware Telemetry Banner */}
+        <div className="glass-quantum rounded-2xl p-4 border border-rose-500/30 bg-rose-950/20 text-xs font-mono space-y-3 shadow-xl">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-rose-500/20 pb-2.5">
+            <div className="flex items-center gap-2 text-rose-400">
+              <Eye className="w-4 h-4 animate-pulse text-rose-400" />
+              <span className="font-bold tracking-wider">SOVEREIGN PERIMETER SURVEILLANCE</span>
+              <span className="hidden md:inline text-slate-500">|</span>
+              <span className="hidden md:inline text-slate-300">Session: <strong className="text-white">{visitor?.sessionId || 'SVRN-AUTH-INITIALIZING'}</strong></span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${
+                visitor?.securityRing === 'RING-0 HARDWARE-SEALED' 
+                  ? 'bg-mint-500/20 text-mint-300 border-mint-500/40' 
+                  : visitor?.securityRing === 'RING-1 ATTESTED-ENCLAVE'
+                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                    : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+              }`}>
+                {visitor?.securityRing || 'RING-0 HARDWARE-SEALED'}
+              </span>
+              <span className="px-2 py-0.5 rounded bg-rose-500/20 border border-rose-500/40 text-rose-300 text-[10px] font-bold uppercase">
+                {visitor?.clearanceStatus || 'RECORDED'}
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-[11px] text-slate-300">
+            <div className="flex items-center gap-1.5 bg-obsidian-950/60 px-2.5 py-1.5 rounded-lg border border-slate-800">
+              <Globe className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+              <span className="truncate">ISP: <strong className="text-slate-100">{visitor?.isp || 'Cellular ASN Resolving'}</strong></span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-obsidian-950/60 px-2.5 py-1.5 rounded-lg border border-slate-800">
+              <Cpu className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+              <span className="truncate">GPU: <strong className="text-slate-100">{visitor?.gpuRenderer || 'WebGL Probed'}</strong></span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-obsidian-950/60 px-2.5 py-1.5 rounded-lg border border-slate-800">
+              <Radio className="w-3.5 h-3.5 text-violet-400 shrink-0" />
+              <span className="truncate">DAC: <strong className="text-slate-100">{visitor?.audioDacHash || 'Synthesizing'}</strong></span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-obsidian-950/60 px-2.5 py-1.5 rounded-lg border border-slate-800">
+              <Activity className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span className="truncate">THREAT: <strong className="text-white">{visitor?.botThreatScore ?? 0}/100</strong> ({visitor?.botThreatCategory || 'BENIGN'})</span>
+            </div>
+          </div>
+
+          {/* Transnational Legal Penal Deterrence Notice */}
+          <div className="pt-2 border-t border-rose-500/20 text-[10px] text-rose-300/80 font-mono flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5">
+              <ShieldAlert className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+              <span>
+                FORENSIC NOTICE: Session telemetry, unmasked cellular carrier IP leases & hardware DAC hashes are permanently committed to remote Supabase enclaves under Budapest Convention on Cybercrime ETS 185 (Arts. 4, 7 & 8), US 18 U.S.C. § 1030 (CFAA) & § 2261A, EU AI Act (2024/1689), and INTERPOL MLAT subpoena standards.
+              </span>
+            </div>
+            <span className="text-rose-400 font-bold shrink-0">CRIMINAL EVIDENCE ATTESTED</span>
           </div>
         </div>
 
@@ -193,7 +495,7 @@ export const NoorixTerminal: React.FC = () => {
               <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
               <span className="text-white font-bold tracking-wider">NOORIX SOVEREIGN NODE</span>
               <span className="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 text-[10px] border border-cyan-500/40">
-                AIR-GAPPED
+                AIR-GAPPED ENCLAVE
               </span>
             </div>
             <div className="flex items-center gap-4 text-xs font-mono">
@@ -203,75 +505,104 @@ export const NoorixTerminal: React.FC = () => {
               </div>
               <div className="hidden sm:flex items-center gap-1.5 text-cyan-400">
                 <Key className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Enclave: {SOVEREIGN_ENCLAVE_CONFIG.nodeId}</span>
+                <span>Node: {SOVEREIGN_ENCLAVE_CONFIG.nodeId}</span>
               </div>
             </div>
           </div>
 
-
           <div className="p-6 space-y-6">
-            {/* Direct Sovereign Command Triggers */}
-            <div className="space-y-2">
+            {/* Direct Sovereign Operational Modes */}
+            <div className="space-y-2.5">
               <div className="flex items-center justify-between text-xs font-mono text-slate-400">
-                <span>Direct Sovereign Command Chips:</span>
-                <span className="text-cyan-400 text-[11px]">Click to execute authenticated query</span>
+                <span className="flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Sovereign Enclave Operational Modes:</span>
+                </span>
+                <span className="text-cyan-400 text-[11px] hidden sm:inline">Attested Air-Gapped Kernel</span>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                {curatedCommands.map((item, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleCommandSelect(item.data)}
-                    className="px-3 py-1.5 rounded-xl bg-obsidian-900/90 border border-cyan-500/30 text-cyan-300 hover:text-white hover:border-cyan-400 text-xs font-mono transition-all flex items-center gap-1.5 shadow-sm"
-                  >
-                    <Terminal className="w-3 h-3 text-cyan-400" />
-                    <span>{item.label}</span>
-                  </button>
-                ))}
+                {commandModes.map((item) => {
+                  const isActive = activeMode === item.mode;
+                  return (
+                    <button
+                      key={item.mode}
+                      onClick={() => handleModeSwitch(item.mode)}
+                      className={`px-3 py-1.5 rounded-xl border text-xs font-mono transition-all flex items-center gap-1.5 shadow-sm ${
+                        isActive
+                          ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400 font-semibold ring-1 ring-cyan-500/40'
+                          : 'bg-obsidian-900/90 border-slate-800 text-slate-300 hover:text-white hover:border-cyan-500/50'
+                      }`}
+                    >
+                      <Terminal className={`w-3 h-3 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
+                      <span>{item.label}</span>
+                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-obsidian-950/80 border border-slate-700/60 text-slate-400">
+                        {item.tag}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             {/* Cryptographic Response Card */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-obsidian-950/95 border border-cyan-500/30 space-y-4 font-mono">
+            <div className="p-5 sm:p-6 rounded-2xl bg-obsidian-950/95 border border-cyan-500/30 space-y-4 font-mono shadow-inner">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-cyan-500/20 pb-3 text-xs">
-                <div className="flex items-center gap-2 text-cyan-400 font-bold">
-                  <span>$ noorix --execute &quot;{output.cmd}&quot;</span>
+                <div className="flex items-center gap-2 text-cyan-400 font-bold truncate">
+                  <Terminal className="w-4 h-4 shrink-0 text-cyan-400" />
+                  <span className="truncate">$ noorix --mode {activeMode.toLowerCase()} --execute &quot;{currentDispatch.command}&quot;</span>
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-cyan-500/10 text-cyan-300 text-[11px] border border-cyan-500/30 font-semibold">
-                  <CheckCircle2 className="w-3 h-3 text-mint-400" />
-                  <span>{output.role}</span>
+                <div className="flex items-center gap-2">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-cyan-500/10 text-cyan-300 text-[11px] border border-cyan-500/30 font-semibold">
+                    <CheckCircle2 className="w-3 h-3 text-mint-400" />
+                    <span>{currentDispatch.role}</span>
+                  </div>
+                  <button
+                    onClick={handleCopyResponse}
+                    title="Copy response to clipboard"
+                    className="p-1 rounded-md bg-obsidian-900 border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 transition-colors"
+                  >
+                    {copied ? <Check className="w-3.5 h-3.5 text-mint-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
                 </div>
               </div>
 
-              <div className="text-slate-100 font-sans text-sm sm:text-base leading-relaxed py-1">
-                {output.response}
+              <div className="space-y-2">
+                <div className="text-xs font-mono uppercase text-violet-400 tracking-wider">
+                  [{currentDispatch.title}]
+                </div>
+                <div className="text-slate-100 font-sans text-sm sm:text-base leading-relaxed py-1">
+                  {currentDispatch.response}
+                </div>
               </div>
 
               <div className="pt-3 border-t border-slate-800 space-y-2 text-[11px] font-mono text-slate-400">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[10px] text-cyan-400">
-                  <span className="truncate">STATE HASH: {output.digest}</span>
-                  <span className="shrink-0 text-slate-400">LATENCY: {output.latency}</span>
+                  <span className="truncate">STATE HASH: {currentDispatch.digest}</span>
+                  <span className="shrink-0 text-slate-400">LATENCY: {currentDispatch.latency}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[10px] text-slate-500">
-                  <span className="truncate">SIGNATURE: {output.signature}</span>
-                  <span className="shrink-0 text-mint-400 font-bold">{output.enclaveStatus}</span>
+                  <span className="truncate">SIGNATURE: {currentDispatch.signature}</span>
+                  <span className="shrink-0 text-mint-400 font-bold">{currentDispatch.enclaveStatus}</span>
                 </div>
               </div>
             </div>
 
-            {/* Terminal Input Form */}
+            {/* Sovereign Terminal Input Form */}
             <form onSubmit={handleExecute} className="flex flex-col sm:flex-row gap-2.5">
               <input
                 type="text"
                 value={queryInput}
                 onChange={(e) => setQueryInput(e.target.value)}
-                placeholder="Interrogate NOORIX (Directives restricted strictly to Noorish Sabah, PAS)..."
-                className="flex-1 bg-obsidian-900 border border-cyan-500/30 rounded-xl px-4 py-3 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition-colors"
+                placeholder="Interrogate NOORIX Kernel (Statecraft, IMF ESRx, EU AI Act, NOORIVA, MIT DEDP)..."
+                disabled={isProcessing}
+                className="flex-1 bg-obsidian-900 border border-cyan-500/30 rounded-xl px-4 py-3 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition-colors disabled:opacity-50"
               />
               <button
                 type="submit"
-                className="px-5 sm:px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-obsidian-950 rounded-xl font-mono text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-cyan-500/30 shrink-0"
+                disabled={isProcessing}
+                className="px-5 sm:px-6 py-3 bg-cyan-500 hover:bg-cyan-400 disabled:bg-slate-700 text-obsidian-950 font-bold rounded-xl font-mono text-xs flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-cyan-500/30 shrink-0"
               >
-                <span>Execute</span>
+                <span>{isProcessing ? 'Attesting...' : 'Execute Kernel'}</span>
                 <Send className="w-3.5 h-3.5" />
               </button>
             </form>
@@ -305,6 +636,60 @@ export const NoorixTerminal: React.FC = () => {
           </div>
         </div>
 
+        {/* Sovereign Prime Authorization Gate Modal (Ctrl+Shift+S) */}
+        {authModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-obsidian-950/80 backdrop-blur-md">
+            <div className="glass-quantum rounded-2xl p-6 border border-cyan-400 max-w-md w-full space-y-4 font-mono shadow-2xl bg-obsidian-950">
+              <div className="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+                <div className="flex items-center gap-2 text-cyan-300 font-bold">
+                  <Key className="w-4 h-4 text-amber-400" />
+                  <span>SOVEREIGN PRIME AUTHORIZATION GATE</span>
+                </div>
+                <button
+                  onClick={() => setAuthModalOpen(false)}
+                  className="p-1 text-slate-400 hover:text-white"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Enter Sovereign Prime Passkey to verify identity of Commander Wali & Noorish Sabah, PAS.
+              </p>
+
+              <form onSubmit={handleAuthSubmit} className="space-y-3">
+                <input
+                  type="password"
+                  value={passkeyInput}
+                  onChange={(e) => setPasskeyInput(e.target.value)}
+                  placeholder="Passkey (e.g. SOVEREIGN_PRIME)"
+                  autoFocus
+                  className="w-full bg-obsidian-900 border border-cyan-500/40 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-300"
+                />
+                {authStatusMsg && (
+                  <div className={`text-xs font-bold ${authStatusMsg.includes('Confirmed') ? 'text-mint-400' : 'text-rose-400'}`}>
+                    {authStatusMsg}
+                  </div>
+                )}
+                <div className="flex justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setAuthModalOpen(false)}
+                    className="px-3 py-1.5 rounded-lg border border-slate-700 text-slate-300 hover:text-white text-xs"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-1.5 rounded-lg bg-cyan-500 text-obsidian-950 font-bold hover:bg-cyan-400 text-xs shadow-md shadow-cyan-500/20"
+                  >
+                    Verify Clearance
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

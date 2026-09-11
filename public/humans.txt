@@ -2,9 +2,10 @@
 Executive Subject: Noorish Sabah, PAS
 Role: Director, Pakistan Sports Board (Punjab)
 Service Group: Pakistan Administrative Service (40th Common Training Program)
-Credentials: KU Leuven (AI Law & Ethics), HP (AI in Society), IDB (Data for Policy), IMF (Macroeconomic Programming)
+Credentials: Oxford Saïd Business School (Executive Leadership XFLSP01), IMF (Macroeconomic Programming FPP.1x & Energy Subsidy Reform ESRx), KU Leuven (AI Law & Ethics HUMANAIx), HP (AI in Society), IDB (Data for Policy), MIT DEDP Advanced Policy Fellow (2026 – Onwards)
 Official Node: https://noorish.org
-Contact: noorish@nooriva.co
+Subordinate Commerce Node: https://nooriva.ai
+Contact: noorish@nooriva.ai
 
 /* SITE */
 Standards: HTML5, CSS3, ES2026, WebGL, Web Audio API

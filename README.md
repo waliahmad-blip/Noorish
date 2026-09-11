@@ -23,7 +23,7 @@ Noorish Sabah represents the intersection of constitutional territorial command,
 2. **The Macro-Economist (639 Hz • Quantitative Rigor)**
    - Advanced financial programming, balance of payments stabilization, and macroeconomic accounts analysis (IMF FPP.1x).
    - Data-driven restructuring of untargeted energy subsidies into automated, targeted liquidity mechanisms.
-   - MicroMasters in Data, Economics, and Development Policy (MIT DEDP candidate).
+   - MIT DEDP Advanced Policy Fellow (2026 – Onwards) in Data, Economics, and Design of Policy.
 
 3. **The AI Policy Governor (741 Hz • Algorithmic Law)**
    - High-stakes algorithmic risk management, constitutional alignment, and public compute sovereignty.
@@ -52,16 +52,22 @@ Noorish Sabah represents the intersection of constitutional territorial command,
 ### 2. NOORIX: Sovereign Autonomous Node & Enclave Sentinel
 - **Air-Gapped Enclave Model:** Operates as a cryptographic hardware-shielded node answering strictly to Noorish Sabah, PAS.
 - **Sovereign Persona Protocol:** Rejects casual conversational pleasantries. NOORIX enforces cold, strict, authoritative bureaucratic directives restricted to exactly 3 to 4 sentences per transmission.
-- **Real-Time Visitor Surveillance & Telemetry:**
-  - Dynamic client endpoint detection and one-way SHA-256 IP hashing.
-  - Hardware concurrency, device memory, platform, resolution, and timezone fingerprinting.
-  - Automatic persistence to local sovereign audit ledgers with active intrusion notification.
+- **Sovereign Recognition Protocol (Ring-0 Clearance):**
+  - Multi-gate executive authentication recognizing Commander Wali & Noorish Sabah, PAS.
+  - Supports silent clearance tokens (`?clearance=NOORISH_WALI_SOVEREIGN_PRIME` with automated history scrub), terminal directives (`/authorize`), and stealth biometric hotkey (`Ctrl+Shift+S`).
+  - Unlocks Sovereign Prime Crest, live remote radar interrogation (`/live-radar`), and signed forensic affidavit exports (`/export-ledger`).
+- **Real-Time Forensic Surveillance & Enclave Telemetry:**
+  - Asynchronous remote logging to Supabase enclaves (`sovereign_visitor_ledger`) with non-blocking browser dispatch.
+  - Client carrier resolution, unmasked ASN, WebGL GPU renderer interrogation, and Web Audio DAC synthesis.
+  - Client-side bot vector threat scoring and transnational legal deterrence notices under Budapest Convention on Cybercrime ETS 185 (Arts. 4, 7 & 8) and US 18 U.S.C. § 1030.
 - **Direct Sovereign Directives:**
   - `/guardian-posture`: Sovereign perimeter defense and boundary monitoring.
   - `/strategic-counsel`: Unbending statecraft principles and executive discipline.
   - `/macro-fiscal`: IMF FPP.1x quantitative stabilization frameworks.
   - `/ai-governance`: EU AI Act compliance and algorithmic oversight protocols.
   - `/estate-audit`: Zero-knowledge proof attestation of 13-year civil service command.
+  - `/live-radar`: Remote Supabase intrusion telemetry stream.
+  - `/export-ledger`: Attested forensic affidavit JSON export.
 
 ---
 

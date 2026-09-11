@@ -31,13 +31,13 @@ export const BrandAndGrowthLedger: React.FC = () => {
 
             <div className="glass-quantum rounded-2xl p-5 border border-violet-500/30 space-y-2">
               <span className="text-[11px] font-mono uppercase text-violet-400 font-semibold">Subordinate Venture Node</span>
-              <div className="font-display font-bold text-lg text-white">nooriva.co</div>
+              <div className="font-display font-bold text-lg text-white">nooriva.ai</div>
               <p className="text-xs text-slate-300">Halal ingestible cellular wellness enterprise serving Pakistan, UAE, UK, and North America.</p>
             </div>
 
             <div className="glass-quantum rounded-2xl p-5 border border-mint-500/30 space-y-2">
               <span className="text-[11px] font-mono uppercase text-mint-400 font-semibold">Executive Transmission</span>
-              <div className="font-display font-bold text-lg text-white">noorish@nooriva.co</div>
+              <div className="font-display font-bold text-lg text-white">noorish@nooriva.ai</div>
               <p className="text-xs text-slate-300">Direct executive communications, institutional correspondence, and verified verification protocols.</p>
             </div>
           </div>

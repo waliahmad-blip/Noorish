@@ -18,13 +18,13 @@ export const FounderFacet: React.FC = () => {
           </p>
         </div>
         <a
-          href="https://nooriva.co"
+          href="https://nooriva.ai"
           target="_blank"
           rel="noopener noreferrer"
           className="px-4 py-2 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-300 hover:text-rose-100 text-xs font-mono transition-all flex items-center gap-2 hover:border-rose-400 shadow-lg"
         >
           <Globe className="w-4 h-4" />
-          <span>nooriva.co</span>
+          <span>nooriva.ai</span>
         </a>
       </div>
 

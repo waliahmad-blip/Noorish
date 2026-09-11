@@ -1,33 +1,67 @@
 /**
- * Web Audio API Procedural Synthesizer for Concept 8 (Chrono-Prism)
- * Generates pure harmonic crystal chimes matching the solfeggio frequencies of each facet.
+ * Web Audio API Procedural Synthesizer for Noorish Sovereign Digital Estate
+ * Generates pure harmonic crystal chimes matching the solfeggio frequencies of each facet,
+ * tactical radar telemetry pings, cryptographic attestation bells, and micro-haptic SFX.
  */
 
 class CrystalAudioEngine {
   private ctx: AudioContext | null = null;
   private isMuted: boolean = true; // Defaults to muted for polite browser autoplay policies
 
+  constructor() {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('noorish_audio_muted');
+        if (saved !== null) {
+          this.isMuted = saved === 'true';
+        }
+      } catch {
+        // LocalStorage sandbox fallback
+      }
+    }
+  }
+
   private initContext() {
     if (!this.ctx && typeof window !== 'undefined') {
       const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      this.ctx = new AudioCtx();
+      if (AudioCtx) {
+        this.ctx = new AudioCtx();
+      }
     }
     if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      this.ctx.resume().catch(() => {});
     }
   }
 
   public toggleMute(): boolean {
     this.isMuted = !this.isMuted;
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('noorish_audio_muted', String(this.isMuted));
+      } catch {
+        // Fallback
+      }
+    }
     if (!this.isMuted) {
       this.initContext();
-      this.playChime(528, 0.2); // Play welcoming golden harmonic chime
+      this.playChime(528, 0.35); // Welcome golden harmonic 528 Hz chime
     }
     return this.isMuted;
   }
 
   public getMuted(): boolean {
     return this.isMuted;
+  }
+
+  public setMuted(muted: boolean) {
+    this.isMuted = muted;
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('noorish_audio_muted', String(this.isMuted));
+      } catch {
+        // Fallback
+      }
+    }
   }
 
   public playFacetHarmonic(frequency: number) {
@@ -98,7 +132,119 @@ class CrystalAudioEngine {
 
   public playTactileClick() {
     if (this.isMuted) return;
-    this.playChime(1200, 0.04);
+    this.playChime(1200, 0.035);
+  }
+
+  /**
+   * Tactical Radar Telemetry Ping for Cartography Node Navigation
+   */
+  public playRadarPing(freq: number = 980) {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, now);
+    osc.frequency.exponentialRampToValueAtTime(freq * 1.25, now + 0.08);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.exponentialRampToValueAtTime(0.14, now + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.25);
+  }
+
+  /**
+   * Triple Harmonic Attestation Bell for Cryptographic Credential Inspection
+   */
+  public playAttestationChime() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const notes = [528, 660, 792]; // Major triad
+
+    notes.forEach((freq, idx) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + idx * 0.03);
+
+      gain.gain.setValueAtTime(0.001, now + idx * 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.09 / (idx + 1), now + idx * 0.03 + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.4);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now + idx * 0.03);
+      osc.stop(now + 1.5);
+    });
+  }
+
+  /**
+   * Operational Mode Shift Sound
+   */
+  public playModeShift() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(440, now);
+    osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.exponentialRampToValueAtTime(0.1, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.28);
+  }
+
+  /**
+   * Perimeter Security Warning Alert
+   */
+  public playPerimeterAlert() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(320, now);
+    osc.frequency.setValueAtTime(480, now + 0.08);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.exponentialRampToValueAtTime(0.08, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.22);
   }
 }
 

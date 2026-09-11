@@ -14,7 +14,7 @@ export const TECHNOLOGY_SUITE = {
   },
   autonomousAgent: {
     name: "Noorix",
-    domain: "nooriva.co",
+    domain: "nooriva.ai",
     description: "Sovereign autonomous agent handling rapid citizen policy queries, wellness formulation science, and automated workflow dispatch."
   },
   dataStack: [

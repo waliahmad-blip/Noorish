@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Volume2, VolumeX, Menu, X, Compass, Award, Cpu, Sparkles } from 'lucide-react';
-import { audioEngine } from '../../utils/audioSynth';
+import React, { useState, useEffect } from "react";
+import { Volume2, VolumeX, Menu, X, Compass, Award, Cpu, Sparkles, ShieldCheck } from "lucide-react";
+import { audioEngine } from "../../utils/audioSynth";
 
 interface HeaderProps {
   onNavigate: (sectionId: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(audioEngine.getMuted());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [timePK, setTimePK] = useState('');
+  const [timePK, setTimePK] = useState("");
 
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      setTimePK(now.toLocaleTimeString('en-US', { timeZone: 'Asia/Karachi', hour12: false, hour: '2-digit', minute: '2-digit' }));
+      setTimePK(now.toLocaleTimeString("en-US", { timeZone: "Asia/Karachi", hour12: false, hour: "2-digit", minute: "2-digit" }));
     };
     updateTime();
     const interval = setInterval(updateTime, 1000);
@@ -27,10 +27,10 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
   };
 
   const navLinks = [
-    { id: 'cartography', label: '13-Year Cartography', icon: Compass },
-    { id: 'credentials', label: 'Verified Credentials', icon: Award },
-    { id: 'uniqueness', label: 'Uniqueness Thesis', icon: Sparkles },
-    { id: 'noorix', label: 'Noorix Terminal', icon: Cpu }
+    { id: "cartography", label: "13-Year Cartography", icon: Compass },
+    { id: "credentials", label: "Verified Credentials", icon: Award },
+    { id: "uniqueness", label: "Uniqueness Thesis", icon: Sparkles },
+    { id: "noorix", label: "Noorix Terminal", icon: Cpu }
   ];
 
   return (
@@ -38,7 +38,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
         {/* Sovereign Monogram Brand */}
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
           <div className="w-10 h-10 rounded-xl border border-cyan-500/50 bg-obsidian-900 flex items-center justify-center text-cyan-400 font-display font-bold text-lg shadow-lg shadow-cyan-500/10">
             NS
           </div>
@@ -71,6 +71,11 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
 
         {/* Global Telemetry & Audio Synthesizer */}
         <div className="flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-950/40 border border-cyan-500/30 text-[11px] font-mono text-cyan-300">
+            <span className="w-1.5 h-1.5 rounded-full bg-mint-400 animate-pulse" />
+            <span>RING-0 SECURE</span>
+          </div>
+
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-obsidian-900 border border-cyan-500/20 text-[11px] font-mono text-slate-300">
             <span className="w-2 h-2 rounded-full bg-mint-400 animate-pulse" />
             <span>LHE/ISB {timePK} PKT</span>
@@ -79,14 +84,25 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
           <button
             onClick={toggleSound}
             aria-label="Toggle Quantum Harmonic Audio"
-            className={`px-3.5 py-1.5 rounded-full border text-xs font-mono flex items-center gap-2 transition-all ${
+            className={"px-3.5 py-1.5 rounded-full border text-xs font-mono flex items-center gap-2 transition-all " + (
               !isMuted 
-                ? 'bg-cyan-500 text-obsidian-950 border-cyan-400 shadow-md shadow-cyan-500/30 font-bold' 
-                : 'bg-obsidian-900 text-cyan-400 border-cyan-500/30 hover:border-cyan-400'
-            }`}
+                ? "bg-cyan-500 text-obsidian-950 border-cyan-400 shadow-md shadow-cyan-500/30 font-bold" 
+                : "bg-obsidian-900 text-cyan-400 border-cyan-500/30 hover:border-cyan-400"
+            )}
           >
-            {!isMuted ? <Volume2 className="w-4 h-4 animate-bounce" /> : <VolumeX className="w-4 h-4" />}
-            <span className="hidden sm:inline">{!isMuted ? 'AUDIO ACTIVE' : 'AUDIO MUTED'}</span>
+            {!isMuted ? (
+              <div className="flex items-center gap-1.5">
+                <Volume2 className="w-4 h-4 text-obsidian-950" />
+                <div className="flex items-end gap-0.5 h-3">
+                  <span className="w-0.5 h-2 bg-obsidian-950 animate-pulse" />
+                  <span className="w-0.5 h-3 bg-obsidian-950 animate-bounce" />
+                  <span className="w-0.5 h-1.5 bg-obsidian-950 animate-pulse" />
+                </div>
+              </div>
+            ) : (
+              <VolumeX className="w-4 h-4" />
+            )}
+            <span className="hidden sm:inline">{!isMuted ? "AUDIO ACTIVE" : "AUDIO MUTED"}</span>
           </button>
 
           {/* Mobile Menu Hamburger */}
@@ -122,4 +138,3 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
     </header>
   );
 };
-

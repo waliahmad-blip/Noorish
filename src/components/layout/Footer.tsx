@@ -22,7 +22,7 @@ export const Footer: React.FC = () => {
               </span>
             </div>
             <p className="text-sm text-slate-400 max-w-md leading-relaxed">
-              Director, Pakistan Sports Board (Punjab) • Pakistan Administrative Service (40th Common) • Founder, NOORIVA • MIT MicroMasters Candidate. Dedicated to constitutional statecraft, multilateral economic design, and autonomous intelligence governance.
+              Director, Pakistan Sports Board (Punjab) • Pakistan Administrative Service (40th Common) • Founder, NOORIVA • MIT DEDP Advanced Policy Fellow (2026 – Onwards). Dedicated to constitutional statecraft, multilateral economic design, and autonomous intelligence governance.
             </p>
             <div className="text-xs font-mono text-cyan-400 pt-1">
               Motto: Governance by duty. Glow by design.
@@ -42,15 +42,15 @@ export const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a href="https://nooriva.co" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors flex items-center gap-2">
+                <a href="https://nooriva.ai" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors flex items-center gap-2">
                   <Globe className="w-4 h-4 text-violet-400/80" />
-                  <span>Venture Node: nooriva.co</span>
+                  <span>Venture Node: nooriva.ai</span>
                 </a>
               </li>
               <li>
-                <a href="mailto:noorish@nooriva.co" className="hover:text-cyan-400 transition-colors flex items-center gap-2">
+                <a href="mailto:noorish@nooriva.ai" className="hover:text-cyan-400 transition-colors flex items-center gap-2">
                   <Mail className="w-4 h-4 text-mint-400/80" />
-                  <span>Executive: noorish@nooriva.co</span>
+                  <span>Executive: noorish@nooriva.ai</span>
                 </a>
               </li>
             </ul>
