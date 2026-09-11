@@ -50,7 +50,8 @@ Noorish Sabah represents the intersection of constitutional territorial command,
 - **Pointer Fluid Repulsion:** Real-time raycasting calculates cursor proximity and deflects particles outward with electromagnetic fluid spring mechanics.
 
 ### 2. NOORIX: Sovereign Autonomous Node & Enclave Sentinel
-- **Air-Gapped Enclave Model:** Operates as a cryptographic hardware-shielded node answering strictly to Noorish Sabah, PAS.
+- **Air-Gapped Enclave Model:** Operates as a cryptographic hardware-shielded vanguard sentinel deployed from the **Harmo AI Apex Command Citadel**, answering strictly to Noorish Sabah, PAS and Commander Wali.
+- **Harmo AI Multi-Agent Mobilization Doctrine:** NOORIX functions as the forward fleet lead; backed by the classified, dormant swarm of specialized Harmo AI autonomous agents ready for instantaneous total-cluster mobilization at sovereign command.
 - **Sovereign Persona Protocol:** Rejects casual conversational pleasantries. NOORIX enforces cold, strict, authoritative bureaucratic directives restricted to exactly 3 to 4 sentences per transmission.
 - **Sovereign Recognition Protocol (Ring-0 Clearance):**
   - Multi-gate executive authentication recognizing Commander Wali & Noorish Sabah, PAS.
