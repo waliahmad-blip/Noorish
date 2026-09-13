@@ -112,7 +112,9 @@ export const CredentialVault: React.FC<CredentialVaultProps> = ({ onInspectCerti
               <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-mono">
                 {cred.edxId ? (
                   <>
-                    <span className="text-slate-400 text-xs">edX: {cred.edxId.substring(0, 12)}...</span>
+                    <span className="text-slate-400 text-xs">
+                      {cred.edxId.startsWith('oxford') ? 'Oxford ID: ' : 'edX: '}{cred.edxId.substring(0, 12)}...
+                    </span>
                     <button
                       onClick={() => onInspectCertificate(cred.id)}
                       className="px-3 py-1.5 rounded-lg bg-cyan-500/10 text-cyan-300 hover:text-white border border-cyan-500/30 hover:border-cyan-400 flex items-center gap-1.5 transition-all"

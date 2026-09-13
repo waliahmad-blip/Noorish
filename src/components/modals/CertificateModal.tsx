@@ -45,7 +45,19 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({ certId, onCl
   if (!cert) return null;
 
   const isVerified = cert.status === "Completed";
-  const verificationUrl = cert.edxId ? ("https://credentials.edx.org/credentials/" + cert.edxId + "/") : "#";
+  
+  const getVerificationUrl = (c: Credential): string => {
+    if (!c.edxId) return "#";
+    if (c.edxId.startsWith('oxford')) {
+      return "https://www.sbs.ox.ac.uk/programmes/executive-education";
+    }
+    if (c.id === 'imf-esrx') {
+      return `https://credentials.edx.org/records/programs/${c.edxId}`;
+    }
+    return `https://courses.edx.org/certificates/${c.edxId}`;
+  };
+
+  const verificationUrl = getVerificationUrl(cert);
 
   const copyAttestationProof = () => {
     const proofText = "[NOORIX-SOVEREIGN-PROOF]\n" +
@@ -197,7 +209,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({ certId, onCl
               rel="noopener noreferrer"
               className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-obsidian-950 font-mono font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-cyan-500/20"
             >
-              <span>Verify on edX Ledger</span>
+              <span>{cert.edxId.startsWith('oxford') ? 'Verify with Oxford Saïd' : 'Verify on edX Ledger'}</span>
               <ExternalLink className="w-4 h-4" />
             </a>
           ) : (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Mail, Globe, ArrowUp } from 'lucide-react';
+import { ShieldCheck, Mail, Globe, ArrowUp, Linkedin, Facebook, Instagram, ShieldAlert } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const scrollToTop = () => {
@@ -27,6 +27,43 @@ export const Footer: React.FC = () => {
             <div className="text-xs font-mono text-cyan-400 pt-1">
               Motto: Governance by duty. Glow by design.
             </div>
+
+            {/* Sole Authorized Social Profiles */}
+            <div className="space-y-1.5 pt-2">
+              <div className="text-[11px] font-mono text-cyan-400 font-semibold flex items-center gap-1.5 uppercase">
+                <ShieldCheck className="w-3.5 h-3.5 text-mint-400" />
+                <span>Sole Authorized Social Channels</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs">
+                <a 
+                  href="https://www.linkedin.com/in/noorishsabah/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-obsidian-900 border border-cyan-500/30 text-slate-300 hover:text-cyan-300 hover:border-cyan-400 transition-colors"
+                >
+                  <Linkedin className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>LinkedIn</span>
+                </a>
+                <a 
+                  href="https://www.facebook.com/noorishsabah" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-obsidian-900 border border-cyan-500/30 text-slate-300 hover:text-cyan-300 hover:border-cyan-400 transition-colors"
+                >
+                  <Facebook className="w-3.5 h-3.5 text-blue-400" />
+                  <span>Facebook</span>
+                </a>
+                <a 
+                  href="https://www.instagram.com/noorishsabah/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-obsidian-900 border border-cyan-500/30 text-slate-300 hover:text-cyan-300 hover:border-cyan-400 transition-colors"
+                >
+                  <Instagram className="w-3.5 h-3.5 text-rose-400" />
+                  <span>Instagram</span>
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* Canonical Verified Domains */}
@@ -48,8 +85,14 @@ export const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
+                <a href="#authenticity" className="hover:text-cyan-400 transition-colors flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-mint-400/80" />
+                  <span>Authenticity Ledger</span>
+                </a>
+              </li>
+              <li>
                 <a href="mailto:noorish@nooriva.ai" className="hover:text-cyan-400 transition-colors flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-mint-400/80" />
+                  <Mail className="w-4 h-4 text-cyan-400/80" />
                   <span>Executive: noorish@nooriva.ai</span>
                 </a>
               </li>
@@ -59,15 +102,15 @@ export const Footer: React.FC = () => {
           {/* Verification & Security Integrity */}
           <div className="space-y-3">
             <h4 className="text-xs font-mono font-semibold text-cyan-400 tracking-wider uppercase">
-              Institutional Protocol
+              Legal & Forensic Protocol
             </h4>
             <div className="p-4 rounded-xl bg-obsidian-900/90 border border-cyan-500/20 text-xs text-slate-300 space-y-2">
               <div className="flex items-center gap-1.5 text-cyan-400 font-medium">
-                <ShieldCheck className="w-4 h-4 text-mint-400" />
-                <span>Verified Entity Cryptography</span>
+                <ShieldAlert className="w-4 h-4 text-rose-400" />
+                <span>Synthetic Media Immunity</span>
               </div>
               <p className="text-[11px] text-slate-400 leading-normal">
-                Multilateral credentials cryptographically verified via public registry identifiers issued by KU Leuven, IMF, IDB, and HP Education.
+                Strict legal deterrence under Budapest Convention ETS No. 185 and Title 18 U.S.C. § 2261A against non-consensual deepfakes, scraper blogs, or impersonation aliases.
               </p>
             </div>
           </div>

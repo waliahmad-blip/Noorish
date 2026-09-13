@@ -11,7 +11,21 @@ export const IDENTITY_CORE = {
   domains: {
     primary: "noorish.org",
     commerce: "nooriva.ai",
-    email: "noorish@nooriva.ai"
+    email: "noorish@nooriva.ai",
+    governmentEmail: "dirlahrpsb@sports.gov.pk"
+  },
+  social: {
+    linkedin: "https://www.linkedin.com/in/noorishsabah/",
+    facebook: "https://www.facebook.com/noorishsabah",
+    instagram: "https://www.instagram.com/noorishsabah/",
+    authorizedNotice: "These three profiles are the ONLY verified and authorized social media presences of Noorish Sabah. All other accounts, channels, or profiles on any platform claiming association, or using her likeness under fabricated aliases (such as 'Huma Khan' or 'Uzma Khan'), are fraudulent, unauthorized, and subject to active reporting under international cybercrime conventions."
+  },
+  authenticityRecord: {
+    gazettedCadre: "Pakistan Administrative Service (PAS) • 40th Common Training Programme",
+    currentExecutiveRole: "Director, Pakistan Sports Board (Punjab), Ministry of Inter-Provincial Coordination",
+    officialGazettedNames: ["Noorish Sabah", "Noorish Imran (Previous Gazetted Name)"],
+    fraudulentAliasesRefuted: ["Huma Khan", "Uzma Khan"],
+    legalNotice: "Any synthetic media, non-consensual face modifications (deepfakes), or defamatory blog posts circulating under previous names or fabricated aliases are malicious cyber-offenses prosecuted under the Council of Europe Convention on Cybercrime (Budapest Convention, ETS No. 185) and Title 18 U.S. Code § 2261A."
   }
 };
 

@@ -16,6 +16,7 @@ import { TechnologySuite } from "./components/interactive/TechnologySuite";
 import { PartnershipAndFirsts } from "./components/interactive/PartnershipAndFirsts";
 import { NoorixTerminal } from "./components/interactive/NoorixTerminal";
 import { BrandAndGrowthLedger } from "./components/interactive/BrandAndGrowthLedger";
+import { AuthenticityLedger } from "./components/interactive/AuthenticityLedger";
 import { ClosingMonument } from "./components/interactive/ClosingMonument";
 import { CertificateModal } from "./components/modals/CertificateModal";
 import { initializeVisitorTelemetry } from "./utils/visitorTelemetry";
@@ -30,6 +31,12 @@ export const App: React.FC = () => {
 
   const handleNavigate = (sectionId: string) => {
     if (sectionId === "noorix" && activeFacet !== "convergence" && activeFacet !== "economist") {
+      setActiveFacet("convergence");
+    } else if (sectionId === "field-command" && activeFacet !== "convergence" && activeFacet !== "officer") {
+      setActiveFacet("convergence");
+    } else if (sectionId === "ai-governance" && activeFacet !== "convergence" && activeFacet !== "ai-governor") {
+      setActiveFacet("convergence");
+    } else if (sectionId === "nooriva" && activeFacet !== "convergence" && activeFacet !== "founder") {
       setActiveFacet("convergence");
     }
     setTimeout(() => {
@@ -57,7 +64,7 @@ export const App: React.FC = () => {
         {/* Dynamic Facet Spotlight Container */}
         <section className="py-12">
           {activeFacet === "officer" && (
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div id="field-command" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
               <OfficerFacet onInspectCertificate={setInspectCertId} />
             </div>
           )}
@@ -72,13 +79,13 @@ export const App: React.FC = () => {
           )}
 
           {activeFacet === "ai-governor" && (
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div id="ai-governance" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
               <AIGovernorFacet onInspectCertificate={setInspectCertId} />
             </div>
           )}
 
           {activeFacet === "founder" && (
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div id="nooriva" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
               <FounderFacet />
             </div>
           )}
@@ -86,7 +93,7 @@ export const App: React.FC = () => {
           {activeFacet === "convergence" && (
             <div className="space-y-12">
               {/* Facet I: The State Strategist */}
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div id="field-command" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
                 <OfficerFacet onInspectCertificate={setInspectCertId} />
               </div>
 
@@ -96,8 +103,12 @@ export const App: React.FC = () => {
               {/* Facets II, III, & IV */}
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
                 <EconomistFacet onInspectCertificate={setInspectCertId} />
-                <AIGovernorFacet onInspectCertificate={setInspectCertId} />
-                <FounderFacet />
+                <div id="ai-governance" className="scroll-mt-24">
+                  <AIGovernorFacet onInspectCertificate={setInspectCertId} />
+                </div>
+                <div id="nooriva" className="scroll-mt-24">
+                  <FounderFacet />
+                </div>
               </div>
             </div>
           )}
@@ -122,9 +133,14 @@ export const App: React.FC = () => {
         <PartnershipAndFirsts />
 
         {/* Sections 9 & 10: Digital Architecture & Growth Ledger */}
-        <BrandAndGrowthLedger />
+        <div id="intelligence" className="scroll-mt-24">
+          <BrandAndGrowthLedger />
+        </div>
 
-        {/* Section 11: Closing Monumental Statement */}
+        {/* Section 11: Sovereign Authenticity & Identity Ledger */}
+        <AuthenticityLedger />
+
+        {/* Section 12: Closing Monumental Statement */}
         <ClosingMonument />
       </main>
 

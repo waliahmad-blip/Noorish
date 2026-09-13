@@ -4,179 +4,203 @@ export const SERVICE_POSTINGS: Posting[] = [
   {
     id: 'psb-punjab',
     role: 'Director, Pakistan Sports Board (Punjab)',
-    department: 'Ministry of Inter-Provincial Coordination, Government of Pakistan',
-    period: '2024 to Present',
-    location: 'Lahore, Punjab',
+    department: 'Ministry of Inter-Provincial Coordination (IPC), Government of Pakistan',
+    period: 'Jul 2024 to Present',
+    location: 'Lahore Coaching Centre, Punjab',
     coordinates: { x: 74, y: 31 },
     isFirstWoman: true,
     highlights: [
-      'First woman to direct Pakistan Sports Board operations in Punjab.',
-      'Oversight of federal sports facilities, high-performance coaching academies, and national athlete pipelines.',
-      'Spearheaded modern sports analytics modernization, anti-doping educational frameworks, and private-public training sponsorships.',
-      'Initiated nationwide Women in Sports campaign, raising competitive female athlete enrollment by 35%.'
+      'First woman appointed as Regional Director of Pakistan Sports Board (Punjab).',
+      'Presented First Integrated National Sports Model to Prime Minister Inspection Commission, unifying provinces, HEC, and Olympic bodies.',
+      'Established state-of-the-art Anti-Doping Centre at Lahore Coaching Centre ensuring WADA-standard compliance.',
+      'Inked landmark strategic partnership MoU with ACTIVIT (Rd. Rizwan Aftab Ahmed, CEO National Hospital Lahore) for sports medicine and annual Independence Day sports festival.',
+      'Established Pakistan\'s First Women\'s Snooker Academy and spearheaded nationwide Women in Sports media campaign across 12+ districts.'
     ],
     metrics: [
       { label: 'Athletic Complexes', value: '119 Facilities' },
       { label: 'Athlete Pipeline', value: '14,000+ Youth' },
-      { label: 'Public-Private Yield', value: 'PKR 140M+' },
-      { label: 'Female Participation', value: '+35%' }
+      { label: 'Official Contact', value: '042-99230383' },
+      { label: 'Campaign Reach', value: '12+ Districts' }
     ]
   },
   {
-    id: 'lgcd-punjab',
-    role: 'Deputy Secretary',
-    department: 'Local Government & Community Development Department, Punjab',
-    period: '2023 to 2024',
-    location: 'Lahore, Punjab',
-    coordinates: { x: 73, y: 32 },
+    id: 'aviation-defence',
+    role: 'Section Officer (Policy & Coordination)',
+    department: 'Ministry of Aviation & Defence, Government of Pakistan',
+    period: 'Jul 2023 to Jul 2024',
+    location: 'Federal Secretariat, Islamabad',
+    coordinates: { x: 73.04, y: 33.68 },
     highlights: [
-      'Supervised legislative, financial, and policy coordination for municipal corporations and district councils across 36 districts.',
-      'Managed Annual Development Programme (ADP) municipal infrastructure portfolio valued over PKR 2 Billion.',
-      'Digitized local government service portals, driving complaint resolution rates to 95% on Prime Minister and Chief Minister portals.'
+      'Intergovernmental coordination across 8+ federal agencies on critical defense-aviation nexus issues adhering to Rules of Business.',
+      'Supervised World Bank-funded Integrated Flood Resilience Adaptation Project (IFRAP) for Pakistan Meteorological Department.',
+      'Synthesized complex datasets and formulated data-driven policy briefs for ministerial leadership and Cabinet.'
     ],
     metrics: [
-      { label: 'ADP Portfolio', value: 'PKR 2.0B' },
-      { label: 'Districts Coordinated', value: '36' },
-      { label: 'Resolution Rate', value: '95%' }
+      { label: 'Federal Agencies', value: '8+ Coordinated' },
+      { label: 'World Bank Project', value: 'IFRAP Supervised' },
+      { label: 'Policy Adherence', value: '100% Rules' }
     ]
   },
   {
-    id: 'adcg-hafizabad',
-    role: 'Additional Deputy Commissioner (General)',
-    department: 'District Administration Hafizabad, Government of Punjab',
-    period: '2022 to 2023',
-    location: 'Hafizabad, Punjab',
-    coordinates: { x: 73.6, y: 32.06 },
+    id: 'irrigation-sindh',
+    role: 'Deputy Secretary (Administration)',
+    department: 'Irrigation Department, Government of Sindh',
+    period: 'Sep 2022 to Apr 2023',
+    location: 'Karachi, Sindh',
+    coordinates: { x: 67.01, y: 24.86 },
     highlights: [
-      'Architected the Hafizabad Model: an integrated inter-agency child protection and female victim support unit uniting police, healthcare, and judiciary.',
-      'Supervised price control magistrates and food supply chain monitoring, securing district ranking in top 5 Punjab compliance audits.',
-      'Led disaster management and pandemic resilience units with zero supply chain interruption across rural tehsils.'
+      'Managed executive administration and judicial legal defense across multiple high-level court forums.',
+      'Monitored provincial canal water distribution equity, barrage telemetry, and post-flood infrastructure resilience.',
+      'Streamlined departmental procurement and established inter-agency emergency protocols.'
     ],
     metrics: [
-      { label: 'Case Disposal Speed', value: '72 Hours' },
-      { label: 'District Compliance', value: 'Top 5' },
-      { label: 'Model Adoption', value: 'National' }
-    ]
-  },
-  {
-    id: 'adcr-hafizabad',
-    role: 'Additional Deputy Commissioner (Revenue)',
-    department: 'Board of Revenue Punjab / District Administration Hafizabad',
-    period: '2021 to 2022',
-    location: 'Hafizabad, Punjab',
-    coordinates: { x: 73.5, y: 32.1 },
-    highlights: [
-      'Presided over appellate revenue courts, resolving long-standing land ownership disputes dating back over 20 years.',
-      'Executed digital land records modernization (Arazi Record Centers), reducing land registry processing delays by 60%.',
-      'Surpassed provincial revenue recovery targets by 118% through automated registry auditing.'
-    ],
-    metrics: [
-      { label: 'Target Realization', value: '118%' },
-      { label: 'Latency Cut', value: '-60%' },
-      { label: 'Disputes Resolved', value: '4,200+' }
-    ]
-  },
-  {
-    id: 'pha-lahore',
-    role: 'Director',
-    department: 'Parks & Horticulture Authority (PHA), Lahore',
-    period: '2020 to 2021',
-    location: 'Lahore, Punjab',
-    coordinates: { x: 74.3, y: 31.5 },
-    highlights: [
-      'Pioneered the Urban Forest Expansion initiative, overseeing the plantation of 1 Million indigenous trees across metropolitan Lahore.',
-      'Designed Miyawaki urban forest clusters to combat smog and urban heat island effects.',
-      'Modernized public green space security and waste recovery protocols across historic parks.'
-    ],
-    metrics: [
-      { label: 'Trees Planted', value: '1,000,000+' },
-      { label: 'Miyawaki Clusters', value: '45 Sites' },
-      { label: 'Canopy Density', value: '+14%' }
+      { label: 'Water Networks', value: 'Provincial Grid' },
+      { label: 'Legal Disposal', value: '100% Compliance' },
+      { label: 'Judicial Forums', value: 'High Court/SC' }
     ]
   },
   {
     id: 'kmc-karachi',
-    role: 'Senior Director (HRM)',
-    department: 'Karachi Metropolitan Corporation (KMC), Sindh',
-    period: '2019 to 2020',
+    role: 'Senior Director HRM',
+    department: 'Karachi Metropolitan Corporation (KMC)',
+    period: 'Nov 2021 to Sep 2022',
     location: 'Karachi, Sindh',
-    coordinates: { x: 67.0, y: 24.8 },
+    coordinates: { x: 67.05, y: 24.9 },
     isFirstWoman: true,
     highlights: [
-      'First woman Senior Director of Human Resource Management in the history of Karachi Metropolitan Corporation.',
-      'Directed personnel administration, pensions, and industrial relations for over 7,000 municipal employees across megacity departments.',
-      'Conducted forensic payroll audits, eliminating ghost workforce allocations and establishing biometric attendance verification.',
-      'Promoted female municipal leaders, achieving a 28% increase in female senior supervisory postings.'
+      'First woman appointed as Senior Director HRM in Karachi Metropolitan Corporation history.',
+      'Governed executive HR administration for 7,000+ municipal personnel across Sindh megacity.',
+      'Conducted forensic biometric payroll audits that eliminated ghost workers, saving PKR 85 Million annually.',
+      'Achieved a 28% increase in female supervisory promotions and established statutory workplace harassment inquiry committees.'
     ],
     metrics: [
-      { label: 'Workforce Governed', value: '7,000+' },
+      { label: 'Municipal Workforce', value: '7,000 Staff' },
+      { label: 'Audit Savings', value: 'PKR 85M' },
       { label: 'Female Promotions', value: '+28%' },
-      { label: 'Audit Savings', value: 'PKR 85M' }
+      { label: 'Committees Led', value: 'Harassment & HR' }
     ]
   },
   {
-    id: 'food-punjab',
-    role: 'Deputy Director',
-    department: 'Punjab Food Department',
-    period: '2018 to 2019',
+    id: 'adcg-adcr-hafizabad',
+    role: 'Additional Deputy Commissioner (General & Revenue)',
+    department: 'District Administration Hafizabad, Government of Punjab',
+    period: 'Feb 2021 to Oct 2021',
+    location: 'Hafizabad, Punjab',
+    coordinates: { x: 73.6, y: 32.06 },
+    highlights: [
+      'Architected the landmark Hafizabad Model: integrated 72-hour child protection and SGBV inter-agency rapid response uniting police, health, and judiciary.',
+      'Modernized Arazi Record Centers (land registries), slashing citizen processing delays by 60%.',
+      'Presided over appellate revenue courts resolving 20+ year-old land disputes and surpassed provincial revenue targets by 118%.'
+    ],
+    metrics: [
+      { label: 'Case Disposal Speed', value: '72 Hours' },
+      { label: 'Target Realization', value: '118%' },
+      { label: 'Land Digitization', value: 'Arazi Centers' },
+      { label: 'Model Adoption', value: 'National Benchmark' }
+    ]
+  },
+  {
+    id: 'literacy-punjab',
+    role: 'Deputy Secretary',
+    department: 'Literacy & Non-Formal Basic Education Department, Punjab',
+    period: 'Oct 2020 to Sep 2021',
     location: 'Lahore, Punjab',
-    coordinates: { x: 74.2, y: 31.4 },
+    coordinates: { x: 74.3, y: 31.55 },
     highlights: [
-      'Governed strategic wheat procurement, flour mill monitoring, and provincial food grain reserves.',
-      'Implemented anti-hoarding digital inspection tracking during seasonal market shortages, stabilizing wheat flour supply.'
+      'Managed Annual Development Programme (ADP) non-formal education portfolio valued at PKR 2.0 Billion.',
+      'Supervised community schooling programs across 36 districts targeted at out-of-school children and adult literacy.',
+      'Implemented digital monitoring dashboards for real-time non-formal center evaluation.'
     ],
     metrics: [
-      { label: 'Grain Supervised', value: '450K Tons' },
-      { label: 'Price Variance', value: '<2.5%' }
+      { label: 'ADP Portfolio', value: 'PKR 2.0B' },
+      { label: 'Districts Coordinated', value: '36' },
+      { label: 'Coverage', value: 'Out-of-School' }
     ]
   },
   {
-    id: 'ac-gujranwala',
-    role: 'Assistant Commissioner',
-    department: 'Gujranwala City Sub-Division, Government of Punjab',
-    period: '2017 to 2018',
-    location: 'Gujranwala, Punjab',
-    coordinates: { x: 74.1, y: 32.18 },
+    id: 'population-welfare',
+    role: 'Deputy Secretary (Planning)',
+    department: 'Population Welfare Department, Punjab',
+    period: 'Aug 2020 to Feb 2021',
+    location: 'Lahore, Punjab',
+    coordinates: { x: 74.32, y: 31.52 },
     highlights: [
-      'Sub-divisional executive magistrate exercising criminal, judicial, and municipal regulatory authority over 1.2 million citizens.',
-      'Spearheaded state land anti-encroachment operations, recovering commercial state property worth PKR 1.4 Billion.',
-      'Led public municipal sanitization, industrial pollution enforcement, and emergency flood readiness operations.'
+      'Mobilized 150+ influential religious scholars (Ulema) for family planning and reproductive health advocacy.',
+      'Designed community outreach and health interventions under the UNFPA partnership framework.'
     ],
     metrics: [
-      { label: 'Citizens Served', value: '1.2 Million' },
-      { label: 'Recovered Land', value: 'PKR 1.4B' }
+      { label: 'Ulema Mobilized', value: '150+ Leaders' },
+      { label: 'UN Partner', value: 'UNFPA' }
     ]
   },
   {
-    id: 'ac-murree',
-    role: 'Assistant Commissioner (Under Training)',
-    department: 'District Administration Rawalpindi / Murree Sub-Division',
-    period: '2016 to 2017',
-    location: 'Murree & Rawalpindi, Punjab',
-    coordinates: { x: 73.3, y: 33.9 },
+    id: 'women-dev-punjab',
+    role: 'Director',
+    department: 'Women Development Department, Punjab',
+    period: 'Jul 2019 to Jul 2020',
+    location: 'Lahore, Punjab',
+    coordinates: { x: 74.35, y: 31.5 },
     highlights: [
-      'Field training in high-altitude tourism management, crowd control logistics, disaster response, and winter road accessibility.',
-      'Coordinated multi-agency emergency rescue operations during peak snow tourist seasons.'
+      'Coordinated provincial implementation of UN Beijing Declaration and Platform for Action (Beijing+25).',
+      'Governed decentralized women distress relief and economic empowerment funds across 15 districts reaching 50,000+ beneficiaries.'
     ],
     metrics: [
-      { label: 'Peak Tourist Traffic', value: '250K/Week' },
-      { label: 'Clearance Protocol', value: '24/7 Rapid' }
+      { label: 'UN Framework', value: 'Beijing+25' },
+      { label: 'Districts Reached', value: '15 Districts' },
+      { label: 'Direct Beneficiaries', value: '50,000+' }
     ]
   },
   {
-    id: 'so-punjab',
-    role: 'Section Officer',
-    department: 'Finance / Services & General Administration Department (S&GAD), Punjab',
-    period: '2014 to 2016',
+    id: 'pha-lahore',
+    role: 'Director (Operations & Marketing / Addl. DG)',
+    department: 'Parks and Horticulture Authority (PHA), Lahore',
+    period: 'May 2018 to Jul 2019',
+    location: 'Lahore, Punjab',
+    coordinates: { x: 74.33, y: 31.54 },
+    highlights: [
+      'Directed historic mass urban afforestation planting 1,000,000+ trees and 45 Miyawaki micro-forests across metropolitan Lahore.',
+      'Managed intelligence coordination, logistics, and multi-agency security for major public festivals with 200,000+ cumulative attendees.'
+    ],
+    metrics: [
+      { label: 'Trees Planted', value: '1,000,000+' },
+      { label: 'Miyawaki Forests', value: '45 Clusters' },
+      { label: 'Crowd Safety', value: '200K+ Attendees' }
+    ]
+  },
+  {
+    id: 'sgad-punjab',
+    role: 'Deputy Secretary (Welfare)',
+    department: 'Services & General Administration Department (S&GAD), Punjab',
+    period: 'Sep 2017 to May 2018',
     location: 'Civil Secretariat, Lahore',
     coordinates: { x: 74.31, y: 31.56 },
     highlights: [
-      'Drafted executive policy summaries, provincial cabinet briefs, and financial rules interpretations.',
-      'Managed cadre postings, civil service rule formulations, and inter-provincial officer allocations.'
+      'Designed enhanced security architecture for Civil Secretariat, Ministers\' Enclave, and Government Residences (GORs).',
+      'Managed logistics, diplomatic protocol, and high-security clearance for 8+ foreign VVIP delegations with zero incidents.'
     ],
     metrics: [
-      { label: 'Cabinet Briefs', value: '160+' },
-      { label: 'Rule Compliance', value: '100%' }
+      { label: 'VVIP Delegations', value: '8+ Foreign' },
+      { label: 'Security Breaches', value: 'Zero' },
+      { label: 'Enclaves Secured', value: 'Secretariat & GOR' }
+    ]
+  },
+  {
+    id: 'field-admin-gujranwala',
+    role: 'ADC (Finance/Planning) & Assistant Commissioner / Administrator',
+    department: 'District Administration Gujranwala & Sharaqpur, Punjab',
+    period: 'Oct 2014 to Sep 2017',
+    location: 'Gujranwala & Sharaqpur, Punjab',
+    coordinates: { x: 74.19, y: 32.16 },
+    highlights: [
+      'Exercised executive magisterial, criminal, and municipal command over 22 departments and 5,000+ public sector employees.',
+      'Spearheaded state anti-encroachment operations recovering PKR 1.4 Billion in commercial state lands.',
+      'Chaired District Security Committees for mass political gatherings and elections, safely managing aggregate crowds exceeding 500,000 citizens.'
+    ],
+    metrics: [
+      { label: 'Departments Commanded', value: '22 State Bodies' },
+      { label: 'Public Personnel', value: '5,000+ Staff' },
+      { label: 'Land Recovered', value: 'PKR 1.4B' },
+      { label: 'Crowd Safety', value: '500K+ Citizens' }
     ]
   },
   {
@@ -187,12 +211,13 @@ export const SERVICE_POSTINGS: Posting[] = [
     location: 'Lahore, Punjab',
     coordinates: { x: 74.34, y: 31.52 },
     highlights: [
-      'Selected into the premier Pakistan Administrative Service (PAS) through nationwide Competitive Superior Services (CSS) examination.',
-      'Completed foundational training in constitutional law, public administration, national security, economics, and criminal procedure code.'
+      'Allocated to premier Pakistan Administrative Service (PAS) through nationwide Competitive Superior Services (CSS) examination.',
+      'Completed rigorous training in constitutional law, public administration, national security, economics, and criminal jurisprudence.'
     ],
     metrics: [
       { label: 'National CSS Cohort', value: 'Top Percentile' },
-      { label: 'CTP / STP Rating', value: 'Distinction' }
+      { label: 'Common Batch', value: '40th Common' },
+      { label: 'Cadre', value: 'PAS Premier' }
     ]
   }
 ];

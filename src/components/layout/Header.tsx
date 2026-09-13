@@ -30,6 +30,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
     { id: "cartography", label: "13-Year Cartography", icon: Compass },
     { id: "credentials", label: "Verified Credentials", icon: Award },
     { id: "uniqueness", label: "Uniqueness Thesis", icon: Sparkles },
+    { id: "authenticity", label: "Authenticity Ledger", icon: ShieldCheck },
     { id: "noorix", label: "Noorix Terminal", icon: Cpu }
   ];
 
