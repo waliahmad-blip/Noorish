@@ -177,9 +177,15 @@ export const NoorixTerminal: React.FC = () => {
 
           <div className="bg-obsidian-900 px-5 py-3 border-b border-cyan-500/20 flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-slate-300">
             <div className="flex items-center gap-2.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
+              <div className="w-6 h-6 rounded-md bg-obsidian-950 border border-purple-500/40 flex items-center justify-center p-0.5 shadow-sm">
+                <img 
+                  src="/logos/small/noorix.png" 
+                  alt="NOORIX" 
+                  className="w-full h-full object-contain filter drop-shadow-[0_0_4px_rgba(192,132,252,0.8)]"
+                />
+              </div>
               <span className="text-white font-bold tracking-wider">NOORIX EXECUTIVE TERMINAL</span>
-              <span className="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 text-[10px] border border-cyan-500/40">
+              <span className="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[10px] border border-purple-500/40">
                 ACTIVE KERNEL
               </span>
             </div>

@@ -68,10 +68,16 @@ export const NoorixFloatingHUD: React.FC<NoorixFloatingHUDProps> = ({ visitor })
               <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 relative" />
             </div>
 
-            <div className="flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-cyan-400 group-hover:rotate-45 transition-transform duration-300" />
+            <div className="flex items-center gap-2.5">
+              <div className="relative w-7 h-7 rounded-lg overflow-hidden bg-obsidian-900 border border-purple-500/50 shadow-[0_0_10px_rgba(192,132,252,0.4)] flex items-center justify-center p-0.5 group-hover:scale-110 transition-transform duration-300">
+                <img 
+                  src="/logos/small/noorix.png" 
+                  alt="NOORIX" 
+                  className="w-full h-full object-contain filter drop-shadow-[0_0_4px_rgba(192,132,252,0.8)]"
+                />
+              </div>
               <span className="font-display font-bold text-xs tracking-wide text-white">Ask Noorix</span>
-              <span className="hidden sm:inline-block text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+              <span className="hidden sm:inline-block text-[10px] font-mono px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/40">
                 Active
               </span>
             </div>
@@ -102,8 +108,12 @@ export const NoorixFloatingHUD: React.FC<NoorixFloatingHUDProps> = ({ visitor })
             {/* Drawer Top Navigation Header */}
             <div className="bg-obsidian-900/90 px-5 py-4 border-b border-cyan-500/25 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
-                  <Cpu className="w-4 h-4 text-cyan-400" />
+                <div className="w-10 h-10 rounded-xl bg-obsidian-950 border border-purple-500/40 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(192,132,252,0.3)] shrink-0">
+                  <img 
+                    src="/logos/noorix.png" 
+                    alt="NOORIX Crest" 
+                    className="w-full h-full object-contain filter drop-shadow-[0_0_6px_rgba(192,132,252,0.8)]"
+                  />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">

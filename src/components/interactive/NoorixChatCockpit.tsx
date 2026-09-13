@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Send, Sparkles, ArrowRight, Copy, Check, Globe, 
-  Terminal, Shield, Volume2, VolumeX, Mic, MicOff,
-  RotateCcw, Lock, Mail, Phone
+  Terminal, Shield, Volume2, VolumeX, Mic, MicOff
 } from 'lucide-react';
 import { audioEngine } from '../../utils/audioSynth';
 import { VisitorRecord } from '../../utils/visitorTelemetry';
@@ -49,6 +48,80 @@ export const PROMPT_SUGGESTIONS = [
   { label: '🎓 IMF Distinctions & MIT DEDP', query: "What are Noorish Sabah's multilateral distinctions with the IMF and MIT?" },
   { label: '🔗 Official Channels', query: 'What are the verified official social accounts and contacts for Noorish Sabah?' }
 ];
+
+function parseInlineStyles(text: string): React.ReactNode {
+  const parts = text.split(/(\*\*.*?\*\*|`.*?`)/g);
+  return parts.map((part, idx) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <strong key={idx} className="font-semibold text-white">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return (
+        <code key={idx} className="px-1.5 py-0.5 rounded bg-obsidian-950/80 border border-slate-700 font-mono text-[11px] text-cyan-300">
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    return part;
+  });
+}
+
+function renderFormattedMessage(content: string): React.ReactNode {
+  const lines = content.split('\n');
+  return lines.map((line, lineIdx) => {
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      return <div key={lineIdx} className="h-2" />;
+    }
+
+    if (trimmed.startsWith('### ')) {
+      return (
+        <h4 key={lineIdx} className="text-xs sm:text-sm font-bold text-cyan-300 font-mono mt-2.5 mb-1 tracking-wide">
+          {trimmed.slice(4)}
+        </h4>
+      );
+    }
+
+    if (trimmed.startsWith('## ')) {
+      return (
+        <h3 key={lineIdx} className="text-sm sm:text-base font-bold text-white font-mono mt-3 mb-1.5 tracking-wide">
+          {trimmed.slice(3)}
+        </h3>
+      );
+    }
+
+    if (trimmed.startsWith('* ') || trimmed.startsWith('- ') || trimmed.startsWith('• ')) {
+      const bulletContent = trimmed.slice(2);
+      return (
+        <div key={lineIdx} className="flex items-start gap-2 my-1 pl-1 text-slate-200">
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-2 shrink-0" />
+          <span className="leading-relaxed">{parseInlineStyles(bulletContent)}</span>
+        </div>
+      );
+    }
+
+    const numMatch = trimmed.match(/^(\d+)\.\s+(.*)/);
+    if (numMatch) {
+      return (
+        <div key={lineIdx} className="flex items-start gap-2 my-1 pl-1 text-slate-200">
+          <span className="text-cyan-400 font-mono text-xs font-bold mt-0.5 shrink-0">{numMatch[1]}.</span>
+          <span className="leading-relaxed">{parseInlineStyles(numMatch[2])}</span>
+        </div>
+      );
+    }
+
+    return (
+      <p key={lineIdx} className="my-1 text-slate-200 leading-relaxed">
+        {parseInlineStyles(line)}
+      </p>
+    );
+  });
+}
 
 interface NoorixChatCockpitProps {
   visitor?: VisitorRecord | null;
@@ -276,10 +349,10 @@ export const NoorixChatCockpit: React.FC<NoorixChatCockpitProps> = ({
 
   const commandModes: { mode: DispatchMode; label: string; tag: string }[] = [
     { mode: 'STATECRAFT', label: '/statecraft', tag: 'Statecraft' },
+    { mode: 'STATECRAFT', label: '/sports-model', tag: 'PSB 2026' },
     { mode: 'MACRO_FISCAL', label: '/macro-fiscal', tag: 'IMF ESRx' },
     { mode: 'MIT_DEDP', label: '/dedp-policy', tag: 'MIT DEDP' },
     { mode: 'AI_GOVERNANCE', label: '/ai-governance', tag: 'EU AI Act' },
-    { mode: 'NOORIVA_COMMERCE', label: '/nooriva', tag: 'nooriva.ai' },
     { mode: 'ENCLAVE_SECURITY', label: '/official-record', tag: 'Verified' }
   ];
 
@@ -352,12 +425,22 @@ export const NoorixChatCockpit: React.FC<NoorixChatCockpitProps> = ({
                   </>
                 ) : (
                   <>
-                    <div className="flex items-center gap-1.5 text-cyan-300 font-bold">
-                      <span className="w-1.5 h-1.5 rounded-full bg-mint-400" />
-                      <span>NOORIX</span>
+                    <div className="flex items-center gap-2">
+                      <div className="relative w-5 h-5 rounded-md overflow-hidden bg-obsidian-900 border border-purple-500/50 shadow-[0_0_8px_rgba(192,132,252,0.4)] shrink-0 flex items-center justify-center p-0.5">
+                        <img 
+                          src="/logos/small/noorix.png" 
+                          alt="NOORIX" 
+                          className="w-full h-full object-contain filter drop-shadow-[0_0_4px_rgba(192,132,252,0.8)]"
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      </div>
+                      <div className="flex items-center gap-1.5 text-purple-300 font-bold tracking-wide">
+                        <span>NOORIX</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-mint-400" />
+                      </div>
                     </div>
                     {msg.role && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/30">
                         {msg.role}
                       </span>
                     )}
@@ -374,20 +457,27 @@ export const NoorixChatCockpit: React.FC<NoorixChatCockpitProps> = ({
               </div>
 
               <div
-                className={`rounded-2xl p-4 sm:p-5 max-w-[92%] sm:max-w-[85%] text-sm leading-relaxed shadow-lg ${
+                className={`p-4 sm:p-5 max-w-[92%] sm:max-w-[85%] text-sm leading-relaxed shadow-lg ${
                   isUser
-                    ? 'bg-gradient-to-r from-cyan-950/70 to-obsidian-900 border border-cyan-500/40 text-slate-100 font-sans'
-                    : 'bg-obsidian-900/95 border border-cyan-500/25 text-slate-200 font-sans relative group'
+                    ? 'rounded-2xl rounded-tr-sm bg-gradient-to-r from-cyan-950/70 to-obsidian-900 border border-cyan-500/40 text-slate-100 font-sans shadow-md'
+                    : 'rounded-2xl rounded-tl-sm bg-gradient-to-br from-[#0c0f1c]/95 via-[#090b14]/98 to-[#05070a]/95 border border-purple-500/30 text-slate-200 font-sans relative group shadow-[0_8px_32px_rgba(0,0,0,0.6),0_0_20px_rgba(168,85,247,0.06)] backdrop-blur-xl'
                 }`}
               >
                 {msg.title && (
-                  <div className="text-xs font-mono uppercase text-violet-400 tracking-wider mb-2 font-semibold border-b border-slate-800 pb-1.5">
-                    [{msg.title}]
+                  <div className="text-xs font-mono uppercase text-purple-300 tracking-wider mb-2 font-semibold border-b border-slate-800/80 pb-1.5 flex items-center gap-2">
+                    <span className="w-1 h-3 bg-purple-400 rounded-full" />
+                    <span>[{msg.title}]</span>
                   </div>
                 )}
-                <div className="whitespace-pre-line">
-                  {msg.text}
-                </div>
+                {isUser ? (
+                  <div className="whitespace-pre-line text-slate-100">
+                    {msg.text}
+                  </div>
+                ) : (
+                  <div className="text-slate-200 text-sm leading-relaxed space-y-0.5">
+                    {renderFormattedMessage(msg.text)}
+                  </div>
+                )}
 
                 {!isUser && (
                   <div className="mt-3 pt-2.5 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-slate-400">

@@ -13,8 +13,15 @@ export const NoorixLockoutCard: React.FC<NoorixLockoutCardProps> = ({ onReset })
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-amber-500/20 pb-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
-            <Lock className="w-4 h-4 animate-pulse" />
+          <div className="w-9 h-9 rounded-xl bg-obsidian-900 border border-amber-500/40 flex items-center justify-center p-1 shadow-[0_0_12px_rgba(245,158,11,0.2)] shrink-0 relative">
+            <img 
+              src="/logos/small/noorix.png" 
+              alt="NOORIX" 
+              className="w-full h-full object-contain filter brightness-90 sepia-[.3] hue-rotate-[320deg]"
+            />
+            <div className="absolute -bottom-1 -right-1 bg-amber-950 rounded-full p-0.5 border border-amber-500/50">
+              <Lock className="w-2.5 h-2.5 text-amber-400" />
+            </div>
           </div>
           <div>
             <div className="text-amber-300 font-bold text-xs tracking-wider flex items-center gap-2">

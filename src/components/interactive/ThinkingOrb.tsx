@@ -37,23 +37,26 @@ export const ThinkingOrb: React.FC<ThinkingOrbProps> = ({ isProcessing, classNam
       <div className="flex flex-wrap items-center justify-between gap-3">
         {/* Kinetic Neural Orb + Cognitive Title */}
         <div className="flex items-center gap-3">
-          {/* Dual Counter-Rotating Concentric Rings */}
-          <div className="relative w-8 h-8 flex items-center justify-center shrink-0">
+          {/* Dual Counter-Rotating Concentric Rings with Noorix Crest */}
+          <div className="relative w-9 h-9 flex items-center justify-center shrink-0">
             {/* Outer ring */}
-            <div className="absolute inset-0 rounded-full border-2 border-t-cyan-400 border-r-mint-400 border-b-transparent border-l-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-full border-2 border-t-cyan-400 border-r-purple-400 border-b-transparent border-l-transparent animate-spin" />
             {/* Middle counter-rotating ring */}
             <div className="absolute inset-1 rounded-full border border-violet-400/70 border-t-transparent border-b-transparent animate-spin [animation-direction:reverse] [animation-duration:1.4s]" />
-            {/* Inner pulsating core */}
-            <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping opacity-75" />
-            <div className="absolute w-2 h-2 rounded-full bg-white shadow-lg shadow-cyan-400" />
+            {/* Inner Crest */}
+            <img 
+              src="/logos/small/noorix.png" 
+              alt="NOORIX" 
+              className="w-4 h-4 object-contain filter drop-shadow-[0_0_6px_rgba(192,132,252,0.8)]"
+            />
           </div>
 
           <div className="min-w-0">
             <div className="flex items-center gap-2 text-cyan-300 font-bold text-xs tracking-wider">
-              <Cpu className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-mint-400 animate-ping" />
               <span>NOORIX DIGITAL GUARDIAN • COGNITIVE SYNTHESIS</span>
             </div>
-            <div className="text-[11px] text-slate-300 truncate transition-all duration-300 pt-0.5">
+            <div className="text-[11px] text-slate-300 truncate transition-all duration-300 pt-0.5 font-mono">
               {THINKING_STAGES[stageIndex]}
             </div>
           </div>
