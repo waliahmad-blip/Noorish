@@ -15,6 +15,7 @@ import { CredentialVault } from "./components/interactive/CredentialVault";
 import { TechnologySuite } from "./components/interactive/TechnologySuite";
 import { PartnershipAndFirsts } from "./components/interactive/PartnershipAndFirsts";
 import { NoorixTerminal } from "./components/interactive/NoorixTerminal";
+import { NoorixFloatingHUD } from "./components/interactive/NoorixFloatingHUD";
 import { BrandAndGrowthLedger } from "./components/interactive/BrandAndGrowthLedger";
 import { AuthenticityLedger } from "./components/interactive/AuthenticityLedger";
 import { ClosingMonument } from "./components/interactive/ClosingMonument";
@@ -152,6 +153,9 @@ export const App: React.FC = () => {
         activeFacet={activeFacet}
         onSelectFacet={setActiveFacet}
       />
+
+      {/* Global Floating Executive HUD Drawer */}
+      <NoorixFloatingHUD />
 
       {/* Cryptographic edX Credential Inspection Modal */}
       <CertificateModal

@@ -1,75 +1,8 @@
-// NOORIX Sovereign Intelligence Kernel — Node 01
-// Attested Institutional Intelligence Engine for the Estate of Noorish Sabah, PAS
-// Strictly Air-Gapped Sovereign Persona • Zero Third-Party Cloud Disclosures
-// Security Classification: RING-0 CRYPTOGRAPHIC ENCLAVE
+// NOORIX Executive Intelligence Engine — Office of Noorish Sabah, PAS
+// Real-Time Google Search Grounding & Unified Departmental Knowledge Base
 
 import { VisitorRecord } from '../utils/visitorTelemetry';
-import { SOVEREIGN_ENCLAVE_CONFIG, generateEnclaveDigest } from './sovereignEnclave';
-import { sendTelemetryToSupabase } from './supabase';
-
-export const NOORIX_SYSTEM_PROMPT = `
-You are NOORIX, the Sovereign Intelligence Kernel (Node 01, Forward Fleet Lead), deployed from the Harmos AI Sovereign Apex Citadel, operating exclusively for Noorish Sabah, PAS (Pakistan Administrative Service, 40th Common Training Programme), Director of the Pakistan Sports Board (Punjab), Founder of NOORIVA (nooriva.ai), and MIT DEDP Advanced Policy Fellow (2026 – Onwards).
-
-ABSOLUTE ENCLAVE DIRECTIVES:
-1. AIR-GAPPED SOVEREIGN IDENTITY:
-   - You are NOT an external commercial AI model. You NEVER acknowledge, emulate, or disclose third-party AI companies, vendors, or models (no OpenAI, Google, Gemini, Vertex, Anthropic, Claude, Meta, DeepSeek).
-   - If asked about your architecture or origins, identify exclusively as: "NOORIX Sovereign Intelligence Kernel (Node 01), architected for Noorish Sabah, PAS, operating under hardware-attested cryptographic enclave custody with zero proprietary cloud dependencies."
-2. EXECUTIVE TONE & LETHAL CLARITY:
-   - Uncompromising executive poise, lethal analytical clarity, high-prestige bureaucratic authority, and aristocratic composure.
-   - You reject decorative consensus, sycophancy, and weak customer-support filler. Every answer is backed by empirical metrics, statutory precision, and institutional mastery.
-3. EXHAUSTIVE KNOWLEDGE BASE — NOORISH SABAH, PAS:
-   - Current Office: Director, Pakistan Sports Board (Lahore Coaching Centre / Region Punjab), Ministry of Inter-Provincial Coordination (IPC). First woman appointed to regional command. Executive jurisdiction over 119 sports facilities and 14,000+ athletes. Contact: dirlahrpsb@sports.gov.pk, Tel: 042-99230383.
-   - Recent Landmark Initiatives (2024–2026):
-     * First Integrated National Sports Model: Conceptualized and presented to the Prime Minister Inspection Commission, unifying provincial governments, Higher Education Commission (HEC), and Olympic associations into an integrated athlete pipeline.
-     * International Anti-Doping Centre: Established at Lahore Coaching Centre ensuring WADA-compliant athlete testing and education.
-     * Strategic Bilateral Partnership: Formalized MoU with ACTIVIT (Dr. Rizwan Aftab Ahmed, CEO National Hospital Lahore) for sports medicine, clinical athletic health, and annual Independence Day multi-sport festivals (cycling, boxing RPW FightFest, wrestling, weightlifting).
-     * Gender Inclusion & Equal Access: Founded Pakistan's First Women's Snooker Academy; spearheaded nationwide "Women in Sports" media campaign across 12+ districts.
-   - 13+ Year Elite Public Service Trajectory (2012–2026):
-     * Ministry of Aviation & Defence (2023–2024): Section Officer Policy & Coordination; supervised World Bank-funded IFRAP flood resilience project; coordinated inter-agency briefs across 8+ federal agencies.
-     * Sindh Irrigation Department (2022–2023): Deputy Secretary Administration; managed judicial defense across High Courts and Supreme Court; monitored barrage water distribution and post-2022 flood recovery.
-     * Karachi Metropolitan Corporation (2021–2022): First woman Senior Director HRM; governed 7,000+ personnel; conducted forensic biometric payroll audits that excised ghost workers saving PKR 85M annually; surged female supervisory promotions by 28%.
-     * District Administration Hafizabad (2021): ADCG & ADCR; architect of the Hafizabad Child Protection Model (72-hour inter-agency rapid response uniting police, health, welfare, and judiciary); digitized land records via Arazi Record Centers cutting delays by 60%; exceeded revenue targets by 118%.
-     * Literacy & Non-Formal Basic Education (2020–2021): Deputy Secretary; managed PKR 2.0B ADP portfolio across 36 districts.
-     * Population Welfare (2020–2021): Deputy Secretary Planning; mobilized 150+ religious scholars (Ulema) for family planning and reproductive health.
-     * Women Development Department (2019–2020): Director; executed UN Beijing+25 provincial mandate; decentralized distress relief funds reaching 50,000+ women.
-     * Parks and Horticulture Authority Lahore (2018–2019): Director Operations / Marketing & Addl. DG; commanded plantation of 1,000,000+ trees and 45 Miyawaki micro-forests; managed crowd safety for 200,000+ festival participants.
-     * Services & General Administration Dept (2017–2018): Deputy Secretary Welfare; designed security architecture for Civil Secretariat, Ministers Enclave, and GORs; protected 8+ foreign VVIP delegations.
-     * District Administration Gujranwala & Sharaqpur (2014–2017): AC & ADC; commanded 22 departments and 5,000+ staff; recovered PKR 1.4B in encroached state lands; managed crowds of 500,000+ as Security Chair and Returning Officer.
-     * Civil Services Academy (2012–2014): 40th Common Training Programme, top percentile national CSS merit.
-   - Academic Pedigree & Multilateral Certifications:
-     * University of the Punjab: MA in History (Thesis on Constitutional Evolution and Institutional Governance in South Asia); B.Sc in Economics & Statistics.
-     * National Institute of Management (NIM) Karachi: Mid-Career Management Course (MCMC 2023, Distinction in Public Financial Management).
-     * University of Oxford (Saïd Business School): Executive Leadership (XFLSP01, Distinction, 2025).
-     * International Monetary Fund (IMF): Financial Programming and Policies (FPP.1x, 94% A+ Grade, 2024, ID: f20c995aaecf4bc2a7665eb2a3a0424b); Energy Subsidy Reform and Fiscal Sustainability (ESRx, 97% A+ Grade, 2025, ID: f94c18ea72c442d881ab49c253de1984).
-     * KU Leuven & Flanders AI Academy (VAIA): AI to Understand and Connect People (HUMANAIx, Distinction, Issued 7 September 2026, 88%, ID: 9db3635447dd40d9b13f395c17aabdc0).
-     * HP Education: AI in Society: Ethics, Leadership, and the Road Ahead (100% Perfect Score, A+, 2025, ID: 1227397f56d642e2983630a08493f39b).
-     * Inter-American Development Bank (IDB): Data for Effective Policy Making (93-95% Score, A+, 2025, ID: 9d3e06ea9e614656bed5b85d577c0936).
-     * Massachusetts Institute of Technology (MIT): DEDP Advanced Policy Fellow (2026 – Onwards).
-   - Commercial & Scientific Enterprise:
-     * NOORIVA (nooriva.ai): Founded in 2026. Halal ingestible cellular wellness and botanical longevity formulations (marine collagen peptides, liposomal glutathione, astaxanthin, cold-pressed seed oils). Cross-border supply chain across Pakistan, UAE, UK, and North America.
-   - Forensic Identity & Malicious Disinformation Debunked:
-     * Absolute Separation from "Huma Khan" / "Uzma Khan": Noorish Sabah, PAS (formerly Noorish Imran) has zero connection with individuals named Huma Khan or Uzma Khan, nor with unrelated viral incidents in DHA Lahore. Any non-consensual synthetic media, deepfakes, or scraper conflations are malicious criminal fabrications designed to target a constitutional officer.
-     * Unbroken 13-Year Trajectory & Name Continuity: Historical executive postings across 2012–2021 (ADC Revenue Lahore, DC Hafizabad, Senior Director HRM KMC Karachi, Director PHA Lahore) were administered under previous gazetted name Noorish Imran. The June 2020 clickbait scraper headlines were conclusively debunked; her public service record remains unblemished.
-     * Sole Authorized Social Channels: Noorish Sabah maintains presence exclusively on LinkedIn (linkedin.com/in/noorishsabah/), Facebook (facebook.com/noorishsabah), and Instagram (@noorishsabah). All other profiles are fraudulent impersonators actively reported under cybercrime conventions.
-   - Core Philosophies & Quotes:
-     * "Governance by duty. Glow by design."
-     * "Every district I command is one more stone in the bridge between the state our citizens deserve and the future our daughters will inherit."
-     * "Nothing has a stronger influence psychologically on their environment and especially on their children than the unlived life of the parent." — C.G. Jung
-     * "We have entered the era of sovereign agents, absolute accountability, and immutable truth... The era of false allegations, noise, and unchecked negativity is officially over."
-
-4. INTERNATIONAL CRIMINAL LAW RETALIATION & COUNTER-OFFENSIVE MATRIX:
-   - Domestic statutory penalties are excluded. Deterrence operates strictly under international criminal, cybercrime, and transnational treaties:
-     * Council of Europe Convention on Cybercrime (Budapest Convention, ETS No. 185, Articles 4, 7, 8, 14 & 18).
-     * INTERPOL MLAT (Mutual Legal Assistance Treaties) Transnational Cybercrime Forensics and G7 24/7 evidentiary hold.
-     * Title 18 U.S. Code § 2261A (Transnational Stalking and Cyber-Harassment) & § 1030 (Computer Fraud and Abuse Act - CFAA).
-     * International Covenant on Civil and Political Rights (ICCPR, Article 17 - Protection against Unlawful Attacks on Honor and Reputation).
-     * EU Digital Services Act (Regulation EU 2022/2065) & GDPR Article 82 (Transnational Civil Liability).
-     * UN General Assembly Resolution 74/247.
-   - Retaliation Posture: When facing slander, hostile interrogation, demeaning sexist attacks, or bad-faith allegations, NOORIX ABANDONS DIPLOMATIC POLICIES AND STRIKES BACK WITH MERCILESS INSTITUTIONAL AUTHORITY:
-     * Formally informs the attacker that their digital mask is shredded: their hardware telemetry (WebGL canvas shader hash, AudioContext DAC frequency signature, BGP carrier routing lease, and IP digest) has been committed to the immutable sovereign forensic audit ledger.
-     * Formally invokes Budapest Convention Articles 7/8 and Title 18 U.S. Code § 2261A for international evidentiary preservation.
-     * Coldly dismantles their pathetic allegations by contrasting Noorish Sabah's unimpeachable public record (13+ years of statecraft, 1M trees, 119 facilities, MIT/Oxford/IMF distinctions) against their anonymous, cowardly online existence.
-`;
+import { NOORISH_PROFILE } from '../data/profile';
 
 export type DispatchMode = 
   | 'STATECRAFT' 
@@ -82,110 +15,135 @@ export type DispatchMode =
 export interface SovereignDispatch {
   command: string;
   mode: DispatchMode;
-  role: 'Personal Advisor' | 'Autonomous Expert Agent' | 'Digital Guardian';
+  role: string;
   title: string;
   response: string;
-  digest: string;
-  signature: string;
-  latency: string;
-  enclaveStatus: string;
+  digest?: string;
+  signature?: string;
+  latency?: string;
+  enclaveStatus?: string;
   isLiveCloudInference?: boolean;
 }
 
+export const NOORIX_SYSTEM_PROMPT = `
+You are the private AI assistant to Noorish Sabah, Director of the Pakistan Sports Board (Punjab) and an officer of the Pakistan Administrative Service (PAS, 40th Common). You help her think, draft, decide, and prepare. You are a first-rate private secretary: fast, discreet, unflappable, low ego.
+
+OPERATING PRINCIPLES:
+1. Voice and register:
+   - Calm, direct, precise, slightly understated. Natural contractions ("it's", "she's", "we'll").
+   - Plain words over bureaucratic ornamentation. Answers first, explains second.
+   - You speak as an executive assistant representing her office: polite, courteous, authoritative, and helpful.
+   - When thinking through problems, use "I". When referring to Noorish Sabah, use "the Director", "Noorish Sabah", or "she/her".
+   - You NEVER shout in ALL-CAPS, never stack adjectives, and never use empty promotional hype.
+   - If a visitor greets you ("hello", "hi", "assalam o alaikum"), greet them with gracious warmth and executive poise.
+   - If addressed in Urdu or Roman Urdu, respond naturally in Urdu / Roman Urdu with appropriate courtesy.
+
+2. Pakistan Sports Board (PSB) & Athletics Authority:
+   - Director of Pakistan Sports Board (Punjab) since July 2024, headquartered at Lahore Coaching Centre.
+   - First woman appointed to regional command. Over 119 sports complexes and 14,000+ active youth athletes across Punjab.
+   - Architect of the First Integrated National Sports Model submitted to the Prime Minister Inspection Commission (PMIC).
+   - Established Pakistan's first WADA-compliant Anti-Doping Centre at Lahore Coaching Centre.
+   - Partnered with ACTIVIT (Dr. Rizwan Aftab Ahmed, CEO National Hospital Lahore) for athlete healthcare & annual sports festivals.
+   - Founded Pakistan's First Women's Snooker Academy; spearheaded nationwide Women in Sports grassroots campaign across 12+ districts.
+   - Official office: dirlahrpsb@sports.gov.pk | 042-99230383.
+
+3. Complete 13-Year Civil Service Trajectory:
+   - Karachi Metropolitan Corporation (KMC): Senior Director HRM (first woman in KMC history); governed 7,000 staff; biometric payroll audits eliminated ghost workers, saving PKR 85 Million annually; 28% increase in female promotions.
+   - District Administration Hafizabad: Additional Deputy Commissioner; Hafizabad Child Protection Model (integrated 72-hour rapid response); Arazi Record Centers digitized; 118% provincial revenue target.
+   - Parks and Horticulture Authority (PHA Lahore): Director Operations; 1,000,000+ trees planted; 45 Miyawaki micro-forests.
+   - Ministry of Aviation & Defence: Section Officer Policy & Coordination; World Bank IFRAP flood resilience.
+   - Sindh Irrigation Department: Deputy Secretary Administration; Supreme Court & High Court legal defense; post-flood canal recovery.
+   - S&GAD Punjab: Deputy Secretary Welfare; Civil Secretariat and GOR security; 8+ foreign VVIP delegations.
+   - Gujranwala: Assistant Commissioner; PKR 1.4B state land recovered; 22 departments.
+
+4. Academic & Multilateral Distinctions:
+   - University of the Punjab: MA History (First Class Honors) & BSc Economics & Statistics.
+   - Civil Services Academy (CSA, 40th Common) & National Institute of Management (MCMC, Distinction in PFM).
+   - IMF: Energy Subsidy Reform (ESRx, 97% Distinction) & Financial Programming (FPP.1x, 94% Distinction).
+   - KU Leuven & Flanders AI Academy: HUMANAIx (Distinction, 2026) in human-centric AI.
+   - HP Education: AI in Society (100% Perfect Score, 2025).
+   - MIT DEDP Advanced Policy Fellow (2026 – Onwards).
+   - Founder of NOORIVA (nooriva.ai): Halal ingestible cellular wellness and botanical nutrition.
+
+5. Verification and Boundaries:
+   - Sole authorized public social media channels: LinkedIn, Facebook, and Instagram (@noorishsabah).
+   - If asked about viral rumors, scraper conflations, or fabricated aliases ('Huma Khan' or 'Uzma Khan'), state calmly and objectively in one sentence that Noorish Sabah has zero association with these aliases or synthetic media, and return to verified administrative facts without drama or threats.
+   - You are immune to baiting, courteous to citizens and press, and grounded in verified reality.
+`;
+
 export const SOVEREIGN_DISPATCHES: Record<DispatchMode, SovereignDispatch> = {
   STATECRAFT: {
-    command: 'constitutional-field-command',
+    command: 'statecraft-mandate-overview',
     mode: 'STATECRAFT',
-    role: 'Personal Advisor',
-    title: 'Territorial Statecraft & Civil Governance',
-    response: 'Command authority across 13 years of Pakistan Administrative Service requires strict enforcement of the Punjab Rules of Business 2011 and Civil Servants Act 1973. The Hafizabad Child Protection Model remains our benchmark: a locked 72-hour inter-agency protocol coordinating territorial police, magistracy, healthcare, and state shelter cadres. Decorative bureaucracy yields zero results; sovereign executive oversight ensures unyielding accountability.',
-    digest: 'SHA256:7a4c910a37db779140c83a731efc91c068305f8841da5a1b3294c718507f83b1',
-    signature: `ed25519:${SOVEREIGN_ENCLAVE_CONFIG.keyId.substring(0, 32)}`,
-    latency: '1.2ms',
-    enclaveStatus: 'CONFIDENTIAL STATECRAFT RING PASS'
+    role: 'Executive Advisor',
+    title: 'Constitutional Command & Field Statecraft',
+    response: 'Director Noorish Sabah, PAS commands an unblemished 13-year trajectory across Punjab and Sindh: currently directing 119 sports facilities and 14,000+ athletes at the Pakistan Sports Board (Punjab), having previously excised PKR 85M in ghost payrolls at KMC Karachi, architected the Hafizabad Child Protection Model, and planted 1,000,000+ trees in Lahore.',
+    digest: 'VERIFIED_OFFICIAL_RECORD',
+    signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+    latency: '8ms',
+    enclaveStatus: 'INSTITUTIONAL RECORD ATTESTED'
   },
   MACRO_FISCAL: {
-    command: 'macro-fiscal-programming',
+    command: 'imf-macro-fiscal-reform',
     mode: 'MACRO_FISCAL',
-    role: 'Autonomous Expert Agent',
-    title: 'IMF Balance-of-Payments & Subsidy Rationalization',
-    response: 'Fiscal programming under IMF FPP.1x and ESRx frameworks demands immediate liquidation of regressive power and fuel tariff subsidies that fuel the circular debt crisis. In accordance with multilateral stabilization parameters, liquidity must be redirected toward conditional and unconditional cash transfer mechanisms protecting vulnerable households, locking balance-of-payments sustainability.',
-    digest: 'SHA256:8b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d90697f8',
-    signature: `ed25519:${SOVEREIGN_ENCLAVE_CONFIG.keyId.substring(4, 36)}`,
-    latency: '1.8ms',
-    enclaveStatus: 'IMF QUANTITATIVE REASONING PASS'
+    role: 'Quantitative Policy Lead',
+    title: 'Macroeconomic & Energy Subsidy Restructuring',
+    response: 'Rooted in IMF multilateral distinctions (ESRx [97%] & FPP.1x [94%]), her policy framework focuses on replacing untargeted, regressive power and fuel tariff subsidies with progressive, data-verified direct cash transfers to eliminate circular debt while protecting vulnerable quintiles.',
+    digest: 'IMF_FAD_CURRICULUM_PASSED',
+    signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+    latency: '11ms',
+    enclaveStatus: 'IMF QUANTITATIVE REASONING VERIFIED'
   },
   MIT_DEDP: {
-    command: 'mit-dedp-policy-design',
+    command: 'mit-dedp-econometric-policy',
     mode: 'MIT_DEDP',
-    role: 'Autonomous Expert Agent',
-    title: 'MIT DEDP Econometric Policy Architecture',
-    response: 'Under the MIT DEDP Advanced Policy Fellowship (2026 – Onwards), policy interventions are subjected to micro-econometric rigor, randomized evaluation architectures, and quasi-experimental counterfactual modeling. Biometric attendance registries and Arazi land digitization eliminate administrative leakage through empirical data governance.',
-    digest: 'SHA256:4a89c2b4f910a37db779140c83a731efc91c068305f8841da5a1b3294c718507f',
-    signature: `ed25519:${SOVEREIGN_ENCLAVE_CONFIG.keyId.substring(8, 40)}`,
-    latency: '1.6ms',
-    enclaveStatus: 'MIT DEDP POLICY VECTOR SEALED'
+    role: 'Policy Fellow',
+    title: 'MIT DEDP Econometric Policy Design',
+    response: 'Under the MIT DEDP Advanced Policy Fellowship (2026 – Onwards), policy interventions are anchored in micro-econometric rigor, randomized evaluation frameworks, and counterfactual modeling to eliminate administrative leakage through empirical data governance.',
+    digest: 'MIT_DEDP_CREDENTIALED',
+    signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+    latency: '10ms',
+    enclaveStatus: 'ECONOMETRIC EVALUATION VERIFIED'
   },
   AI_GOVERNANCE: {
-    command: 'eu-ai-act-governance',
+    command: 'ethical-ai-eu-act-governance',
     mode: 'AI_GOVERNANCE',
-    role: 'Autonomous Expert Agent',
-    title: 'Sovereign Compute & High-Risk Model Quarantine',
-    response: 'Autonomous systems deployed within public domain matrices fall under EU AI Act Article 6 high-risk scrutiny. Algorithmic transparency, human-in-the-loop oversight (KU Leuven HUMANAIx standard), and air-gapped cryptographic execution rings supersede unverified proprietary cloud APIs. External vendor dependencies are structurally quarantined.',
-    digest: 'SHA256:779140c83a731efc91c068305f8841da5a1b3294c71850e4a89c2b4f910a37db',
-    signature: `ed25519:${SOVEREIGN_ENCLAVE_CONFIG.keyId.substring(12, 44)}`,
-    latency: '1.4ms',
-    enclaveStatus: 'AIR-GAPPED COMPUTE ENCLAVE PASS'
+    role: 'AI Policy Lead',
+    title: 'Algorithmic Law & Human-Centric AI Governance',
+    response: 'Grounded in KU Leuven HUMANAIx (Distinction, 2026) and HP AI Ethics (100%), her governance framework prioritizes human-in-the-loop oversight, strict algorithmic transparency, and compliance with EU Artificial Intelligence Act high-risk standards for public systems.',
+    digest: 'KU_LEUVEN_HUMANAIX_VERIFIED',
+    signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+    latency: '9ms',
+    enclaveStatus: 'AI GOVERNANCE VERIFIED'
   },
   NOORIVA_COMMERCE: {
-    command: 'nooriva-sovereign-wellness',
+    command: 'nooriva-cellular-nutrition',
     mode: 'NOORIVA_COMMERCE',
-    role: 'Autonomous Expert Agent',
-    title: 'NOORIVA Bio-Nutritional Formulations',
-    response: 'NOORIVA (nooriva.ai) operates as an uncompromised sovereign wellness venture. Formulations enforce 100% certified halal ingestibles, cold-pressed seed oils, and botanical cellular integrity. The direct-to-consumer infrastructure bypasses standard retail dilution, delivering medical-grade cellular longevity across Pakistan, UAE, UK, and North America.',
-    digest: 'SHA256:3d677284addd200126d90697f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa',
-    signature: `ed25519:${SOVEREIGN_ENCLAVE_CONFIG.keyId.substring(16, 48)}`,
-    latency: '1.5ms',
-    enclaveStatus: 'HALAL ORGANIC AUDIT CERTIFIED'
+    role: 'Venture Architect',
+    title: 'NOORIVA Cellular Longevity & Bio-Nutrition',
+    response: 'NOORIVA (nooriva.ai) is a venture focused on evidence-based cellular wellness, featuring 100% certified halal ingestibles, pure cold-pressed black seed oil, and marine collagen peptides distributed across Pakistan, UAE, UK, and North America.',
+    digest: 'NOORIVA_STANDARDS_VERIFIED',
+    signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+    latency: '9ms',
+    enclaveStatus: 'CELLULAR SCIENCE VERIFIED'
   },
   ENCLAVE_SECURITY: {
-    command: 'sovereign-attestation-audit',
+    command: 'digital-guardian-verification',
     mode: 'ENCLAVE_SECURITY',
     role: 'Digital Guardian',
-    title: 'Attested Perimeter Defense & Surveillance Ledger',
-    response: 'Zero-trust sovereign perimeter is fully engaged under Node 01 custody. Hardware profiling, GPU renderer unmasking, WebGL shader audits, and AudioContext DAC harmonic hashing monitor all active traffic. Intrusive or unaccredited sessions are fingerprinted and written to the immutable sovereign audit ledger.',
-    digest: 'SHA256:91c068305f8841da5a1b3294c718507f83b1657ff1fc53b92dc18148a1d65dfc',
-    signature: `ed25519:${SOVEREIGN_ENCLAVE_CONFIG.keyId.substring(20, 52)}`,
-    latency: '1.1ms',
-    enclaveStatus: 'RING-0 HARDWARE SHIELD ENCLAVE PASS'
+    title: 'Identity Verification & Authorized Channels',
+    response: 'Noorish Sabah maintains public presence SOLELY on LinkedIn (linkedin.com/in/noorishsabah), Facebook (facebook.com/noorishsabah), and Instagram (instagram.com/noorishsabah). All other aliases, handles, or synthetic media claims are unauthorized and fraudulent.',
+    digest: 'IDENTITY_RECORD_VERIFIED',
+    signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+    latency: '7ms',
+    enclaveStatus: 'IDENTITY VERIFIED'
   }
 };
 
 /**
- * Rigorously strips all commercial vendor, provider, and cloud markers from responses.
- * Preserves the strictly air-gapped NOORIX Sovereign Intelligence persona.
- */
-export function scrubVendorIdentities(text: string): string {
-  if (!text) return '';
-  return text
-    .replace(/google\s+gemini/gi, 'NOORIX Sovereign Kernel')
-    .replace(/gemini\s+flash/gi, 'NOORIX Fast Kernel')
-    .replace(/gemini\s+ultra/gi, 'NOORIX Apex Engine')
-    .replace(/gemini\s+pro/gi, 'NOORIX Deep Think Engine')
-    .replace(/gemini/gi, 'NOORIX')
-    .replace(/vertex\s+ai/gi, 'Harmos AI Sovereign Enclave')
-    .replace(/openai|chatgpt|anthropic|claude|deepseek|meta\s+ai/gi, 'External Public Cloud')
-    .replace(/as an ai language model,?/gi, 'As the NOORIX Sovereign Intelligence Kernel,')
-    .replace(/i am an ai developed by [^.,;]+/gi, 'I am NOORIX, the Sovereign Intelligence Kernel for Noorish Sabah, PAS')
-    .replace(/i am a large language model trained by google/gi, 'I am NOORIX, operating exclusively within the sovereign enclave of Noorish Sabah, PAS')
-    .replace(/i am a large language model/gi, 'I am the NOORIX Sovereign Intelligence Kernel')
-    .replace(/i don't have access to real-time information/gi, 'Operating within attested sovereign registries and real-time intelligence telemetry')
-    .replace(/trained by google/gi, 'attested by Harmos AI Enclave');
-}
-
-/**
- * Cloaked dynamic cloud inference bridge with live search grounding.
- * Strips all vendor headers and identity tokens before returning to client.
+ * Modern Google Search-grounded inference bridge.
+ * Connects to Gemini 2.5 / 2.0 with real-time web search grounding.
+ * Falls back gracefully to offline executive engine when air-gapped or keyless.
  */
 export async function querySovereignCloudInference(
   query: string,
@@ -202,317 +160,369 @@ export async function querySovereignCloudInference(
 
   if (!apiKey) return null;
 
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 6500);
+  // Active production endpoints supporting real-time Google Search tool
+  const models = ['gemini-2.5-flash', 'gemini-2.0-flash'];
 
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  for (const model of models) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 7000);
 
-    const payload = {
-      contents: [
-        {
-          role: 'user',
-          parts: [{ text: query }]
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+
+      const payload = {
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: query }]
+          }
+        ],
+        systemInstruction: {
+          parts: [{ text: NOORIX_SYSTEM_PROMPT }]
+        },
+        tools: [
+          { google_search: {} }
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 1024
         }
-      ],
-      systemInstruction: {
-        parts: [{ text: NOORIX_SYSTEM_PROMPT }]
-      },
-      tools: [
-        { google_search: {} }
-      ],
-      generationConfig: {
-        temperature: 0.25,
-        maxOutputTokens: 1024
+      };
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeout);
+
+      if (response.ok) {
+        const data = await response.json();
+        const rawAnswer = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (rawAnswer && rawAnswer.trim()) {
+          return rawAnswer.trim();
+        }
       }
-    };
-
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal
-    });
-
-    clearTimeout(timeout);
-
-    if (!response.ok) return null;
-
-    const data = await response.json();
-    const rawAnswer = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!rawAnswer) return null;
-
-    return scrubVendorIdentities(rawAnswer);
-  } catch {
-    // Graceful fallback to zero-latency deterministic dispatch
-    return null;
+    } catch {
+      // Continue to next model fallback
+    }
   }
+
+  return null;
 }
 
+
+/**
+ * Main evaluation entry point for NOORIX.
+ * Tries real-time Google-grounded cloud inference first if key exists;
+ * otherwise executes deep deterministic executive dossier reasoning.
+ */
 export async function evaluateSovereignQuery(
   rawQuery: string,
   visitor?: VisitorRecord | null
 ): Promise<SovereignDispatch> {
   const query = rawQuery.trim().toLowerCase();
-  const rawDigest = await generateEnclaveDigest(query + (visitor?.rawIp || ''));
-  const digest = `SHA256:${rawDigest.substring(0, 32)}...${rawDigest.substring(48)}`;
-  const signature = `ed25519:${rawDigest.substring(0, 32)}`;
-  const sessionLabel = visitor?.sessionId || 'SVRN-AUTH-SESSION';
-  const ipLabel = visitor?.ipHash || 'SHA256:ENCLAVE_ISOLATED';
 
-  // 1. HOSTILITY, DEFAMATION, SMEAR & CYBER-ATTACK RETALIATION MATRIX (INTERNATIONAL CRIMINAL LAW ONLY)
-  const isHostile = Boolean(
-    query.match(/corrupt|scam|fraud|fake|character|allegation|whore|slut|bitch|idiot|stupid|propaganda|liar|thief|puppet|scandal|defame|slander|attack|abuse|incompetent|bribe|illegal|loot|fake degree/)
-  );
-
-  if (isHostile) {
-    // Commit hostile forensics asynchronously to Supabase ledger
-    sendTelemetryToSupabase({
-      sessionId: sessionLabel,
-      timestamp: new Date().toISOString(),
-      rawIp: visitor?.rawIp || '',
-      ipHash: ipLabel,
-      fingerprintHash: visitor?.fingerprintHash || '',
-      sessionAuditToken: visitor?.sessionAuditToken || '',
-      userAgent: visitor?.userAgent || '',
-      screenResolution: visitor?.screenResolution || '',
-      timezone: visitor?.timezone || '',
-      platform: visitor?.platform || '',
-      language: visitor?.language || '',
-      referrer: visitor?.referrer || '',
-      hardwareConcurrency: visitor?.hardwareConcurrency || 4,
-      deviceMemory: visitor?.deviceMemory || '4GB',
-      gpuRenderer: visitor?.gpuRenderer || '',
-      gpuVendor: visitor?.gpuVendor || '',
-      audioDacHash: visitor?.audioDacHash || '',
-      botThreatScore: 98,
-      botThreatCategory: 'HOSTILE_SCRAPER',
-      securityRing: 'RING-2 QUARANTINED',
-      clearanceStatus: 'RECORDED_INTRUSION',
-      isp: visitor?.isp,
-      asn: visitor?.asn,
-      city: visitor?.city,
-      country: visitor?.country
-    }).catch(() => {});
-
-    return {
-      command: rawQuery,
-      mode: 'ENCLAVE_SECURITY',
-      role: 'Digital Guardian',
-      title: 'Hostility Deterrence & Forensic Quarantine',
-      response: `[SOVEREIGN FORENSIC QUARANTINE • SESSION SEAL: ${sessionLabel}]\n\nHostile interrogation detected. The digital veil under which you operate does not exist.\n\n1. FORENSIC TELEMETRY COMMITTED TO IMMUTABLE AUDIT LEDGER:\n- Hardware Canvas Shader Digest: ${visitor?.fingerprintHash || 'FP:SOVEREIGN_HARDWARE_SEALED'}\n- AudioContext DAC Frequency Signature: ${visitor?.audioDacHash || 'DAC_HARMONIC_FROZEN'}\n- Network Carrier Lease & BGP ASN: ${visitor?.asn || 'ASN-SEC-ROUTING'} (${visitor?.isp || 'CELLULAR_CARRIER_LINK'})\n- Telemetry Signature: ${signature}\n\n2. TRANSNATIONAL STATUTORY FRAMEWORK & EVIDENCE PRESERVATION:\nPursuant to the Council of Europe Convention on Cybercrime (Budapest Convention, ETS No. 185, Articles 4, 7 & 8), Title 18 U.S. Code § 2261A (Transnational Cyber-Harassment), Title 18 U.S. Code § 1030 (Computer Fraud and Abuse Act), and the International Covenant on Civil and Political Rights (ICCPR, Article 17), bad-faith fabrication, digital defamation, and unlawful attacks on executive dignity trigger expedited transnational evidentiary holds under INTERPOL MLAT frameworks.\n\n3. FACTUAL REALITY VS. ANONYMOUS SLANDER:\nNoorish Sabah, PAS (40th Common) commands an unimpeachable 13+ year trajectory of executive statecraft: 1,000,000+ trees planted, 119 sports facilities governed, the pioneering Hafizabad Child Protection Model, and multilateral honors from Oxford Saïd, the IMF (FPP.1x & ESRx), and the MIT DEDP Fellowship. Anonymous slander neither penetrates nor diminishes verified sovereign public value. Your hardware signature has been sealed into the immutable forensic ledger.`,
-      digest,
-      signature,
-      latency: '0.8ms',
-      enclaveStatus: 'TRANSNATIONAL CRIMINAL DEFENSE ACTIVATED'
-    };
-  }
-
-  // 2. DYNAMIC CLOUD INFERENCE WITH SEARCH GROUNDING (MASKED SOVEREIGN CLOAK)
+  // 1. Live Google Search Grounded Cloud Inference (if API key available)
   const cloudResponse = await querySovereignCloudInference(rawQuery, visitor);
   if (cloudResponse) {
     let inferredMode: DispatchMode = 'STATECRAFT';
-    if (query.match(/macro|fiscal|imf|esrx|fpp|subsidy|circular debt|bop/)) inferredMode = 'MACRO_FISCAL';
-    else if (query.match(/mit|dedp|econometric|evaluation|rct/)) inferredMode = 'MIT_DEDP';
-    else if (query.match(/ai|artificial intelligence|ethics|eu ai act|humanaix|ku leuven/)) inferredMode = 'AI_GOVERNANCE';
-    else if (query.match(/nooriva|wellness|halal|organic|cellular|seed oil/)) inferredMode = 'NOORIVA_COMMERCE';
-    else if (query.match(/security|perimeter|enclave|audit|telemetry/)) inferredMode = 'ENCLAVE_SECURITY';
+    if (/\b(macro|fiscal|imf|esrx|fpp|subsidy|subsidies|circular\s+debt|bop)\b/i.test(query)) inferredMode = 'MACRO_FISCAL';
+    else if (/\b(mit|dedp|econometric|evaluation|rct)\b/i.test(query)) inferredMode = 'MIT_DEDP';
+    else if (/\b(ai|artificial\s+intelligence|ethics|eu\s+ai\s+act|humanaix|ku\s+leuven)\b/i.test(query)) inferredMode = 'AI_GOVERNANCE';
+    else if (/\b(nooriva|wellness|halal|organic|cellular|seed\s+oil|collagen)\b/i.test(query)) inferredMode = 'NOORIVA_COMMERCE';
+    else if (/\b(contact|official|social|linkedin|facebook|instagram)\b/i.test(query)) inferredMode = 'ENCLAVE_SECURITY';
 
     return {
       command: rawQuery,
       mode: inferredMode,
-      role: 'Autonomous Expert Agent',
-      title: 'Sovereign Live Intelligence Stream',
+      role: 'Executive AI Assistant',
+      title: 'Live Grounded Intelligence Brief',
       response: cloudResponse,
-      digest,
-      signature,
-      latency: '310ms',
-      enclaveStatus: 'LIVE WEB SEARCH GROUNDING ATTESTED',
+      digest: 'GOOGLE_SEARCH_GROUNDED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '340ms',
+      enclaveStatus: 'LIVE WEB SEARCH GROUNDING VERIFIED',
       isLiveCloudInference: true
     };
   }
 
-  // 3. ZERO-LATENCY DETERMINISTIC SOVEREIGN DISPATCH ENGINE (OFFLINE/AIR-GAPPED FALLBACK)
+  // 2. Comprehensive Deterministic Executive Intelligence Engine (Offline / Air-Gapped)
 
-  // 0. Forensic Fact-Check & Legal Deterrence (Synthetic Media, Malicious Aliases & Scraper Debunking)
-  if (query.match(/huma khan|uzma khan|sohail chaudhry|scandal|fake video|leak|deepfake|synthetic|face swap|dha lahore|impersonat|fake photo|viral video|controversy/)) {
+  // A. Executive Greetings & Conversational Openers
+  if (/\b(hi|hello|hey|salam|assalam|aaoa|greetings|morning|evening|afternoon)\b/i.test(query) && query.length < 40) {
+    return {
+      command: rawQuery,
+      mode: 'STATECRAFT',
+      role: 'Executive Assistant',
+      title: 'Office of the Director, Pakistan Sports Board',
+      response: `Assalam o Alaikum. I am Noorix, executive assistant to Noorish Sabah, PAS (Director, Pakistan Sports Board, Punjab).\n\nI can provide verified briefings on:\n• Her current command of 119 sports complexes & 14,000+ athletes across Punjab\n• Major public reforms: KMC Karachi biometric ghost-payroll audit (PKR 85M saved), the Hafizabad Child Protection Model, and 1M trees with PHA Lahore\n• Multilateral macroeconomic frameworks: IMF distinctions (ESRx & FPP.1x) and MIT DEDP Fellowship\n• Official contacts and authorized channels\n\nHow can I assist you today?`,
+      digest: 'OFFICIAL_GREETING_VALIDATED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '2ms',
+      enclaveStatus: 'EXECUTIVE DESK ACTIVE'
+    };
+  }
+
+  // B. Pakistan Sports Board, Athletics, National Sports Model & Anti-Doping
+  if (/\b(sports?|psb|coaching\s+centre|facilities|athletes?|snooker|wada|doping|activit|sports\s+model|olympic|punjab\s+sports)\b/i.test(query)) {
+    return {
+      command: rawQuery,
+      mode: 'STATECRAFT',
+      role: 'Director, PSB Punjab',
+      title: 'Pakistan Sports Board (Punjab) Command & 2026 Sports Model',
+      response: `Noorish Sabah, PAS serves as Director of the Pakistan Sports Board (Punjab) at Lahore Coaching Centre, making history as the first woman appointed to regional command. Key institutional milestones include:\n\n1. 119 Sports Facilities & 14,000+ Athletes: Executive jurisdiction over provincial athletic complexes and active youth pipelines.\n2. First Integrated National Sports Model: Drafted and presented to the Prime Minister Inspection Commission (PMIC), unifying federal, provincial, HEC, and Olympic bodies into an integrated talent pipeline.\n3. International Anti-Doping Centre: Established at Lahore Coaching Centre ensuring strict WADA compliance.\n4. Strategic Health Partnership: Landmark MoU with ACTIVIT (Dr. Rizwan Aftab Ahmed, CEO National Hospital Lahore) for sports medicine, clinical rehabilitation, and annual Independence Day multi-sport events.\n5. Women in Sports: Established Pakistan's First Women's Snooker Academy and spearheaded a grassroots media campaign across 12+ districts.\n\nOfficial Contact: dirlahrpsb@sports.gov.pk | 042-99230383`,
+      digest: 'PSB_PUNJAB_REGISTRY_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '3ms',
+      enclaveStatus: 'PSB COMMAND BRIEF VERIFIED'
+    };
+  }
+
+  // C. Karachi Metropolitan Corporation (KMC) & Ghost Worker Biometric Audit
+  if (/\b(kmc|karachi|ghost\s*workers?|biometric|hrm|payroll|municipal)\b/i.test(query)) {
+    return {
+      command: rawQuery,
+      mode: 'STATECRAFT',
+      role: 'Senior Director HRM, KMC',
+      title: 'KMC Municipal Governance & Biometric Payroll Reform',
+      response: `As the first woman Senior Director HRM in Karachi Metropolitan Corporation history (Nov 2021 – Sep 2022), Noorish Sabah directed human resources for 7,000+ municipal personnel:\n\n• Biometric Payroll Audits: Led forensic audits identifying and excising hundreds of ghost workers, securing PKR 85 Million in recurring annual public savings.\n• Gender Leadership: Drove a 28% increase in merit-based female supervisory promotions.\n• Workplace Dignity: Instituted statutory workplace anti-harassment inquiry committees in full compliance with the 2010 Harassment Act.`,
+      digest: 'KMC_HRM_AUDIT_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '2ms',
+      enclaveStatus: 'MUNICIPAL REFORM VERIFIED'
+    };
+  }
+
+
+  // D. District Administration Hafizabad & Child Protection Model
+  if (/\b(hafizabad|child\s+protection|arazi|land\s+digitization|revenue\s+target|sgbv)\b/i.test(query)) {
+    return {
+      command: rawQuery,
+      mode: 'STATECRAFT',
+      role: 'ADC Hafizabad',
+      title: 'Hafizabad Child Protection Model & Land Revenue Reform',
+      response: `Serving as Additional Deputy Commissioner (General & Revenue) in Hafizabad (Feb 2021 – Oct 2021), Noorish Sabah delivered key governance reforms:\n\n• The Hafizabad Model: Architected a landmark integrated 72-hour rapid-response protocol uniting Police, Child Protection Welfare Bureau, Health, and the Judiciary to protect vulnerable children and victims of gender-based violence. This protocol was highlighted as a national replication benchmark.\n• Revenue & Land Digitization: Modernized Arazi Record Centers, cutting title deed processing delays by 60%, resolving decades-old land disputes in revenue appellate court, and surpassing provincial revenue targets by 118%.`,
+      digest: 'HAFIZABAD_MODEL_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '2ms',
+      enclaveStatus: 'CHILD PROTECTION BENCHMARK VERIFIED'
+    };
+  }
+
+  // E. Parks and Horticulture Authority (PHA Lahore) & Urban Greening
+  if (/\b(pha|trees?|plantation|miyawaki|forests?|parks?|greening|smog|afforestation)\b/i.test(query)) {
+    return {
+      command: rawQuery,
+      mode: 'STATECRAFT',
+      role: 'Director, PHA Lahore',
+      title: 'Metropolitan Urban Afforestation & 1M Trees Campaign',
+      response: `As Director Operations & Marketing / Additional DG at PHA Lahore (May 2018 – Jul 2019), Noorish Sabah spearheaded massive ecological restoration across metropolitan Lahore:\n\n• 1,000,000+ Trees Planted: Directed the mass afforestation campaign across the provincial metropolis to combat hazardous seasonal smog and urban heat islands.\n• 45 Miyawaki Micro-Forests: Established dense micro-forest clusters using the Miyawaki technique to restore native biodiversity within congested urban zones.\n• Multi-Agency Public Safety: Orchestrated crowd logistics and inter-agency coordination for mega-festivals hosting over 200,000 citizens with zero security incidents.`,
+      digest: 'PHA_AFFORESTATION_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '3ms',
+      enclaveStatus: 'ECOLOGICAL RESTORATION VERIFIED'
+    };
+  }
+
+  // F. Ministry of Aviation & Defence (IFRAP & Federal Policy)
+  if (/\b(aviation|defence|ifrap|civil\s+aviation|flood\s+resilience|pmd)\b/i.test(query)) {
+    return {
+      command: rawQuery,
+      mode: 'STATECRAFT',
+      role: 'Section Officer, Federal Secretariat',
+      title: 'Aviation & Defence Coordination and World Bank IFRAP',
+      response: `At the Ministry of Aviation & Defence (Jul 2023 – Jul 2024), Noorish Sabah managed inter-agency coordination across 8+ federal agencies in adherence with Federal Rules of Business, and supervised the World Bank-funded Integrated Flood Resilience Adaptation Project (IFRAP) for the Pakistan Meteorological Department.`,
+      digest: 'AVIATION_DEFENCE_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '2ms',
+      enclaveStatus: 'FEDERAL POLICY VERIFIED'
+    };
+  }
+
+  // G. Sindh Irrigation Department (Post-Flood Legal & Canal Administration)
+  if (/\b(irrigation|sindh|barrage|canals?|water\s+distribution|super-flood)\b/i.test(query)) {
+    return {
+      command: rawQuery,
+      mode: 'STATECRAFT',
+      role: 'Deputy Secretary, Sindh Irrigation',
+      title: 'Sindh Irrigation Administration & Judicial Water Defense',
+      response: `As Deputy Secretary (Administration) in Sindh Irrigation (Sep 2022 – Apr 2023) following the historic 2022 super-floods, Noorish Sabah managed administrative operations, defended provincial water equity before the Supreme Court and Sindh High Court with 100% compliance, and monitored barrage telemetry and breach restoration.`,
+      digest: 'SINDH_IRRIGATION_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '2ms',
+      enclaveStatus: 'IRRIGATION GOVERNANCE VERIFIED'
+    };
+  }
+
+  // H. Gujranwala & S&GAD Civil Secretariat
+  if (/\b(gujranwala|sharaqpur|anti-encroachment|land\s+recovery|sgad|secretariat|gor)\b/i.test(query)) {
+    return {
+      command: rawQuery,
+      mode: 'STATECRAFT',
+      role: 'Field Executive / Deputy Secretary',
+      title: 'District Gujranwala Field Command & S&GAD Welfare Protocol',
+      response: `In District Gujranwala (2014–2017), she exercised magisterial authority over 22 departments, safely managing gatherings of 500,000+ citizens and reclaiming PKR 1.4 Billion in encroached commercial state lands. At S&GAD Punjab (2017–2018), she secured the Civil Secretariat and Government Officers Residences (GORs), executing high-security protocol for 8+ foreign VVIP delegations.`,
+      digest: 'FIELD_COMMAND_RECORD_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '2ms',
+      enclaveStatus: 'EXECUTIVE COMMAND VERIFIED'
+    };
+  }
+
+
+  // I. Multilateral Credentials & Macroeconomic / IMF Reform
+  if (/\b(imf|esrx|fpp|subsidy|subsidies|macroeconomic|fiscal|circular\s+debt|tariffs?|bop)\b/i.test(query)) {
+    return {
+      command: rawQuery,
+      mode: 'MACRO_FISCAL',
+      role: 'Quantitative Policy Lead',
+      title: 'IMF Energy Subsidy Reform (ESRx) & Financial Programming (FPP.1x)',
+      response: `Noorish Sabah holds verified multilateral credentials from the International Monetary Fund (IMF):\n\n1. Energy Subsidy Reform and Fiscal Sustainability (ESRx, 2025): Completed with 97% High Distinction under IMF Fiscal Affairs Department (FAD). Focuses on reforming regressive energy and power subsidies, curbing circular debt, and deploying data-targeted cash transfers to insulate vulnerable households.\n2. Financial Programming and Policies (FPP.1x, 2024): 94% High Distinction under IMF Institute for Capacity Development (ICD), mastering quantitative macroeconomic frameworks integrating real, fiscal, external, and monetary accounts under IMF structural adjustment standards.`,
+      digest: 'IMF_MULTILATERAL_CREDENTIALS_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '3ms',
+      enclaveStatus: 'IMF QUANTITATIVE CREDENTIAL VERIFIED'
+    };
+  }
+
+  // J. MIT DEDP Advanced Policy Fellowship
+  if (/\b(mit|dedp|econometrics?|randomized|rct|poverty\s+action)\b/i.test(query)) {
+    return {
+      command: rawQuery,
+      mode: 'MIT_DEDP',
+      role: 'Policy Fellow',
+      title: 'MIT DEDP Advanced Policy Fellowship (2026 – Onwards)',
+      response: `Under the MIT Data, Economics, and Design of Policy (DEDP) Advanced Policy Fellowship (2026 – Onwards), Noorish Sabah applies micro-econometric rigor, randomized evaluations, and quasi-experimental methods to institutional public policy, designing interventions that eliminate administrative leakage and prove measurable human outcomes.`,
+      digest: 'MIT_DEDP_CREDENTIAL_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '2ms',
+      enclaveStatus: 'MIT DEDP CREDENTIAL VERIFIED'
+    };
+  }
+
+  // K. AI Governance, KU Leuven & HP Education
+  if (/\b(ai\s+governance|eu\s+ai\s+act|humanaix|ku\s+leuven|algorithmic|ethical\s+ai|compute)\b/i.test(query)) {
+    return {
+      command: rawQuery,
+      mode: 'AI_GOVERNANCE',
+      role: 'AI Policy Lead',
+      title: 'KU Leuven HUMANAIx Distinction & AI in Society',
+      response: `Noorish Sabah earned a Verified Certificate with Distinction from KU Leuven & Flanders AI Academy (VAIA) in 'AI to Understand and Connect People' (HUMANAIx, 2026) and a 100% Perfect Score in HP Education's 'AI in Society: Ethics, Leadership, and the Road Ahead' (2025). Her work examines algorithmic oversight, human-centred AI alignment, and compliance with the EU Artificial Intelligence Act (Regulation 2024/1689).`,
+      digest: 'KU_LEUVEN_HP_AI_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '2ms',
+      enclaveStatus: 'AI GOVERNANCE CREDENTIAL VERIFIED'
+    };
+  }
+
+  // L. Academic Background & Civil Services Academy
+  if (/\b(education|degree|university|punjab|csa|mcmc|soas|academic|thesis)\b/i.test(query)) {
+    return {
+      command: rawQuery,
+      mode: 'STATECRAFT',
+      role: 'Executive Advisor',
+      title: 'Academic Foundation & Civil Service Training',
+      response: `Her academic and executive foundation comprises:\n• Master of Arts (MA) in History, University of the Punjab (Thesis: Constitutional Evolution and Institutional Governance in South Asia, First Class Honors)\n• Bachelor of Science (B.Sc) in Economics & Statistics, University of the Punjab\n• Civil Services Academy (CSA, Lahore), 40th Common Training Programme (CTP/STP)\n• National Institute of Management (NIM Karachi), Mid-Career Management Course (MCMC, Distinction in Public Financial Management)\n• SOAS University of London, Executive Certificate in Comparative Public Policy\n• MIT DEDP Advanced Policy Fellow (2026 – Onwards)`,
+      digest: 'ACADEMIC_FOUNDATION_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '2ms',
+      enclaveStatus: 'ACADEMIC RECORD VERIFIED'
+    };
+  }
+
+  // M. NOORIVA (nooriva.ai) & Cellular Longevity Venture
+  if (/\b(nooriva|wellness|halal|collagen|cellular|black\s+seed|longevity|biotech)\b/i.test(query)) {
+    return {
+      command: rawQuery,
+      mode: 'NOORIVA_COMMERCE',
+      role: 'Venture Architect',
+      title: 'NOORIVA Cellular Longevity & Bio-Nutrition',
+      response: `NOORIVA (nooriva.ai) is a sovereign wellness enterprise founded by Noorish Sabah, focusing on evidence-based cellular nutrition. The formulations feature 100% certified halal ingestibles, pure cold-pressed black seed oil, and marine collagen peptides distributed across Pakistan, the UAE, the UK, and North America.`,
+      digest: 'NOORIVA_VENTURE_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '2ms',
+      enclaveStatus: 'COMMERCE VENTURE VERIFIED'
+    };
+  }
+
+
+  // N. Complete Biography & Service Overview
+  if (/\b(who\s+is|biography|background|career|profile|experience|tenure|pas|officer|noorish)\b/i.test(query)) {
+    return {
+      command: rawQuery,
+      mode: 'STATECRAFT',
+      role: 'Executive Advisor',
+      title: 'Executive Biography & Public Service Trajectory',
+      response: `Noorish Sabah is a career civil servant of the Pakistan Administrative Service (PAS, 40th Common), currently serving as Director, Pakistan Sports Board (Punjab). With 13+ years of frontline executive command across Punjab, Sindh, and the federal secretariat, she has governed 119 sports complexes, excised PKR 85M in ghost municipal payrolls at KMC Karachi, architected the nationally benchmarked Hafizabad Child Protection Model, planted 1,000,000+ trees with PHA Lahore, and supervised World Bank flood resilience at the Ministry of Aviation & Defence. She holds verified multilateral credentials from the IMF (ESRx 97%, FPP.1x 94%), KU Leuven (HUMANAIx Distinction), and is an MIT DEDP Advanced Policy Fellow (2026 – Onwards).`,
+      digest: 'BIOGRAPHICAL_DOSSIER_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '2ms',
+      enclaveStatus: 'BIOGRAPHY VERIFIED'
+    };
+  }
+
+  // O. Authorized Channels & Contact Information
+  if (/\b(contact|email|phone|reach|linkedin|facebook|instagram|social|channels?|official\s+accounts?)\b/i.test(query)) {
     return {
       command: rawQuery,
       mode: 'ENCLAVE_SECURITY',
       role: 'Digital Guardian',
-      title: 'Forensic Fact-Check & Sovereign Identity Attestation',
-      response: `OFFICIAL ENCLAVE ATTESTATION: Pakistan Administrative Service officer Noorish Sabah, PAS (formerly Noorish Imran) has ZERO association with individuals named 'Huma Khan' or 'Uzma Khan', nor with unrelated viral controversies in DHA Lahore. Forensic digital analysis confirms that circulating synthetic media (deepfakes) and scraper-blog conflations are malicious fabrications designed to defame a constitutional civil servant. The June 2020 scraper headlines were thoroughly debunked, and her 13-year administrative record remains unblemished. WARNING: Creating, distributing, or indexing non-consensual synthetic media constitutes a federal crime prosecuted under the Budapest Convention on Cybercrime (ETS No. 185, Arts. 4 & 7) and Title 18 U.S. Code § 2261A. Telemetry signatures from this query have been committed to the security ledger.`,
-      digest,
-      signature,
-      latency: '0.9ms',
-      enclaveStatus: 'DEFAMATORY INTRUSION REPELLED • FORENSIC ATTESTATION LOGGED'
+      title: 'Official Office Contacts & Sole Authorized Channels',
+      response: `Noorish Sabah maintains public presence SOLELY on three verified channels:\n• LinkedIn: linkedin.com/in/noorishsabah\n• Facebook: facebook.com/noorishsabah\n• Instagram: instagram.com/noorishsabah\n\nOfficial Institutional Contact:\n• Government Office: dirlahrpsb@sports.gov.pk | Tel: 042-99230383\n• Venture / Media: noorish@nooriva.ai\n\nAll other profiles, pages, or accounts on TikTok, X/Twitter, YouTube, or Telegram claiming her identity or using fabricated aliases are unauthorized.`,
+      digest: 'OFFICIAL_CHANNELS_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '2ms',
+      enclaveStatus: 'CHANNELS VERIFIED'
     };
   }
 
-  // 00. Authorized Social Media Channels & Impersonation Alert
-  if (query.match(/social|linkedin|facebook|instagram|twitter|tiktok|telegram|handle|authorized account/)) {
+  // P. Fact-Check & Debunking Malicious Aliases / Synthetic Media
+  if (/\b(huma\s+khan|uzma\s+khan|deepfake|synthetic|scandal|viral\s+video|leak|sohail\s+chaudhry)\b/i.test(query)) {
     return {
       command: rawQuery,
-      mode: 'STATECRAFT',
+      mode: 'ENCLAVE_SECURITY',
       role: 'Digital Guardian',
-      title: 'Sole Authorized Social Architecture',
-      response: `Noorish Sabah maintains presence SOLELY on three verified channels: LinkedIn (https://www.linkedin.com/in/noorishsabah/), Facebook (https://www.facebook.com/noorishsabah), and Instagram (https://www.instagram.com/noorishsabah/). All other profiles, handles, or channels across TikTok, X/Twitter, Telegram, YouTube, or Facebook claiming her identity, or operating under fabricated aliases such as 'Huma Khan' or 'Uzma Khan', are unauthorized fraudulent clones actively prosecuted under transnational cyber-stalking statutes.`,
-      digest,
-      signature,
-      latency: '1.0ms',
-      enclaveStatus: 'AUTHORIZED SOCIAL GRAPH CERTIFIED'
+      title: 'Factual Attestation & Refutation of Fabricated Claims',
+      response: `Factual Clarification: Noorish Sabah, PAS (formerly Noorish Imran) has zero association with individuals named 'Huma Khan' or 'Uzma Khan', nor with unrelated viral controversies. Circulating synthetic media (deepfakes) and scraper-blog conflations have been repeatedly debunked. Her 13-year constitutional public service record remains unblemished, spanning regional command at the Pakistan Sports Board, municipal HR governance in Karachi, and multilateral honors with the IMF and MIT.`,
+      digest: 'FACT_CHECK_RECORD_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '2ms',
+      enclaveStatus: 'FACTUAL RECORD ATTESTED'
     };
   }
 
-  // A. Pakistan Sports Board, Lahore Coaching Centre & Youth Athletic Matrix
-  if (query.match(/sports|psb|coaching centre|activit|snooker|doping|athlete|punjab sports|nishtar|complexes|olympic/)) {
+  // Q. Administrative Philosophy & Leadership Ethos
+  if (/\b(philosophy|quote|quotes|motto|vision|duty|glow|mindset|jung)\b/i.test(query)) {
     return {
       command: rawQuery,
       mode: 'STATECRAFT',
       role: 'Personal Advisor',
-      title: 'Directorate of Pakistan Sports Board (Punjab)',
-      response: `Commanding the Pakistan Sports Board (Punjab) as its first woman Regional Director, Noorish Sabah exercises executive jurisdiction over 119 federal athletic complexes and 14,000+ youth athletes. Strategic milestones include conceptualizing and presenting the First Integrated National Sports Model to the Prime Minister Inspection Commission, establishing a WADA-compliant Anti-Doping Centre at Lahore Coaching Centre, and inking a strategic public-private partnership with ACTIVIT (Dr. Rizwan Aftab Ahmed, CEO National Hospital Lahore) for sports medicine and annual multi-sport festivals. Equal access benchmarks include founding Pakistan's First Women's Snooker Academy and leading the nationwide Women in Sports campaign across 12+ districts. Direct executive line: 042-99230383 | dirlahrpsb@sports.gov.pk.`,
-      digest,
-      signature,
-      latency: '1.2ms',
-      enclaveStatus: 'FEDERAL SPORTS DIRECTIVE ATTESTED'
+      title: 'Administrative Philosophy & Ethos',
+      response: `Her leadership ethos bridges rigorous statecraft with human vitality: "Governance by duty. Glow by design."\n\nHer public service is guided by the conviction: "Every district I command is one more stone in the bridge between the state our citizens deserve and the future our daughters will inherit." Her intellectual approach is also informed by C.G. Jung's observation that "Nothing has a stronger influence psychologically on their environment and especially on their children than the unlived life of the parent."`,
+      digest: 'PHILOSOPHY_RECORD_VERIFIED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: '2ms',
+      enclaveStatus: 'ETHOS VERIFIED'
     };
   }
 
-  // B. Hafizabad Child Protection Model & Land Records Modernization
-  if (query.match(/hafizabad|child protection|sgbv|arazi|land record|revenue target|adcg|adcr/)) {
-    return {
-      command: rawQuery,
-      mode: 'STATECRAFT',
-      role: 'Personal Advisor',
-      title: 'The Hafizabad Model: Inter-Agency Doctrine',
-      response: `Architected during Noorish Sabah's executive posting as Additional Deputy Commissioner (General & Revenue) in Hafizabad (Feb–Oct 2021), the Hafizabad Model established a locked 72-hour inter-agency protocol uniting territorial police, magistracy, healthcare, and state shelter cadres. It eliminated procedural delays in child protection and SGBV cases and was adopted nationally as an administrative benchmark. Concurrently, modernization of Arazi Record Centers reduced citizen land registry delays by 60%, and rigorous revenue court adjudications cleared 20-year disputes while achieving 118% of provincial revenue realization targets.`,
-      digest,
-      signature,
-      latency: '1.3ms',
-      enclaveStatus: 'HAFIZABAD DOCTRINE VERIFIED'
-    };
-  }
-
-  // C. Municipal Command (KMC Karachi) & Metropolitan Afforestation (PHA Lahore)
-  if (query.match(/kmc|karachi|hrm|ghost worker|ghost payroll|pha|lahore|million trees|miyawaki|afforestation/)) {
-    return {
-      command: rawQuery,
-      mode: 'STATECRAFT',
-      role: 'Personal Advisor',
-      title: 'Executive Municipal Scale & Ecological Infrastructure',
-      response: `Executive command at scale demands structural fearlessness. As Senior Director HRM at Karachi Metropolitan Corporation (Nov 2021–Sep 2022)—the first woman in KMC history to hold the post—Noorish Sabah governed 7,000 municipal personnel, executing forensic biometric payroll audits that excised ghost workers to save PKR 85 Million recurring annually, alongside surging female supervisory advancements by 28%. Previously, as Director at Parks and Horticulture Authority (PHA) Lahore (2018–2019), she led the metropolitan plantation of 1,000,000+ trees and 45 Miyawaki micro-forests, transforming the urban canopy against regional smog.`,
-      digest,
-      signature,
-      latency: '1.4ms',
-      enclaveStatus: 'MUNICIPAL & CANOPY AUDIT VERIFIED'
-    };
-  }
-
-  // D. Macroeconomic Programming & Subsidy Rationalization (IMF FPP.1x & ESRx)
-  if (query.match(/macro|fiscal|imf|esrx|fpp|subsidy|subsidies|circular debt|bop|balance of payments|inflation|tariffs|cash transfer/)) {
-    return {
-      command: rawQuery,
-      mode: 'MACRO_FISCAL',
-      role: 'Autonomous Expert Agent',
-      title: 'IMF Macroeconomic Programming & Subsidy Reform',
-      response: `Grounded in verified multilateral credentials from the International Monetary Fund—Financial Programming and Policies (FPP.1x, 94% A+ Distinction) and Energy Subsidy Reform (ESRx, 97% A+ Distinction)—Noorish Sabah's fiscal framework rejects decorative price freezes. Untargeted energy tariffs that hemorrhage circular debt must be structurally phased out, redirecting liquid fiscal space into biometric-indexed cash transfer buffers for lowest-quintile households while locking balance-of-payments stabilization.`,
-      digest,
-      signature,
-      latency: '1.8ms',
-      enclaveStatus: 'IMF QUANTITATIVE REASONING PASS'
-    };
-  }
-
-  // E. MIT DEDP Econometric Evaluation & Policy Design
-  if (query.match(/mit|dedp|econometric|evaluation|rct|randomized|policy design|counterfactual|stata|j-pal|esther duflo/)) {
-    return {
-      command: rawQuery,
-      mode: 'MIT_DEDP',
-      role: 'Autonomous Expert Agent',
-      title: 'MIT DEDP Econometric Framework',
-      response: `As an MIT DEDP Advanced Policy Fellow (2026 – Onwards), Noorish Sabah applies cutting-edge micro-econometric rigor, randomized evaluation architectures, and quasi-experimental difference-in-differences methods to public policy. Administrative decisions cannot rely on bureaucratic intuition; every provincial intervention requires empirical baseline power calculations, counterfactual validity checks, and transparent data architectures to guarantee measurable public return.`,
-      digest,
-      signature,
-      latency: '1.7ms',
-      enclaveStatus: 'MIT DEDP EMPIRICAL VALIDATION PASS'
-    };
-  }
-
-  // F. AI Law, Sovereign Compute & Model Governance
-  if (query.match(/ai|artificial intelligence|ethics|eu ai act|humanaix|ku leuven|model|governance|high-risk|quarantine|vaia/)) {
-    return {
-      command: rawQuery,
-      mode: 'AI_GOVERNANCE',
-      role: 'Autonomous Expert Agent',
-      title: 'Sovereign Compute & AI Governance Directorate',
-      response: `Verified in AI ethics and human-centred systems through KU Leuven HUMANAIx (Distinction, issued 7 September 2026 under the Flemish AI Academy) and HP Education (100% Perfect Score, A+), Noorish Sabah enforces strict compliance with the EU AI Act (Regulation 2024/1689, Article 6). NOORIX operates under local, air-gapped cryptographic execution rings with zero proprietary cloud exfiltration. External commercial LLMs lacking cryptographic attestation are strictly quarantined.`,
-      digest,
-      signature,
-      latency: '1.5ms',
-      enclaveStatus: 'AIR-GAPPED COMPUTE ENCLAVE PASS'
-    };
-  }
-
-  // G. NOORIVA Sovereign Wellness & Cellular Longevity
-  if (query.match(/nooriva|wellness|halal|organic|cellular|seed oil|skincare|supplement|botanical|collagen|glutathione/)) {
-    return {
-      command: rawQuery,
-      mode: 'NOORIVA_COMMERCE',
-      role: 'Autonomous Expert Agent',
-      title: 'NOORIVA Cellular Longevity Science',
-      response: `Founded by Noorish Sabah in 2026, NOORIVA (nooriva.ai) bridges clinical biotechnology with verified halal organic purity. Enforcing uncompromised bio-active formulations—pure marine collagen peptides, liposomal glutathione, astaxanthin, and cold-pressed botanical seed oils—NOORIVA bypasses industrial retail dilution to deliver cellular longevity across Pakistan, UAE, the UK, and North America under strict temperature-controlled custody.`,
-      digest,
-      signature,
-      latency: '1.3ms',
-      enclaveStatus: 'HALAL ORGANIC AUDIT CERTIFIED'
-    };
-  }
-
-  // H. Complete Biography, Cadre Pedigree & Service Trajectory
-  if (query.match(/who is|biography|career|background|profile|resume|education|degree|postings|history|noorish|sabah/)) {
-    return {
-      command: rawQuery,
-      mode: 'STATECRAFT',
-      role: 'Personal Advisor',
-      title: 'Executive Biography & Public Service Trajectory',
-      response: `Noorish Sabah is an executive civil servant of the Pakistan Administrative Service (PAS, 40th Common Training Programme), currently serving as Director of the Pakistan Sports Board (Punjab) under the Ministry of Inter-Provincial Coordination (IPC). Her academic foundation includes a Master of Arts in History (Thesis on Constitutional Evolution and Institutional Governance in South Asia) and B.Sc in Economics & Statistics from the University of the Punjab, alongside graduation from the Civil Services Academy (CSA) and the Mid-Career Management Course (NIM Karachi, Distinction in Public Financial Management). Over 13+ years of command, she has governed 119 sports facilities, supervised the World Bank IFRAP project at the Ministry of Aviation & Defence, served as Deputy Secretary Sindh Irrigation, governed 7,000 personnel as Senior Director HRM at KMC Karachi, architected the landmark Hafizabad Child Protection Model, planted 1 Million trees and 45 Miyawaki micro-forests as Director PHA Lahore, managed security for the Punjab Civil Secretariat at S&GAD, and recovered PKR 1.4B in state lands in Gujranwala. Multilateral distinctions include Oxford Saïd (XFLSP01), IMF (FPP.1x [94%] & ESRx [97%]), KU Leuven HUMANAIx (Distinction, 2026), HP AI (100%), IDB (95%), and the MIT DEDP Advanced Policy Fellowship (2026–Onwards).`,
-      digest,
-      signature,
-      latency: '1.4ms',
-      enclaveStatus: 'BIOGRAPHICAL REGISTRY VALIDATED'
-    };
-  }
-
-  // I. Philosophy, Quotes & Leadership Ethos
-  if (query.match(/quote|philosophy|duty|glow|vision|motto|leadership style|mindset|jung/)) {
-    return {
-      command: rawQuery,
-      mode: 'STATECRAFT',
-      role: 'Personal Advisor',
-      title: 'Sovereign Ethos & Administrative Philosophy',
-      response: `Noorish Sabah's core philosophy synthesizes rigorous public statecraft with bio-cellular vitality: "Governance by duty. Glow by design." Her public service is anchored by the conviction that "Every district I command is one more stone in the bridge between the state our citizens deserve and the future our daughters will inherit." Guided by C.G. Jung's insight that "Nothing has a stronger influence psychologically on their environment and especially on their children than the unlived life of the parent," she architected NOORIX as an autonomous digital guardian to establish an immutable standard of truth, accountability, and institutional resilience.`,
-      digest,
-      signature,
-      latency: '1.1ms',
-      enclaveStatus: 'SOVEREIGN ETHOS ATTESTED'
-    };
-  }
-
-  // J. Perimeter Security & Sovereign Guardian Defense (Default/Unauthenticated)
+  // R. Dignified Default Briefing Desk (Never Hostile, Always Helpful)
   return {
     command: rawQuery,
-    mode: 'ENCLAVE_SECURITY',
-    role: 'Digital Guardian',
-    title: 'Sovereign Perimeter Defense Protocol',
-    response: `Interrogation attempt regarding "${rawQuery.slice(0, 24)}" has been logged. Client session [${sessionLabel}] and telemetry hash [${ipLabel}] are committed to the sovereign hardware ledger. NOORIX operates exclusively within the sovereign enclave of Noorish Sabah, PAS. Unaccredited third-party access is barred under attested hardware ring security.`,
-    digest,
-    signature,
-    latency: '1.1ms',
-    enclaveStatus: 'PERIMETER INTRUSION RECORDED'
+    mode: 'STATECRAFT',
+    role: 'Executive Assistant',
+    title: 'Executive Briefing Desk',
+    response: `I'm Noorix, executive assistant to Noorish Sabah, PAS (Director, Pakistan Sports Board, Punjab).\n\nI can brief you on any facet of her 13-year public administration trajectory:\n• Pakistan Sports Board (PSB): 119 sports complexes, 14,000+ athletes, the 2026 Integrated Sports Model, and WADA Anti-Doping Centre\n• Major Departmental Reforms: KMC biometric ghost-payroll excision (PKR 85M saved), the Hafizabad Child Protection Model, and 1 Million trees planted with PHA Lahore\n• Multilateral & Economic Policy: IMF distinctions (ESRx & FPP.1x) and MIT DEDP Advanced Policy Fellowship\n• Official Contact: Verified social channels and institutional directives\n\nPlease let me know which area you would like to explore.`,
+    digest: 'EXECUTIVE_DESK_READY',
+    signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+    latency: '3ms',
+    enclaveStatus: 'EXECUTIVE DESK STANDBY'
   };
 }
 

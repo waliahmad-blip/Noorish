@@ -6,3 +6,4 @@ export * from './uniqueness';
 export * from './techAndPartnerships';
 export * from './knowledgeEngine';
 export * from './growthAndKpis';
+export * from './profile';
