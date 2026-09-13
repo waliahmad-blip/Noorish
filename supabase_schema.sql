@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS public.sovereign_visitor_ledger (
 ALTER TABLE public.sovereign_visitor_ledger ENABLE ROW LEVEL SECURITY;
 
 -- 3. Policy: Allow public anonymous insertions (captures all incoming traffic)
+DROP POLICY IF EXISTS "Allow public insert of telemetry" ON public.sovereign_visitor_ledger;
 CREATE POLICY "Allow public insert of telemetry" 
 ON public.sovereign_visitor_ledger
 FOR INSERT 
@@ -47,6 +48,7 @@ TO anon, authenticated
 WITH CHECK (true);
 
 -- 4. Policy: Allow reading of telemetry records
+DROP POLICY IF EXISTS "Allow reading of telemetry" ON public.sovereign_visitor_ledger;
 CREATE POLICY "Allow reading of telemetry" 
 ON public.sovereign_visitor_ledger
 FOR SELECT 
@@ -57,3 +59,4 @@ USING (true);
 CREATE INDEX IF NOT EXISTS idx_svrn_ledger_created_at ON public.sovereign_visitor_ledger (created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_svrn_ledger_threat_score ON public.sovereign_visitor_ledger (bot_threat_score DESC);
 CREATE INDEX IF NOT EXISTS idx_svrn_ledger_session_id ON public.sovereign_visitor_ledger (session_id);
+

@@ -14,12 +14,12 @@ export const TECHNOLOGY_SUITE = {
   },
   autonomousAgent: {
     name: "NOORIX [Forward Fleet Lead]",
-    operationalBase: "Harmo AI Apex Citadel",
-    domain: "harmo.ai",
-    badge: "HARMO AI SOVEREIGN COMMAND • VANGUARD SENTINEL",
+    operationalBase: "Harmos AI Apex Citadel",
+    domain: "harmos.ai",
+    badge: "HARMOS AI SOVEREIGN COMMAND • VANGUARD SENTINEL",
     swarmStatus: "HOT-STANDBY • CLASSIFIED SWARM RESERVES",
     description: "Noorix serves as the frontline autonomous sentinel—synthesizing real-time macroeconomic intelligence, constitutional policy briefs, and air-gapped perimeter defense in sub-second cycles.",
-    doctrine: "Noorix is merely the forward envoy. At the first threshold breach or high-stakes sovereign escalation, a single encrypted directive mobilizes the entire elite fleet of Harmo AI autonomous agents to seize absolute cognitive and computational domain control."
+    doctrine: "Noorix is merely the forward envoy. At the first threshold breach or high-stakes sovereign escalation, a single encrypted directive mobilizes the entire elite fleet of Harmos AI autonomous agents to seize absolute cognitive and computational domain control."
   },
   dataStack: [
     "Python & R for Econometric Modeling (Stata / R Studio)",

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu, Terminal, Database, CheckCircle2, Radio, ShieldAlert } from 'lucide-react';
+import { Cpu, Terminal, Database, CheckCircle2, Radio, ShieldAlert, ExternalLink } from 'lucide-react';
 import { TECHNOLOGY_SUITE } from '../../data';
 
 export const TechnologySuite: React.FC = () => {
@@ -38,7 +38,7 @@ export const TechnologySuite: React.FC = () => {
             </div>
           </div>
 
-          {/* Autonomous Agent Card: Harmo AI Sovereign Command & Noorix Vanguard */}
+          {/* Autonomous Agent Card: Harmos AI Sovereign Command & Noorix Vanguard */}
           <div className="glass-quantum rounded-2xl p-6 border border-violet-500/40 space-y-4 hover:border-violet-400/60 transition-all bg-gradient-to-br from-obsidian-900 via-obsidian-950 to-violet-950/20 shadow-2xl">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-violet-500/20 pb-3">
               <div className="flex items-center gap-2 text-violet-400 font-mono text-xs">
@@ -62,7 +62,17 @@ export const TechnologySuite: React.FC = () => {
             <div className="p-3.5 rounded-xl bg-obsidian-900/90 border border-violet-500/30 text-xs text-violet-300 font-mono flex items-center gap-2">
               <Radio className="w-4 h-4 text-violet-400 shrink-0 animate-pulse" />
               <span>
-                Operational Base: <strong className="text-white">{TECHNOLOGY_SUITE.autonomousAgent.operationalBase}</strong> ({TECHNOLOGY_SUITE.autonomousAgent.domain}) • Sovereign Multi-Agent Core
+                Operational Base: <strong className="text-white">{TECHNOLOGY_SUITE.autonomousAgent.operationalBase}</strong> (
+                <a 
+                  href={`https://${TECHNOLOGY_SUITE.autonomousAgent.domain}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-violet-300 hover:text-white underline underline-offset-2 transition-colors inline-flex items-center gap-1 font-semibold"
+                >
+                  {TECHNOLOGY_SUITE.autonomousAgent.domain}
+                  <ExternalLink className="w-3 h-3 inline" />
+                </a>
+                ) • Sovereign Multi-Agent Core
               </span>
             </div>
 
