@@ -171,7 +171,10 @@ export const NoorixTerminal: React.FC = () => {
         />
 
         {/* Cryptographically Attested Executive Terminal HUD */}
-        <div className="glass-quantum rounded-2xl border border-cyan-500/40 overflow-hidden shadow-2xl">
+        <div className="glass-quantum rounded-2xl border border-cyan-500/40 overflow-hidden shadow-2xl relative hud-brackets">
+          {/* Top Holographic Laser Sweep */}
+          <div className="sovereign-laser-sweep" />
+
           <div className="bg-obsidian-900 px-5 py-3 border-b border-cyan-500/20 flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-slate-300">
             <div className="flex items-center gap-2.5">
               <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />

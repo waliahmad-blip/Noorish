@@ -14,6 +14,7 @@ interface NoorixFloatingHUDProps {
 export const NoorixFloatingHUD: React.FC<NoorixFloatingHUDProps> = ({ visitor }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [hasUnreadPulse, setHasUnreadPulse] = useState(true);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   useEffect(() => {
     // Global event listener to open HUD from Header or other CTA buttons
@@ -25,10 +26,14 @@ export const NoorixFloatingHUD: React.FC<NoorixFloatingHUDProps> = ({ visitor })
 
     window.addEventListener('open-noorix-hud', handleOpenHUD);
 
-    // ESC key closes HUD
+    // ESC key closes FullScreen first, then HUD
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
-        setIsOpen(false);
+        if (isFullScreen) {
+          setIsFullScreen(false);
+        } else {
+          setIsOpen(false);
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -37,7 +42,7 @@ export const NoorixFloatingHUD: React.FC<NoorixFloatingHUDProps> = ({ visitor })
       window.removeEventListener('open-noorix-hud', handleOpenHUD);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen]);
+  }, [isOpen, isFullScreen]);
 
   const toggleOpen = () => {
     audioEngine.playTactileClick();
@@ -83,10 +88,17 @@ export const NoorixFloatingHUD: React.FC<NoorixFloatingHUDProps> = ({ visitor })
 
       {/* Floating Executive Cockpit Drawer Modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-obsidian-950/60 backdrop-blur-md animate-in fade-in duration-200">
+        <div className={`fixed inset-0 z-50 flex ${isFullScreen ? 'justify-center items-center' : 'justify-end'} bg-obsidian-950/75 backdrop-blur-md animate-in fade-in duration-200`}>
           <div 
-            className="w-full max-w-xl h-full bg-obsidian-950/95 border-l border-cyan-500/30 flex flex-col shadow-2xl animate-in slide-in-from-right duration-300 font-mono"
+            className={`${
+              isFullScreen 
+                ? 'w-full h-full max-w-7xl mx-auto rounded-none lg:rounded-2xl lg:my-6 lg:h-[94vh] border border-cyan-500/40 shadow-[0_0_50px_rgba(0,240,255,0.2)]' 
+                : 'w-full max-w-xl h-full border-l border-cyan-500/30'
+            } bg-obsidian-950/98 flex flex-col shadow-2xl animate-in slide-in-from-right duration-300 font-mono relative overflow-hidden`}
           >
+            {/* Top Holographic Laser Sweep */}
+            <div className="sovereign-laser-sweep" />
+
             {/* Drawer Top Navigation Header */}
             <div className="bg-obsidian-900/90 px-5 py-4 border-b border-cyan-500/25 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
@@ -95,20 +107,36 @@ export const NoorixFloatingHUD: React.FC<NoorixFloatingHUDProps> = ({ visitor })
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-white font-bold text-sm tracking-wide">NOORIX EXECUTIVE HUD</span>
+                    <span className="text-white font-bold text-sm tracking-wide">
+                      {isFullScreen ? 'NOORIX COMMAND BRIDGE • FULL ARSENAL' : 'NOORIX EXECUTIVE HUD'}
+                    </span>
                     <span className="w-2 h-2 rounded-full bg-mint-400 animate-pulse" />
                   </div>
                   <div className="text-[11px] text-slate-400 font-sans">
-                    Office of Noorish Sabah, PAS • 24/7 Policy Briefings
+                    Office of Noorish Sabah, PAS • 24/7 Policy Briefings & Institutional Archives
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
+                {/* Fullscreen Bridge Toggle */}
+                <button
+                  onClick={() => {
+                    audioEngine.playTactileClick();
+                    setIsFullScreen(prev => !prev);
+                  }}
+                  className="p-1.5 rounded-lg bg-obsidian-900 border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 transition-colors"
+                  aria-label={isFullScreen ? "Exit Fullscreen Bridge" : "Enter Fullscreen Command Bridge"}
+                  title={isFullScreen ? "Exit Fullscreen Bridge (ESC)" : "Fullscreen Command Bridge"}
+                >
+                  {isFullScreen ? <Minimize2 className="w-4 h-4 text-cyan-400" /> : <Maximize2 className="w-4 h-4" />}
+                </button>
+
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-1.5 rounded-lg bg-obsidian-900 border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-white transition-colors"
+                  className="p-1.5 rounded-lg bg-obsidian-900 border border-slate-700 hover:border-rose-400 text-slate-300 hover:text-white transition-colors"
                   aria-label="Close HUD"
+                  title="Close (ESC)"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -116,8 +144,8 @@ export const NoorixFloatingHUD: React.FC<NoorixFloatingHUDProps> = ({ visitor })
             </div>
 
             {/* Drawer Body Container */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-5">
-              <NoorixChatCockpit visitor={visitor} compact={true} />
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+              <NoorixChatCockpit visitor={visitor} compact={!isFullScreen} />
             </div>
 
             {/* Drawer Footer Notice */}
@@ -126,7 +154,9 @@ export const NoorixFloatingHUD: React.FC<NoorixFloatingHUDProps> = ({ visitor })
                 <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Verified Departmental Registry & Google Search Grounded</span>
               </div>
-              <span className="hidden sm:inline">Press ESC to dismiss</span>
+              <span className="hidden sm:inline">
+                {isFullScreen ? 'Press ESC to exit Fullscreen Bridge' : 'Press ESC to dismiss'}
+              </span>
             </div>
           </div>
         </div>
