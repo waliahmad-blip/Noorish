@@ -4,7 +4,7 @@ import { CLOSING_STATEMENT } from '../../data';
 
 export const ClosingMonument: React.FC = () => {
   return (
-    <section className="py-20 bg-obsidian-950 text-slate-100 relative overflow-hidden border-t border-cyan-500/30">
+    <section id="monument" aria-label="Closing Monumental Statement" className="py-20 bg-obsidian-950 text-slate-100 relative overflow-hidden border-t border-cyan-500/30">
       
       {/* Background Radial Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />

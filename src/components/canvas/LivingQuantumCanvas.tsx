@@ -7,7 +7,11 @@ interface LivingQuantumCanvasProps {
   onFacetChange: (facet: FacetId) => void;
 }
 
-const PARTICLE_COUNT = 7500;
+function getOptimalParticleCount(): number {
+  if (typeof window === 'undefined') return 3000;
+  const isMobile = window.innerWidth < 768 || (typeof navigator !== 'undefined' && navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+  return isMobile ? 1200 : 4500;
+}
 
 function createGlowTexture(): THREE.Texture {
   const canvas = document.createElement('canvas');
@@ -25,21 +29,23 @@ function createGlowTexture(): THREE.Texture {
   return tex;
 }
 
-// Generate the 4 specialized morph geometries
-function generateMorphTargets(): Record<FacetId, Float32Array> {
+// Generate the 5 specialized morph geometries scaled adaptively
+function generateMorphTargets(count: number): Record<FacetId, Float32Array> {
   const targets: Record<FacetId, Float32Array> = {
-    officer: new Float32Array(PARTICLE_COUNT * 3),
-    economist: new Float32Array(PARTICLE_COUNT * 3),
-    'ai-governor': new Float32Array(PARTICLE_COUNT * 3),
-    founder: new Float32Array(PARTICLE_COUNT * 3),
-    convergence: new Float32Array(PARTICLE_COUNT * 3)
+    officer: new Float32Array(count * 3),
+    economist: new Float32Array(count * 3),
+    'ai-governor': new Float32Array(count * 3),
+    founder: new Float32Array(count * 3),
+    convergence: new Float32Array(count * 3)
   };
 
+  const colCutoff = Math.floor(count * 0.33);
+
   // 1. Officer: Sovereign Spinal Column of Statecraft + Superluminal Equatorial Torus
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
+  for (let i = 0; i < count; i++) {
     const idx = i * 3;
-    if (i < 2500) {
-      const progress = (i / 2500) * 2 - 1;
+    if (i < colCutoff) {
+      const progress = (i / colCutoff) * 2 - 1;
       const y = progress * 1.5;
       const radius = 0.12 * (1 + 0.4 * Math.sin(y * 8)) + Math.random() * 0.08;
       const angle = (i % 360) * (Math.PI / 18);
@@ -47,8 +53,9 @@ function generateMorphTargets(): Record<FacetId, Float32Array> {
       targets.officer[idx + 1] = y;
       targets.officer[idx + 2] = Math.sin(angle) * radius;
     } else {
-      const u = ((i - 2500) / 5000) * Math.PI * 2 * 12;
-      const v = ((i - 2500) / 5000) * Math.PI * 2;
+      const remaining = count - colCutoff;
+      const u = ((i - colCutoff) / remaining) * Math.PI * 2 * 12;
+      const v = ((i - colCutoff) / remaining) * Math.PI * 2;
       const R = 1.35 + (Math.random() - 0.5) * 0.1;
       const r = 0.42 + (Math.random() - 0.5) * 0.08;
       targets.officer[idx] = (R + r * Math.cos(v)) * Math.cos(u);
@@ -58,18 +65,20 @@ function generateMorphTargets(): Record<FacetId, Float32Array> {
   }
 
   // 2. Economist: Multilateral Intersecting Orthogonal Rings & Fibonacci Spiral
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
+  const r1Cut = Math.floor(count * 0.4);
+  const r2Cut = Math.floor(count * 0.8);
+  for (let i = 0; i < count; i++) {
     const idx = i * 3;
-    if (i < 3000) {
-      const theta = (i / 3000) * Math.PI * 2;
+    if (i < r1Cut) {
+      const theta = (i / r1Cut) * Math.PI * 2;
       const r = 1.4 + (Math.random() - 0.5) * 0.12;
       const x = r * Math.cos(theta);
       const y = r * Math.sin(theta);
       targets.economist[idx] = x * Math.cos(0.6) - y * Math.sin(0.6);
       targets.economist[idx + 1] = (x * Math.sin(0.6) + y * Math.cos(0.6)) * 0.9;
       targets.economist[idx + 2] = (Math.random() - 0.5) * 0.15;
-    } else if (i < 6000) {
-      const theta = ((i - 3000) / 3000) * Math.PI * 2;
+    } else if (i < r2Cut) {
+      const theta = ((i - r1Cut) / (r2Cut - r1Cut)) * Math.PI * 2;
       const r = 1.4 + (Math.random() - 0.5) * 0.12;
       const x = r * Math.cos(theta);
       const z = r * Math.sin(theta);
@@ -77,7 +86,7 @@ function generateMorphTargets(): Record<FacetId, Float32Array> {
       targets.economist[idx + 1] = (Math.random() - 0.5) * 0.15;
       targets.economist[idx + 2] = x * Math.sin(-0.6) + z * Math.cos(-0.6);
     } else {
-      const t = (i - 6000) / 1500;
+      const t = (i - r2Cut) / Math.max(1, count - r2Cut);
       const r = Math.sqrt(t) * 1.1;
       const theta = t * Math.PI * 18;
       targets.economist[idx] = r * Math.cos(theta);
@@ -87,11 +96,11 @@ function generateMorphTargets(): Record<FacetId, Float32Array> {
   }
 
   // 3. AI Governor: Cerebral Synaptic Neural Cortex (Left & Right Hemispheres)
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
+  for (let i = 0; i < count; i++) {
     const idx = i * 3;
     const isRight = i % 2 === 0;
     const sign = isRight ? 1 : -1;
-    const u = (i / PARTICLE_COUNT) * Math.PI * 2;
+    const u = (i / count) * Math.PI * 2;
     const v = (Math.random() - 0.5) * Math.PI;
 
     const cortexRipple = 0.08 * Math.sin(u * 12) * Math.cos(v * 10);
@@ -109,11 +118,12 @@ function generateMorphTargets(): Record<FacetId, Float32Array> {
   }
 
   // 4. Founder: Double Helix Bio-Molecular Spiral & Radiant Starburst Shell
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
+  const helixCut = Math.floor(count * 0.56);
+  for (let i = 0; i < count; i++) {
     const idx = i * 3;
-    if (i < 4200) {
+    if (i < helixCut) {
       const strand = i % 2 === 0 ? 0 : Math.PI;
-      const progress = (i / 4200) * 2 - 1;
+      const progress = (i / helixCut) * 2 - 1;
       const y = progress * 1.5;
       const angle = y * 5.5 + strand;
       const r = 0.65 + (Math.random() - 0.5) * 0.08;
@@ -121,8 +131,9 @@ function generateMorphTargets(): Record<FacetId, Float32Array> {
       targets.founder[idx + 1] = y;
       targets.founder[idx + 2] = r * Math.sin(angle);
     } else {
-      const phi = Math.acos(-1 + (2 * (i - 4200)) / 3300);
-      const theta = Math.sqrt(3300 * Math.PI) * phi;
+      const starCount = Math.max(1, count - helixCut);
+      const phi = Math.acos(-1 + (2 * (i - helixCut)) / starCount);
+      const theta = Math.sqrt(starCount * Math.PI) * phi;
       const r = 1.35 + (Math.random() - 0.5) * 0.25;
       targets.founder[idx] = r * Math.cos(theta) * Math.sin(phi);
       targets.founder[idx + 1] = r * Math.sin(theta) * Math.sin(phi);
@@ -131,11 +142,12 @@ function generateMorphTargets(): Record<FacetId, Float32Array> {
   }
 
   // 5. Convergence: Harmonized Quantum Singularity Core
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
+  const coreCut = Math.floor(count * 0.27);
+  for (let i = 0; i < count; i++) {
     const idx = i * 3;
-    const phi = Math.acos(-1 + (2 * i) / PARTICLE_COUNT);
-    const theta = Math.sqrt(PARTICLE_COUNT * Math.PI) * phi;
-    const r = (i < 2000 ? 0.55 : 1.3) + (Math.random() - 0.5) * 0.18;
+    const phi = Math.acos(-1 + (2 * i) / count);
+    const theta = Math.sqrt(count * Math.PI) * phi;
+    const r = (i < coreCut ? 0.55 : 1.3) + (Math.random() - 0.5) * 0.18;
     targets.convergence[idx] = r * Math.cos(theta) * Math.sin(phi);
     targets.convergence[idx + 1] = r * Math.sin(theta) * Math.sin(phi);
     targets.convergence[idx + 2] = r * Math.cos(phi);
@@ -170,17 +182,24 @@ export const LivingQuantumCanvas: React.FC<LivingQuantumCanvasProps> = ({ active
     let w = container.clientWidth;
     let h = container.clientHeight;
 
+    const particleCount = getOptimalParticleCount();
+    const isMobile = window.innerWidth < 768;
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 50);
     camera.position.set(0, 0, 4.4);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    const renderer = new THREE.WebGLRenderer({
+      antialias: !isMobile,
+      alpha: true,
+      powerPreference: 'high-performance'
+    });
     renderer.setSize(w, h);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
     container.appendChild(renderer.domElement);
 
-    const morphTargets = generateMorphTargets();
-    const currentPositions = new Float32Array(PARTICLE_COUNT * 3);
+    const morphTargets = generateMorphTargets(particleCount);
+    const currentPositions = new Float32Array(particleCount * 3);
     const initialTarget = morphTargets[activeFacet] || morphTargets.convergence;
     for (let i = 0; i < currentPositions.length; i++) {
       currentPositions[i] = initialTarget[i];
@@ -192,7 +211,7 @@ export const LivingQuantumCanvas: React.FC<LivingQuantumCanvasProps> = ({ active
     const glowTexture = createGlowTexture();
     const material = new THREE.PointsMaterial({
       color: new THREE.Color(facetTelemetry[activeFacet]?.col || '#00F0FF'),
-      size: 0.048,
+      size: isMobile ? 0.055 : 0.048,
       map: glowTexture,
       transparent: true,
       opacity: 0.88,
@@ -271,14 +290,37 @@ export const LivingQuantumCanvas: React.FC<LivingQuantumCanvasProps> = ({ active
     };
     window.addEventListener('resize', onResize);
 
+    // IntersectionObserver Lifecycle: Completely pause calculation & rendering when offscreen
+    let isIntersecting = true;
     let animId: number;
     const clock = new THREE.Clock();
 
-    const animate = () => {
+    const observer = new IntersectionObserver(([entry]) => {
+      const wasIntersecting = isIntersecting;
+      isIntersecting = entry.isIntersecting;
+      if (isIntersecting && !wasIntersecting) {
+        lastFrameTime = performance.now();
+        animId = requestAnimationFrame(animate);
+      }
+    }, { rootMargin: '100px' });
+    observer.observe(container);
+
+    // Dynamic Frame Rate Budget: 32 FPS on mobile avoids CPU starvation; 60 FPS on desktop
+    const targetFps = isMobile ? 32 : 60;
+    const targetInterval = 1000 / targetFps;
+    let lastFrameTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      if (!isIntersecting) return;
       animId = requestAnimationFrame(animate);
+
+      const delta = currentTime - lastFrameTime;
+      if (delta < targetInterval) return;
+      lastFrameTime = currentTime - (delta % targetInterval);
+
       const t = clock.getElapsedTime();
 
-      // 4-Second Biological Respiration Wave
+      // Biological Respiration Wave
       const breath = 1.0 + 0.05 * Math.sin(t * 1.57);
 
       // Smooth color morphing
@@ -293,7 +335,7 @@ export const LivingQuantumCanvas: React.FC<LivingQuantumCanvasProps> = ({ active
       raycaster.setFromCamera(pointer, camera);
       raycaster.ray.intersectPlane(plane, intersectionPoint);
 
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
+      for (let i = 0; i < particleCount; i++) {
         const idx = i * 3;
         const tx = targetPos[idx] * breath;
         const ty = targetPos[idx + 1] * breath;
@@ -332,9 +374,10 @@ export const LivingQuantumCanvas: React.FC<LivingQuantumCanvasProps> = ({ active
 
       renderer.render(scene, camera);
     };
-    animate();
+    animId = requestAnimationFrame(animate);
 
     return () => {
+      observer.disconnect();
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', onResize);
       window.removeEventListener('pointerup', onPointerUp);
@@ -370,7 +413,7 @@ export const LivingQuantumCanvas: React.FC<LivingQuantumCanvasProps> = ({ active
         </div>
         <div className="hidden sm:flex items-center gap-2 text-cyan-400">
           <span>•</span>
-          <span>7,500 PARTICLES</span>
+          <span>QUANTUM FIELD</span>
           <span>•</span>
           <span>4.0s BIOLOGICAL PULSE</span>
         </div>

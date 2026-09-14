@@ -28,6 +28,7 @@ export const MobileCommandDock: React.FC<MobileCommandDockProps> = ({ activeFace
           return (
             <button
               key={facet.id}
+              aria-label={`Select ${facet.name} view`}
               onClick={() => {
                 audioEngine.playFacetHarmonic(facet.frequencyHz);
                 onSelectFacet(facet.id);

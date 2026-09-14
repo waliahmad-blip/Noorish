@@ -4,7 +4,7 @@ import { GROWTH_MILESTONES, LEGACY_KPIS } from '../../data';
 
 export const BrandAndGrowthLedger: React.FC = () => {
   return (
-    <section className="py-16 bg-obsidian-950 text-slate-100 border-t border-cyan-500/20">
+    <section aria-label="Digital Architecture and Growth Ledger" className="py-16 bg-obsidian-950 text-slate-100 border-t border-cyan-500/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
         
         {/* Section 10: Brand Architecture */}

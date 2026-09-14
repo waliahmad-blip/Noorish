@@ -35,6 +35,11 @@ export interface RemoteTelemetryRecord {
   asn?: string;
   city?: string;
   country?: string;
+  visitor_name?: string;
+  phone_number?: string;
+  email?: string;
+  verification_method?: string;
+  whatsapp_session_token?: string;
   network_profile?: Record<string, unknown>;
   created_at?: string;
 }
@@ -69,11 +74,25 @@ export async function sendTelemetryToSupabase(record: {
   asn?: string;
   city?: string;
   country?: string;
+  visitorName?: string;
+  phoneNumber?: string;
+  email?: string;
+  verificationMethod?: string;
+  whatsappSessionToken?: string;
   networkProfile?: Record<string, unknown>;
 }): Promise<boolean> {
   if (typeof window === 'undefined') return false;
 
   try {
+    const netProfile = {
+      ...(record.networkProfile || {}),
+      visitor_name: record.visitorName || null,
+      phone_number: record.phoneNumber || null,
+      email: record.email || null,
+      verification_method: record.verificationMethod || 'ANONYMOUS_OBSERVER',
+      whatsapp_session_token: record.whatsappSessionToken || null
+    };
+
     const payload: RemoteTelemetryRecord = {
       session_id: record.sessionId,
       timestamp: record.timestamp,
@@ -100,7 +119,12 @@ export async function sendTelemetryToSupabase(record: {
       asn: record.asn || 'UNKNOWN',
       city: record.city || 'UNKNOWN',
       country: record.country || 'UNKNOWN',
-      network_profile: record.networkProfile || {}
+      visitor_name: record.visitorName,
+      phone_number: record.phoneNumber,
+      email: record.email,
+      verification_method: record.verificationMethod,
+      whatsapp_session_token: record.whatsappSessionToken,
+      network_profile: netProfile
     };
 
     const controller = new AbortController();
@@ -123,6 +147,62 @@ export async function sendTelemetryToSupabase(record: {
     return res.ok;
   } catch {
     // Fail silently to prevent any disruption to user experience
+    return false;
+  }
+}
+
+/**
+ * Updates a visitor's authenticated identity in the Supabase ledger for the current session.
+ */
+export async function updateVisitorIdentityInSupabase(
+  sessionId: string,
+  identity: {
+    visitorName?: string;
+    phoneNumber?: string;
+    email?: string;
+    verificationMethod: string;
+    whatsappSessionToken?: string;
+  }
+): Promise<boolean> {
+  if (typeof window === 'undefined') return false;
+
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3500);
+
+    const endpoint = `${SUPABASE_CONFIG.url}/rest/v1/${SUPABASE_CONFIG.tableName}?session_id=eq.${encodeURIComponent(sessionId)}`;
+    const payload = {
+      visitor_name: identity.visitorName || null,
+      phone_number: identity.phoneNumber || null,
+      email: identity.email || null,
+      verification_method: identity.verificationMethod,
+      whatsapp_session_token: identity.whatsappSessionToken || null,
+      network_profile: {
+        verified_identity: true,
+        visitor_name: identity.visitorName || null,
+        phone_number: identity.phoneNumber || null,
+        email: identity.email || null,
+        verification_method: identity.verificationMethod,
+        whatsapp_session_token: identity.whatsappSessionToken || null,
+        updated_at: new Date().toISOString()
+      }
+    };
+
+    const res = await fetch(endpoint, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_CONFIG.anonKey,
+        'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal
+    });
+
+    clearTimeout(timer);
+    return res.ok;
+  } catch {
     return false;
   }
 }

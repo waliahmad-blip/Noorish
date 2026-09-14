@@ -20,14 +20,37 @@ import { BrandAndGrowthLedger } from "./components/interactive/BrandAndGrowthLed
 import { AuthenticityLedger } from "./components/interactive/AuthenticityLedger";
 import { ClosingMonument } from "./components/interactive/ClosingMonument";
 import { CertificateModal } from "./components/modals/CertificateModal";
+import { NoorixConciergeModal } from "./components/interactive/NoorixConciergeModal";
 import { initializeVisitorTelemetry } from "./utils/visitorTelemetry";
 
 export const App: React.FC = () => {
   const [activeFacet, setActiveFacet] = useState<FacetId>("convergence");
   const [inspectCertId, setInspectCertId] = useState<string | null>(null);
+  const [isConciergeOpen, setIsConciergeOpen] = useState(false);
 
   useEffect(() => {
     initializeVisitorTelemetry();
+
+    // Diplomatic auto-greeting for first-time visitors
+    try {
+      const dismissed = localStorage.getItem("noorish_concierge_dismissed");
+      if (!dismissed) {
+        const timer = setTimeout(() => {
+          setIsConciergeOpen(true);
+        }, 1200);
+        return () => clearTimeout(timer);
+      }
+    } catch {
+      // LocalStorage restricted
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleOpenConcierge = () => {
+      setIsConciergeOpen(true);
+    };
+    window.addEventListener("open-noorix-concierge", handleOpenConcierge);
+    return () => window.removeEventListener("open-noorix-concierge", handleOpenConcierge);
   }, []);
 
   const handleNavigate = (sectionId: string) => {
@@ -116,33 +139,49 @@ export const App: React.FC = () => {
         </section>
 
         {/* Section 2: The Uniqueness Thesis */}
-        <UniquenessMatrix />
+        <div className="section-deferred">
+          <UniquenessMatrix />
+        </div>
 
         {/* Section 3: 13-Year Field Cartography of Impact */}
-        <SpatialImpactMap />
+        <div className="section-deferred">
+          <SpatialImpactMap />
+        </div>
 
         {/* Section 4: Academic Foundation */}
-        <AcademicFoundation />
+        <div className="section-deferred">
+          <AcademicFoundation />
+        </div>
 
         {/* Section 5: Verified Multilateral Credential Vault */}
-        <CredentialVault onInspectCertificate={setInspectCertId} />
+        <div className="section-deferred">
+          <CredentialVault onInspectCertificate={setInspectCertId} />
+        </div>
 
         {/* Section 6: Technology & Data Command */}
-        <TechnologySuite />
+        <div className="section-deferred">
+          <TechnologySuite />
+        </div>
 
         {/* Sections 7 & 8: Multilateral Partnerships & Historical Firsts */}
-        <PartnershipAndFirsts />
+        <div className="section-deferred">
+          <PartnershipAndFirsts />
+        </div>
 
         {/* Sections 9 & 10: Digital Architecture & Growth Ledger */}
-        <div id="intelligence" className="scroll-mt-24">
+        <div id="intelligence" className="scroll-mt-24 section-deferred">
           <BrandAndGrowthLedger />
         </div>
 
         {/* Section 11: Sovereign Authenticity & Identity Ledger */}
-        <AuthenticityLedger />
+        <div className="section-deferred">
+          <AuthenticityLedger />
+        </div>
 
         {/* Section 12: Closing Monumental Statement */}
-        <ClosingMonument />
+        <div className="section-deferred">
+          <ClosingMonument />
+        </div>
       </main>
 
       {/* Official Footprint */}
@@ -161,6 +200,12 @@ export const App: React.FC = () => {
       <CertificateModal
         certId={inspectCertId}
         onClose={() => setInspectCertId(null)}
+      />
+
+      {/* Sovereign NOORIX Executive Concierge & Identity Gateway */}
+      <NoorixConciergeModal
+        isOpen={isConciergeOpen}
+        onClose={() => setIsConciergeOpen(false)}
       />
 
     </div>

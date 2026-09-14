@@ -110,7 +110,7 @@ export const NoorixFloatingHUD: React.FC<NoorixFloatingHUDProps> = ({ visitor })
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-obsidian-950 border border-purple-500/40 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(192,132,252,0.3)] shrink-0">
                   <img 
-                    src="/logos/noorix.png" 
+                    src="/logos/noorix.webp" 
                     alt="NOORIX Crest" 
                     className="w-full h-full object-contain filter drop-shadow-[0_0_6px_rgba(192,132,252,0.8)]"
                   />

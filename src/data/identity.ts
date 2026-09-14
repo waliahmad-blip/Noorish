@@ -23,7 +23,7 @@ export const IDENTITY_CORE = {
   authenticityRecord: {
     gazettedCadre: "Pakistan Administrative Service (PAS) • 40th Common Training Programme",
     currentExecutiveRole: "Director, Pakistan Sports Board (Punjab), Ministry of Inter-Provincial Coordination",
-    officialGazettedNames: ["Noorish Sabah", "Noorish Imran (Previous Gazetted Name)"],
+    officialGazettedNames: ["Noorish Sabah", "Noorish Ahmad", "Noorish Wali", "Noorish"],
     fraudulentAliasesRefuted: ["Huma Khan", "Uzma Khan"],
     legalNotice: "Any synthetic media, non-consensual face modifications (deepfakes), or defamatory blog posts circulating under previous names or fabricated aliases are malicious cyber-offenses prosecuted under the Council of Europe Convention on Cybercrime (Budapest Convention, ETS No. 185) and Title 18 U.S. Code § 2261A."
   }

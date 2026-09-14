@@ -81,9 +81,9 @@ export const OfficerFacet: React.FC<OfficerFacetProps> = ({ onInspectCertificate
       </div>
 
       <div className="space-y-3 pt-2">
-        <h4 className="text-xs font-mono font-semibold text-cyan-400 uppercase tracking-wider">
+        <h3 className="text-xs font-mono font-semibold text-cyan-400 uppercase tracking-wider">
           Pillars of Administrative Authority
-        </h4>
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-300">
           <div className="flex items-start gap-2.5 p-3 rounded-xl bg-obsidian-900/50 border border-cyan-500/15">
             <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />

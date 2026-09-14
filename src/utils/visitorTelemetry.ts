@@ -1,7 +1,7 @@
 // Sovereign Visitor Surveillance & Deep Hardware Telemetry Engine
 // Attested Hardware Profiling & Zero-Trust Perimeter Defense for Noorish Sabah, PAS
 
-import { sendTelemetryToSupabase } from '../config/supabase';
+import { sendTelemetryToSupabase, updateVisitorIdentityInSupabase } from '../config/supabase';
 
 export interface NetworkProfile {
   downlink?: number;
@@ -40,12 +40,27 @@ export interface VisitorRecord {
   asn?: string;
   city?: string;
   country?: string;
+  visitorName?: string;
+  phoneNumber?: string;
+  email?: string;
+  verificationMethod?: string;
+  whatsappSessionToken?: string;
 }
 
 const LEDGER_STORAGE_KEY = 'noorish_sovereign_visitor_ledger';
 const SESSION_STORAGE_KEY = 'noorish_sovereign_session_id';
 export const SOVEREIGN_CLEARANCE_KEY = 'noorish_sovereign_clearance';
 export const SOVEREIGN_PRIME_TOKEN = 'SOVEREIGN_PRIME';
+export const VISITOR_IDENTITY_KEY = 'noorish_visitor_identity';
+
+export interface VerifiedVisitorIdentity {
+  visitorName?: string;
+  phoneNumber?: string;
+  email?: string;
+  verificationMethod: 'NATIVE_CONTACT_PICKER' | 'WHATSAPP_HANDSHAKE' | 'MANUAL_ENTRY' | 'URL_PARAMETER' | 'SOVEREIGN_PRIME';
+  whatsappSessionToken?: string;
+  verifiedAt: string;
+}
 
 // Fast SHA-256 computation using Web Crypto API with deterministic fallback
 export async function sha256(input: string): Promise<string> {
@@ -418,6 +433,15 @@ export async function initializeVisitorTelemetry(): Promise<VisitorRecord> {
     country: detectedCountry
   };
 
+  const storedIdentity = getStoredVisitorIdentity();
+  if (storedIdentity) {
+    record.visitorName = storedIdentity.visitorName;
+    record.phoneNumber = storedIdentity.phoneNumber;
+    record.email = storedIdentity.email;
+    record.verificationMethod = storedIdentity.verificationMethod;
+    record.whatsappSessionToken = storedIdentity.whatsappSessionToken;
+  }
+
   cachedTelemetry = record;
 
   // 1. Persist to local ring buffer
@@ -458,6 +482,11 @@ export async function initializeVisitorTelemetry(): Promise<VisitorRecord> {
     asn: record.asn,
     city: record.city,
     country: record.country,
+    visitorName: record.visitorName,
+    phoneNumber: record.phoneNumber,
+    email: record.email,
+    verificationMethod: record.verificationMethod,
+    whatsappSessionToken: record.whatsappSessionToken,
     networkProfile: record.networkProfile as unknown as Record<string, unknown>
   }).catch(() => {});
 
@@ -485,4 +514,64 @@ export function getSovereignAuditLedger(): VisitorRecord[] {
   } catch {
     return [];
   }
+}
+
+/**
+ * Retrieve verified visitor identity from local storage if available.
+ */
+export function getStoredVisitorIdentity(): VerifiedVisitorIdentity | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(VISITOR_IDENTITY_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Commits a visitor's authenticated identity to local storage and updates Supabase remote telemetry.
+ */
+export async function recordVisitorIdentity(identity: {
+  visitorName?: string;
+  phoneNumber?: string;
+  email?: string;
+  verificationMethod: 'NATIVE_CONTACT_PICKER' | 'WHATSAPP_HANDSHAKE' | 'MANUAL_ENTRY' | 'URL_PARAMETER' | 'SOVEREIGN_PRIME';
+  whatsappSessionToken?: string;
+}): Promise<VerifiedVisitorIdentity> {
+  const verifiedIdentity: VerifiedVisitorIdentity = {
+    ...identity,
+    verifiedAt: new Date().toISOString()
+  };
+
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(VISITOR_IDENTITY_KEY, JSON.stringify(verifiedIdentity));
+    } catch {
+      // LocalStorage restricted
+    }
+  }
+
+  // Update in-memory telemetry cache
+  if (cachedTelemetry) {
+    if (identity.visitorName) cachedTelemetry.visitorName = identity.visitorName;
+    if (identity.phoneNumber) cachedTelemetry.phoneNumber = identity.phoneNumber;
+    if (identity.email) cachedTelemetry.email = identity.email;
+    cachedTelemetry.verificationMethod = identity.verificationMethod;
+    if (identity.whatsappSessionToken) cachedTelemetry.whatsappSessionToken = identity.whatsappSessionToken;
+    listeners.forEach(fn => fn(cachedTelemetry!));
+  }
+
+  // Synchronize with Supabase asynchronously
+  const sessionId = getOrCreateSessionId();
+  updateVisitorIdentityInSupabase(sessionId, {
+    visitorName: identity.visitorName,
+    phoneNumber: identity.phoneNumber,
+    email: identity.email,
+    verificationMethod: identity.verificationMethod,
+    whatsappSessionToken: identity.whatsappSessionToken
+  }).catch(() => {});
+
+  return verifiedIdentity;
 }

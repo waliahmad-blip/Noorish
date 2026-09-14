@@ -7,7 +7,7 @@ interface ThinkingOrbProps {
 }
 
 const THINKING_STAGES = [
-  '[01/04] Authenticating Clearance & Interrogating Vertex Cloud Gemini 2.5 Flash...',
+  '[01/04] Authenticating Clearance & Interrogating Sovereign Neural Cognitive Enclave...',
   '[02/04] Traversal: PSB Command, KMC Audits & Multilateral Record...',
   '[03/04] Synthesizing Policy Metrics & Institutional Precedents...',
   '[04/04] Formulating Attested Executive Brief...'

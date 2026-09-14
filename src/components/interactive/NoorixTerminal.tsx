@@ -217,7 +217,7 @@ export const NoorixTerminal: React.FC = () => {
                   <span>PILLAR 0{p.number}</span>
                   <span className="text-[10px] text-slate-400 uppercase tracking-widest">{p.format}</span>
                 </div>
-                <h4 className="font-display font-bold text-base text-white">{p.title}</h4>
+                <h3 className="font-display font-bold text-base text-white">{p.title}</h3>
                 <p className="text-xs text-slate-300 leading-relaxed">{p.summary}</p>
                 <div className="pt-2 flex flex-wrap gap-1.5 border-t border-slate-800">
                   {p.topics.slice(0, 2).map((t, tidx) => (

@@ -44,6 +44,7 @@ export const TerminalAuthModal: React.FC<TerminalAuthModalProps> = ({
           </div>
           <button
             onClick={onClose}
+            aria-label="Close Authorization Modal"
             className="p-1 text-slate-400 hover:text-white"
           >
             <X className="w-4 h-4" />
@@ -56,10 +57,12 @@ export const TerminalAuthModal: React.FC<TerminalAuthModalProps> = ({
 
         <form onSubmit={handleAuthSubmit} className="space-y-3">
           <input
+            id="clearance-passkey-input"
             type="password"
             value={passkeyInput}
             onChange={(e) => setPasskeyInput(e.target.value)}
             placeholder="Enter Passkey..."
+            aria-label="Security Clearance Access Code"
             className="w-full bg-obsidian-900 border border-cyan-500/40 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
             autoFocus
           />

@@ -22,7 +22,7 @@ export const CredentialVault: React.FC<CredentialVaultProps> = ({ onInspectCerti
   const list = tab === 'completed' ? filterList(VERIFIED_CREDENTIALS) : filterList(IN_PROGRESS_CREDENTIALS);
 
   return (
-    <section id="credentials" className="py-16 bg-obsidian-950 text-slate-100 border-t border-cyan-500/20">
+    <section id="credentials" aria-label="Verified Multilateral Credential Vault" className="py-16 bg-obsidian-950 text-slate-100 border-t border-cyan-500/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         <div className="space-y-2 max-w-3xl">

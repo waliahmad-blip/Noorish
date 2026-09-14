@@ -79,11 +79,16 @@ export const EconomistFacet: React.FC<EconomistFacetProps> = ({ onInspectCertifi
             <span className="font-bold text-mint-400 text-sm">{subsidyReformPct}%</span>
           </div>
           <input
+            id="subsidy-reform-slider"
             type="range"
             min="10"
             max="100"
             step="5"
             value={subsidyReformPct}
+            aria-label="Regressive Tariff Subsidy Rationalization percentage"
+            aria-valuemin={10}
+            aria-valuemax={100}
+            aria-valuenow={subsidyReformPct}
             onChange={(e) => {
               audioEngine.playTactileClick();
               setSubsidyReformPct(Number(e.target.value));

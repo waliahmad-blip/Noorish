@@ -16,7 +16,7 @@ export const SpatialImpactMap: React.FC = () => {
     : SERVICE_POSTINGS.filter(p => p.location.toLowerCase().includes(activeFilter.toLowerCase()));
 
   return (
-    <section id="cartography" className="py-16 bg-obsidian-950 text-slate-100 border-t border-cyan-500/20">
+    <section id="cartography" aria-label="13-Year Field Cartography of Impact" className="py-16 bg-obsidian-950 text-slate-100 border-t border-cyan-500/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Header */}
@@ -104,14 +104,14 @@ export const SpatialImpactMap: React.FC = () => {
                     <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{posting.period}</span>
                     <span className="text-slate-400 flex items-center gap-1"><MapPin className="w-3 h-3" />{posting.location}</span>
                   </div>
-                  <h4 className="font-display font-bold text-sm text-white mt-1 flex items-center gap-2">
+                  <h3 className="font-display font-bold text-sm text-white mt-1 flex items-center gap-2">
                     <span>{posting.role}</span>
                     {posting.isFirstWoman && (
                       <span className="px-1.5 py-0.5 rounded text-[9px] bg-rose-500/20 text-rose-300 border border-rose-500/40 font-mono">
                         First Woman
                       </span>
                     )}
-                  </h4>
+                  </h3>
                   <p className="text-xs text-slate-400 truncate">{posting.department}</p>
                 </div>
               );
@@ -151,10 +151,10 @@ export const SpatialImpactMap: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-              <h5 className="text-xs font-mono font-semibold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+              <h4 className="text-xs font-mono font-semibold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
                 <Shield className="w-3.5 h-3.5" />
                 <span>Executive Directives & Policy Milestones</span>
-              </h5>
+              </h4>
               <div className="space-y-2">
                 {selectedPosting.highlights.map((hl, idx) => (
                   <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-300">

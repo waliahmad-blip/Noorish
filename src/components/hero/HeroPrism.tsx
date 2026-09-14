@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { LivingQuantumCanvas } from '../canvas/LivingQuantumCanvas';
+const LivingQuantumCanvas = React.lazy(() =>
+  import('../canvas/LivingQuantumCanvas').then((mod) => ({ default: mod.LivingQuantumCanvas }))
+);
 import { FacetId } from '../../types/protocol';
 import { IDENTITY_CORE, FACETS_CONFIG } from '../../data';
 import { audioEngine } from '../../utils/audioSynth';
@@ -52,7 +54,7 @@ export const HeroPrism: React.FC<HeroPrismProps> = ({ activeFacet, onFacetChange
   ];
 
   return (
-    <section className="relative pt-6 pb-14 overflow-hidden bg-obsidian-950 text-slate-100">
+    <section id="hero" aria-label="Executive Dossier Hero Enclave" className="relative pt-6 pb-14 overflow-hidden bg-obsidian-950 text-slate-100">
       {/* Background Quantum Gradient Glows */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-cyan-500/10 via-violet-500/5 to-transparent blur-3xl pointer-events-none" />
       <div className="absolute top-1/3 left-10 w-72 h-72 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
@@ -111,15 +113,17 @@ export const HeroPrism: React.FC<HeroPrismProps> = ({ activeFacet, onFacetChange
 
               <div className="relative overflow-hidden rounded-2xl aspect-square bg-obsidian-950">
                 <picture className="w-full h-full block">
-                  <source srcSet="/assets/noorish-sabah-executive.webp" type="image/webp" />
+                  <source media="(max-width: 640px)" srcSet="/assets/noorish-sabah-executive-mobile.webp" type="image/webp" />
+                  <source srcSet="/assets/noorish-sabah-official-portrait-2026.webp" type="image/webp" />
                   <img
-                    src="/assets/noorish-sabah-executive.jpg"
+                    src="/assets/noorish-sabah-official-portrait-2026.jpg"
                     alt="Noorish Sabah, PAS - Official Sovereign Executive Portrait"
                     className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                    width={2048}
-                    height={2048}
+                    width={1024}
+                    height={1024}
                     fetchPriority="high"
                     loading="eager"
+                    decoding="async"
                   />
                 </picture>
 
@@ -210,9 +214,15 @@ export const HeroPrism: React.FC<HeroPrismProps> = ({ activeFacet, onFacetChange
           {/* RIGHT COLUMN: 3D Kinetic Singularity, Harmonic Facets & Dossier HUD (7 Cols) */}
           <div className="lg:col-span-7 space-y-5">
 
-            {/* 7,500-Particle Kinetic Living Quantum Particle Singularity Canvas */}
-            <div className="rounded-3xl glass-quantum border border-cyan-500/25 overflow-hidden shadow-2xl relative bg-obsidian-950/80">
-              <LivingQuantumCanvas activeFacet={activeFacet} onFacetChange={onFacetChange} />
+            {/* Adaptive Living Quantum Particle Singularity Canvas */}
+            <div className="rounded-3xl glass-quantum border border-cyan-500/25 overflow-hidden shadow-2xl relative bg-obsidian-950/80 min-h-[380px] sm:min-h-[440px]">
+              <React.Suspense fallback={
+                <div className="w-full h-[380px] sm:h-[440px] flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full border-2 border-cyan-500/20 border-t-cyan-400 animate-spin" />
+                </div>
+              }>
+                <LivingQuantumCanvas activeFacet={activeFacet} onFacetChange={onFacetChange} />
+              </React.Suspense>
             </div>
 
             {/* Facet Selectors with Solfeggio Harmonic Tones */}

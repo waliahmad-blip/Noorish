@@ -4,7 +4,7 @@ import { ACADEMIC_FOUNDATION } from '../../data';
 
 export const AcademicFoundation: React.FC = () => {
   return (
-    <section className="py-16 bg-obsidian-950 text-slate-100 border-t border-cyan-500/20">
+    <section id="academic-foundation" aria-label="Academic Foundation and Honors" className="py-16 bg-obsidian-950 text-slate-100 border-t border-cyan-500/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         <div className="space-y-2 max-w-3xl">

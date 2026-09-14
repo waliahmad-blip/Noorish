@@ -17,7 +17,7 @@ import {
 
 export const AuthenticityLedger: React.FC = () => {
   return (
-    <section id="authenticity" className="py-20 bg-obsidian-950 text-slate-100 border-t border-cyan-500/20 scroll-mt-20">
+    <section id="authenticity" aria-label="Sovereign Authenticity and Biometric Anti-Deepfake Verification Ledger" className="py-20 bg-obsidian-950 text-slate-100 border-t border-cyan-500/20 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
 
         {/* Header & Attestation Banner */}
@@ -40,14 +40,16 @@ export const AuthenticityLedger: React.FC = () => {
           <div className="lg:col-span-5 space-y-4">
             <div className="relative rounded-2xl overflow-hidden border-2 border-cyan-500/40 bg-obsidian-900 shadow-2xl shadow-cyan-500/20 group">
               <picture>
-                <source srcSet="/assets/noorish-sabah-executive.webp" type="image/webp" />
+                <source media="(max-width: 640px)" srcSet="/assets/noorish-sabah-executive-mobile.webp" type="image/webp" />
+                <source srcSet="/assets/noorish-sabah-official-portrait-2026.webp" type="image/webp" />
                 <img 
-                  src="/assets/noorish-sabah-executive.jpg" 
+                  src="/assets/noorish-sabah-official-portrait-2026.jpg" 
                   alt="Noorish Sabah, PAS - Official Sovereign Portrait" 
                   className="w-full h-auto object-cover aspect-square transition-transform duration-500 group-hover:scale-105"
-                  loading="eager"
-                  width="2048"
-                  height="2048"
+                  loading="lazy"
+                  decoding="async"
+                  width="1024"
+                  height="1024"
                 />
               </picture>
               <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-transparent to-transparent opacity-90" />
@@ -122,10 +124,10 @@ export const AuthenticityLedger: React.FC = () => {
               </div>
               <div className="text-xs text-slate-300 leading-relaxed space-y-2">
                 <p>
-                  <strong>Nomenclature Record:</strong> Official executive postings across 2012–2021—including Assistant Commissioner Ferozewala, Additional Deputy Commissioner (Revenue) Lahore, Deputy Commissioner Hafizabad, Senior Director HRM KMC Karachi, and Director PHA Lahore—were administered under the previous gazetted surname <strong>Noorish Imran</strong>.
+                  <strong>Nomenclature Continuity:</strong> Official executive postings across 2012–2026—including Assistant Commissioner Ferozewala, Additional Deputy Commissioner (Revenue) Lahore, Deputy Commissioner Hafizabad, Senior Director HRM KMC Karachi, and Director PHA Lahore—are canonically unified under <strong>Noorish Sabah</strong>, alongside matrimonial records under <strong>Noorish Ahmad</strong> and <strong>Noorish Wali</strong>.
                 </p>
                 <p className="text-slate-400 text-[11px]">
-                  All historical state citations, governance initiatives, tree-planting records, and child protection awards issued under Noorish Imran belong strictly and unequivocally to <strong>Noorish Sabah, PAS</strong>.
+                  All historical state citations, governance initiatives, tree-planting records, and child protection awards belong strictly and unequivocally to <strong>Noorish Sabah, PAS</strong>.
                 </p>
               </div>
             </div>
@@ -268,7 +270,7 @@ export const AuthenticityLedger: React.FC = () => {
                 <span>Refutation of 'Huma Khan' & 'Uzma Khan' Fabrications</span>
               </div>
               <p className="text-slate-300">
-                Forensic investigation and administrative records confirm that civil servant Noorish Sabah (formerly Noorish Imran) has zero association with individuals named Huma Khan or Uzma Khan, nor with unrelated controversies in DHA Lahore. Malicious actors manufactured non-consensual synthetic face-swaps and clickbait conflations to defame a sitting constitutional officer.
+                Forensic investigation and administrative records confirm that civil servant Noorish Sabah (also recorded as Noorish Ahmad and Noorish Wali) has zero association with individuals named Huma Khan or Uzma Khan, nor with unrelated controversies in DHA Lahore. Malicious actors manufactured non-consensual synthetic face-swaps and clickbait conflations to defame a sitting constitutional officer.
               </p>
             </div>
 
@@ -278,7 +280,7 @@ export const AuthenticityLedger: React.FC = () => {
                 <span>June 2020 Scraper Blog Conflations Debunked</span>
               </div>
               <p className="text-slate-300">
-                In June 2020, unverified scraper blogs harvested official administrative portraits of then-ADC Revenue Noorish Imran to fabricate sensational headlines during an unrelated viral event. Judicial records and official service files confirm these claims were entirely fictitious. Her 13-year trajectory reflects an unblemished record of constitutional statecraft.
+                In June 2020, unverified scraper blogs harvested official administrative portraits of then-ADC Revenue Noorish Sabah to fabricate sensational headlines during an unrelated viral event. Judicial records and official service files confirm these claims were entirely fictitious. Her 13-year trajectory reflects an unblemished record of constitutional statecraft.
               </p>
             </div>
 

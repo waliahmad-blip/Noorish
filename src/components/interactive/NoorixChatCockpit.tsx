@@ -81,17 +81,17 @@ function renderFormattedMessage(content: string): React.ReactNode {
 
     if (trimmed.startsWith('### ')) {
       return (
-        <h4 key={lineIdx} className="text-xs sm:text-sm font-bold text-cyan-300 font-mono mt-2.5 mb-1 tracking-wide">
+        <div key={lineIdx} className="text-xs sm:text-sm font-bold text-cyan-300 font-mono mt-2.5 mb-1 tracking-wide">
           {trimmed.slice(4)}
-        </h4>
+        </div>
       );
     }
 
     if (trimmed.startsWith('## ')) {
       return (
-        <h3 key={lineIdx} className="text-sm sm:text-base font-bold text-white font-mono mt-3 mb-1.5 tracking-wide">
+        <div key={lineIdx} className="text-sm sm:text-base font-bold text-white font-mono mt-3 mb-1.5 tracking-wide">
           {trimmed.slice(3)}
-        </h3>
+        </div>
       );
     }
 
@@ -602,7 +602,7 @@ export const NoorixChatCockpit: React.FC<NoorixChatCockpitProps> = ({
                     {msg.isLiveCloudInference && (
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-mint-500/10 text-mint-400 border border-mint-500/30 flex items-center gap-1">
                         <Globe className="w-2.5 h-2.5" />
-                        Vertex Cloud • Gemini 2.5 Flash
+                        Sovereign Neural Enclave • Grounded
                       </span>
                     )}
                     <span className="text-slate-500">•</span>
@@ -729,10 +729,12 @@ export const NoorixChatCockpit: React.FC<NoorixChatCockpitProps> = ({
         <form onSubmit={handleSubmit} className="flex gap-2">
           <div className="relative flex-1 flex items-center">
             <input
+              id="noorix-chat-input"
               type="text"
               value={queryInput}
               onChange={(e) => setQueryInput(e.target.value)}
               placeholder={isListeningSpeech ? "Listening... Speak now..." : "Ask Noorix about sports governance, public reforms, or economic policy..."}
+              aria-label="Direct query input for Noorix conversational AI"
               disabled={isProcessing}
               className={`w-full bg-obsidian-950/80 backdrop-blur-xl border rounded-xl px-4 py-3.5 pr-11 text-xs font-mono text-white placeholder-slate-500 transition-all focus:outline-none ${
                 isListeningSpeech 

@@ -4,7 +4,7 @@ import { INTERNATIONAL_PARTNERSHIPS, HISTORICAL_FIRSTS } from '../../data';
 
 export const PartnershipAndFirsts: React.FC = () => {
   return (
-    <section className="py-16 bg-obsidian-950 text-slate-100 border-t border-cyan-500/20">
+    <section id="partnerships" aria-label="Multilateral Partnerships and Historical Precedents" className="py-16 bg-obsidian-950 text-slate-100 border-t border-cyan-500/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
         
         {/* Section 7: International Partnerships */}
@@ -60,7 +60,7 @@ export const PartnershipAndFirsts: React.FC = () => {
                 </div>
                 <div className="space-y-1.5 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <h4 className="font-display font-bold text-base text-white">{item.title}</h4>
+                    <h3 className="font-display font-bold text-base text-white">{item.title}</h3>
                     <span className="text-xs font-mono text-cyan-400 font-semibold">{item.year}</span>
                   </div>
                   <p className="text-xs text-slate-300 leading-relaxed">{item.impact}</p>

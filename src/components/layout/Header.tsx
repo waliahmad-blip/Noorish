@@ -79,15 +79,23 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
             }}
             className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/40 text-[11px] font-mono text-cyan-300 transition-all hover:scale-105"
             title="Open Noorix Executive HUD"
+            aria-label="Open Noorix Executive HUD"
           >
             <Cpu className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
             <span>Ask Noorix</span>
           </button>
 
-          <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-950/40 border border-cyan-500/30 text-[11px] font-mono text-cyan-300">
+          <button
+            onClick={() => {
+              audioEngine.playTactileClick();
+              window.dispatchEvent(new CustomEvent('open-noorix-concierge'));
+            }}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-500/30 hover:border-cyan-400 text-[11px] font-mono text-cyan-300 transition-all cursor-pointer"
+            title="Open Sovereign Concierge Identity Clearance"
+          >
             <span className="w-1.5 h-1.5 rounded-full bg-mint-400 animate-pulse" />
             <span>RING-0 SECURE</span>
-          </div>
+          </button>
 
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-obsidian-900 border border-cyan-500/20 text-[11px] font-mono text-slate-300">
             <span className="w-2 h-2 rounded-full bg-mint-400 animate-pulse" />

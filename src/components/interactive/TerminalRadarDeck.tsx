@@ -60,6 +60,7 @@ export const TerminalRadarDeck: React.FC<TerminalRadarDeckProps> = ({
           </button>
           <button
             onClick={onClose}
+            aria-label="Close Telemetry Radar Deck"
             className="p-1 rounded bg-obsidian-900 border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-white"
           >
             <X className="w-4 h-4" />

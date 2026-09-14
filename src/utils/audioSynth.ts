@@ -64,6 +64,38 @@ class CrystalAudioEngine {
     }
   }
 
+  /**
+   * Sovereign Solfeggio Concierge Harmonic Sequence (528Hz Golden Ratio & 432Hz Harmonic Undertone)
+   * Unmutes the engine, initializes AudioContext, and plays a multi-stage crystal chord.
+   */
+  public playSolfeggioWelcome() {
+    this.setMuted(false);
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const solfeggioFrequencies = [432, 528, 639, 852];
+
+    solfeggioFrequencies.forEach((freq, idx) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+
+      gain.gain.setValueAtTime(0.0001, now + idx * 0.09);
+      gain.gain.exponentialRampToValueAtTime(0.09 / (idx + 1), now + idx * 0.09 + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.00001, now + 1.8 + idx * 0.15);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now + idx * 0.09);
+      osc.stop(now + 2.0 + idx * 0.15);
+    });
+  }
+
   public playFacetHarmonic(frequency: number) {
     if (this.isMuted) return;
     this.initContext();

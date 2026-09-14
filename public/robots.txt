@@ -47,4 +47,9 @@ Allow: /
 Host: https://noorish.org
 Sitemap: https://noorish.org/sitemap.xml
 
+# Sovereign LLM Context Directives (Agentic Browsing & Autonomous Agent Specifications)
+# https://noorish.org/llms.txt
+# https://noorish.org/llms-full.txt
+
+
 

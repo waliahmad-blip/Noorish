@@ -68,9 +68,9 @@ export const Footer: React.FC = () => {
 
           {/* Canonical Verified Domains */}
           <div className="space-y-3">
-            <h4 className="text-xs font-mono font-semibold text-cyan-400 tracking-wider uppercase">
+            <h3 className="text-xs font-mono font-semibold text-cyan-400 tracking-wider uppercase">
               Canonical Architecture
-            </h4>
+            </h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <a href="https://noorish.org" className="hover:text-cyan-400 transition-colors flex items-center gap-2">
@@ -101,9 +101,9 @@ export const Footer: React.FC = () => {
 
           {/* Verification & Security Integrity */}
           <div className="space-y-3">
-            <h4 className="text-xs font-mono font-semibold text-cyan-400 tracking-wider uppercase">
+            <h3 className="text-xs font-mono font-semibold text-cyan-400 tracking-wider uppercase">
               Legal & Forensic Protocol
-            </h4>
+            </h3>
             <div className="p-4 rounded-xl bg-obsidian-900/90 border border-cyan-500/20 text-xs text-slate-300 space-y-2">
               <div className="flex items-center gap-1.5 text-cyan-400 font-medium">
                 <ShieldAlert className="w-4 h-4 text-rose-400" />
