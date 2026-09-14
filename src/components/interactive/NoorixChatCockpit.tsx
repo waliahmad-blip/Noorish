@@ -447,7 +447,7 @@ export const NoorixChatCockpit: React.FC<NoorixChatCockpitProps> = ({
                     {msg.isLiveCloudInference && (
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-mint-500/10 text-mint-400 border border-mint-500/30 flex items-center gap-1">
                         <Globe className="w-2.5 h-2.5" />
-                        Search Grounded
+                        Vertex Cloud • Gemini 2.5 Flash
                       </span>
                     )}
                     <span className="text-slate-500">•</span>

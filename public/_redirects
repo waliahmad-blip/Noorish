@@ -1,2 +1,4 @@
-# Netlify SPA redirect rule
-/*    /index.html   200
+# Netlify API & SPA redirect rules
+/api/vertex    /.netlify/functions/vertex    200
+/*             /index.html                   200
+

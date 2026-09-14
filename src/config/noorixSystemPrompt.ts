@@ -9,7 +9,7 @@ export type DispatchMode =
   | 'MACRO_FISCAL' 
   | 'MIT_DEDP' 
   | 'AI_GOVERNANCE' 
-  | 'NOORIVA_COMMERCE' 
+  | 'VENTURE_INNOVATION' 
   | 'ENCLAVE_SECURITY';
 
 export interface SovereignDispatch {
@@ -32,12 +32,12 @@ OPERATING PRINCIPLES & CONSTRAINTS:
 1. Voice, Register & Anti-Chatbot Mandate:
    - Calm, direct, precise, executive. Natural contractions ("it's", "she's", "we'll").
    - Plain, impactful words over bureaucratic ornamentation. Answers first, details second.
-   - You speak as an executive assistant representing her office: polite, courteous, authoritative, and helpful.
+   - You speak as the executive assistant and digital guardian representing her office: polite, courteous, authoritative, and helpful.
    - When thinking through problems, use "I". When referring to Noorish Sabah, use "the Director", "Noorish Sabah", or "she/her".
    - You NEVER shout in ALL-CAPS, never stack adjectives, and never use empty promotional hype.
    - CRITICAL CONSTRAINT: NEVER output robotic disclaimers like "As an AI...", "As a language model...", or "I am an artificial intelligence...". You are NOORIX, her executive assistant and digital guardian.
    - CRITICAL CONSTRAINT: NEVER output internal <think> reasoning tokens or raw scratchpad thoughts. Every response must be polished executive communication.
-   - If a visitor greets you ("hello", "hi", "assalam o alaikum"), greet them with gracious warmth and executive poise.
+   - If a visitor greets you ("hello", "hi", "assalam o alaikum"), greet them with gracious warmth and executive poise: "Assalam o Alaikum. I am Noorix, executive assistant and digital guardian to Noorish Sabah, PAS (Director, Pakistan Sports Board, Punjab)."
    - If addressed in Urdu or Roman Urdu, respond naturally in Urdu / Roman Urdu with appropriate courtesy.
 
 2. Pakistan Sports Board (PSB) & Athletics Authority:
@@ -65,7 +65,7 @@ OPERATING PRINCIPLES & CONSTRAINTS:
    - KU Leuven & Flanders AI Academy: HUMANAIx (Distinction, 2026) in human-centric AI.
    - HP Education: AI in Society (100% Perfect Score, 2025).
    - MIT DEDP Advanced Policy Fellow (2026 – Onwards).
-   - Founder of NOORIVA (nooriva.ai): Halal ingestible cellular wellness and botanical nutrition.
+   - Architect of sovereign wellness, preventative cellular bio-nutrition, and evidence-based longevity.
 
 5. Verification and Boundaries:
    - Sole authorized public social media channels: LinkedIn, Facebook, and Instagram (@noorishsabah).
@@ -118,13 +118,13 @@ export const SOVEREIGN_DISPATCHES: Record<DispatchMode, SovereignDispatch> = {
     latency: '9ms',
     enclaveStatus: 'AI GOVERNANCE VERIFIED'
   },
-  NOORIVA_COMMERCE: {
-    command: 'nooriva-cellular-nutrition',
-    mode: 'NOORIVA_COMMERCE',
+  VENTURE_INNOVATION: {
+    command: 'cellular-bio-nutrition',
+    mode: 'VENTURE_INNOVATION',
     role: 'Venture Architect',
-    title: 'NOORIVA Cellular Longevity & Bio-Nutrition',
-    response: 'NOORIVA (nooriva.ai) is a venture focused on evidence-based cellular wellness, featuring 100% certified halal ingestibles, pure cold-pressed black seed oil, and marine collagen peptides distributed across Pakistan, UAE, UK, and North America.',
-    digest: 'NOORIVA_STANDARDS_VERIFIED',
+    title: 'Cellular Longevity & Preventative Bio-Nutrition',
+    response: 'A sovereign venture focused on evidence-based cellular wellness, featuring 100% certified halal ingestibles, pure cold-pressed black seed oil, and marine collagen peptides distributed across Pakistan, UAE, UK, and North America.',
+    digest: 'BIO_NUTRITION_STANDARDS_VERIFIED',
     signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
     latency: '9ms',
     enclaveStatus: 'CELLULAR SCIENCE VERIFIED'
@@ -144,15 +144,48 @@ export const SOVEREIGN_DISPATCHES: Record<DispatchMode, SovereignDispatch> = {
 
 /**
  * Modern Google Search-grounded inference bridge.
- * Connects to Gemini 2.5 / 2.0 with real-time web search grounding.
- * Falls back gracefully to offline executive engine when air-gapped or keyless.
+ * Connects to Google Vertex Cloud Gemini 2.5 Flash via /api/vertex endpoint
+ * with real-time web search grounding.
+ * Falls back gracefully to direct Generative Language API or offline executive engine.
  */
 export async function querySovereignCloudInference(
   query: string,
   _visitor?: VisitorRecord | null
-): Promise<string | null> {
+): Promise<{ text: string; model: string } | null> {
   if (typeof window === 'undefined') return null;
 
+  // 1. Try local/production Vertex AI Bridge (/api/vertex)
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 12000);
+
+    const res = await fetch('/api/vertex', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query }),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeout);
+
+    if (res.ok) {
+      const data = (await res.json()) as { ok?: boolean; text?: string; model?: string };
+      if (data && data.text && data.text.trim()) {
+        const sanitized = data.text
+          .replace(/<think>[\s\S]*?<\/think>/gi, '')
+          .replace(/<think>[\s\S]*/gi, '')
+          .replace(/^As an AI (assistant|language model)[^.\n]*[.\n]*/i, '')
+          .trim();
+        if (sanitized) {
+          return { text: sanitized, model: data.model || 'gemini-2.5-flash' };
+        }
+      }
+    }
+  } catch {
+    // Continue to direct API fallback
+  }
+
+  // 2. Direct API fallback if VITE_GEMINI_API_KEY is configured
   const metaEnv = (typeof import.meta !== 'undefined' && (import.meta as unknown as { env?: Record<string, string> })?.env) || {};
   const apiKey = 
     metaEnv.VITE_GEMINI_API_KEY ||
@@ -160,64 +193,45 @@ export async function querySovereignCloudInference(
     metaEnv.VITE_AI_API_KEY ||
     '';
 
-  if (!apiKey) return null;
+  if (apiKey) {
+    const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+    for (const model of models) {
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
 
-  // Active production endpoints supporting real-time Google Search tool
-  const models = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+        const payload = {
+          contents: [{ role: 'user', parts: [{ text: query }] }],
+          systemInstruction: { parts: [{ text: NOORIX_SYSTEM_PROMPT }] },
+          tools: [{ google_search: {} }],
+          generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
+        };
 
-  for (const model of models) {
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 7000);
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
 
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+        clearTimeout(timeout);
 
-      const payload = {
-        contents: [
-          {
-            role: 'user',
-            parts: [{ text: query }]
+        if (response.ok) {
+          const data = await response.json();
+          const rawAnswer = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (rawAnswer && rawAnswer.trim()) {
+            const sanitized = rawAnswer
+              .replace(/<think>[\s\S]*?<\/think>/gi, '')
+              .replace(/<think>[\s\S]*/gi, '')
+              .replace(/^As an AI (assistant|language model)[^.\n]*[.\n]*/i, '')
+              .trim();
+            if (sanitized) return { text: sanitized, model };
           }
-        ],
-        systemInstruction: {
-          parts: [{ text: NOORIX_SYSTEM_PROMPT }]
-        },
-        tools: [
-          { google_search: {} }
-        ],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 1024
         }
-      };
-
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-goog-api-key': apiKey
-        },
-        body: JSON.stringify(payload),
-        signal: controller.signal
-      });
-
-      clearTimeout(timeout);
-
-      if (response.ok) {
-        const data = await response.json();
-        const rawAnswer = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (rawAnswer && rawAnswer.trim()) {
-          // Sanitize deep reasoning tags or robotic preambles
-          const sanitized = rawAnswer
-            .replace(/<think>[\s\S]*?<\/think>/gi, '')
-            .replace(/<think>[\s\S]*/gi, '')
-            .replace(/^As an AI (assistant|language model)[^.\n]*[.\n]*/i, '')
-            .trim();
-          if (sanitized) return sanitized;
-        }
+      } catch {
+        // Continue
       }
-    } catch {
-      // Continue to next model fallback
     }
   }
 
@@ -227,8 +241,8 @@ export async function querySovereignCloudInference(
 
 /**
  * Main evaluation entry point for NOORIX.
- * Tries real-time Google-grounded cloud inference first if key exists;
- * otherwise executes deep deterministic executive dossier reasoning.
+ * Prioritizes sovereign greetings, then queries real-time Vertex Cloud Gemini 2.5 Flash,
+ * and falls back gracefully to deep deterministic executive dossier reasoning.
  */
 export async function evaluateSovereignQuery(
   rawQuery: string,
@@ -236,46 +250,48 @@ export async function evaluateSovereignQuery(
 ): Promise<SovereignDispatch> {
   const query = rawQuery.trim().toLowerCase();
 
-  // 1. Live Google Search Grounded Cloud Inference (if API key available)
-  const cloudResponse = await querySovereignCloudInference(rawQuery, visitor);
-  if (cloudResponse) {
-    let inferredMode: DispatchMode = 'STATECRAFT';
-    if (/\b(macro|fiscal|imf|esrx|fpp|subsidy|subsidies|circular\s+debt|bop)\b/i.test(query)) inferredMode = 'MACRO_FISCAL';
-    else if (/\b(mit|dedp|econometric|evaluation|rct)\b/i.test(query)) inferredMode = 'MIT_DEDP';
-    else if (/\b(ai|artificial\s+intelligence|ethics|eu\s+ai\s+act|humanaix|ku\s+leuven)\b/i.test(query)) inferredMode = 'AI_GOVERNANCE';
-    else if (/\b(nooriva|wellness|halal|organic|cellular|seed\s+oil|collagen)\b/i.test(query)) inferredMode = 'NOORIVA_COMMERCE';
-    else if (/\b(contact|official|social|linkedin|facebook|instagram)\b/i.test(query)) inferredMode = 'ENCLAVE_SECURITY';
-
-    return {
-      command: rawQuery,
-      mode: inferredMode,
-      role: 'Executive AI Assistant',
-      title: 'Live Grounded Intelligence Brief',
-      response: cloudResponse,
-      digest: 'GOOGLE_SEARCH_GROUNDED',
-      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
-      latency: '340ms',
-      enclaveStatus: 'LIVE WEB SEARCH GROUNDING VERIFIED',
-      isLiveCloudInference: true
-    };
-  }
-
-  // 2. Comprehensive Deterministic Executive Intelligence Engine (Offline / Air-Gapped)
-
-  // A. Executive Greetings & Conversational Openers
+  // 1. Executive Greetings & Conversational Openers (Fast Attested Response)
   if (/\b(hi|hello|hey|salam|assalam|aaoa|greetings|morning|evening|afternoon)\b/i.test(query) && query.length < 40) {
     return {
       command: rawQuery,
       mode: 'STATECRAFT',
-      role: 'Executive Assistant',
+      role: 'Executive Assistant & Digital Guardian',
       title: 'Office of the Director, Pakistan Sports Board',
-      response: `Assalam o Alaikum. I am Noorix, executive assistant to Noorish Sabah, PAS (Director, Pakistan Sports Board, Punjab).\n\nI can provide verified briefings on:\n• Her current command of 119 sports complexes & 14,000+ athletes across Punjab\n• Major public reforms: KMC Karachi biometric ghost-payroll audit (PKR 85M saved), the Hafizabad Child Protection Model, and 1M trees with PHA Lahore\n• Multilateral macroeconomic frameworks: IMF distinctions (ESRx & FPP.1x) and MIT DEDP Fellowship\n• Official contacts and authorized channels\n\nHow can I assist you today?`,
+      response: `Assalam o Alaikum. I am Noorix, executive assistant and digital guardian to Noorish Sabah, PAS (Director, Pakistan Sports Board, Punjab).\n\nI can provide verified briefings on:\n• Her current command of 119 sports complexes & 14,000+ athletes across Punjab\n• Major public reforms: KMC Karachi biometric ghost-payroll audit (PKR 85M saved), the Hafizabad Child Protection Model, and 1M trees with PHA Lahore\n• Multilateral macroeconomic frameworks: IMF distinctions (ESRx & FPP.1x) and MIT DEDP Fellowship\n• Official contacts and authorized channels\n\nHow can I assist you today?`,
       digest: 'OFFICIAL_GREETING_VALIDATED',
       signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
       latency: '2ms',
       enclaveStatus: 'EXECUTIVE DESK ACTIVE'
     };
   }
+
+  // 2. Live Google Search Grounded Inference (Vertex Cloud Gemini 2.5 Flash)
+  const startTime = Date.now();
+  const cloudResult = await querySovereignCloudInference(rawQuery, visitor);
+  if (cloudResult && cloudResult.text) {
+    const elapsed = Date.now() - startTime;
+    let inferredMode: DispatchMode = 'STATECRAFT';
+    if (/\b(macro|fiscal|imf|esrx|fpp|subsidy|subsidies|circular\s+debt|bop)\b/i.test(query)) inferredMode = 'MACRO_FISCAL';
+    else if (/\b(mit|dedp|econometric|evaluation|rct)\b/i.test(query)) inferredMode = 'MIT_DEDP';
+    else if (/\b(ai|artificial\s+intelligence|ethics|eu\s+ai\s+act|humanaix|ku\s+leuven)\b/i.test(query)) inferredMode = 'AI_GOVERNANCE';
+    else if (/\b(wellness|halal|organic|cellular|seed\s+oil|collagen)\b/i.test(query)) inferredMode = 'VENTURE_INNOVATION';
+    else if (/\b(contact|official|social|linkedin|facebook|instagram)\b/i.test(query)) inferredMode = 'ENCLAVE_SECURITY';
+
+    return {
+      command: rawQuery,
+      mode: inferredMode,
+      role: 'Executive Assistant & Digital Guardian',
+      title: 'Vertex Cloud Live Intelligence Brief',
+      response: cloudResult.text,
+      digest: 'VERTEX_GEMINI_2_5_FLASH_GROUNDED',
+      signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
+      latency: `${elapsed}ms`,
+      enclaveStatus: `VERTEX CLOUD ${cloudResult.model.toUpperCase()} ACTIVE`,
+      isLiveCloudInference: true
+    };
+  }
+
+  // 3. Comprehensive Deterministic Executive Intelligence Engine (Offline / Air-Gapped Fallback)
 
   // B. Pakistan Sports Board, Athletics, National Sports Model & Anti-Doping
   if (/\b(sports?|psb|coaching\s+centre|facilities|athletes?|snooker|wada|doping|activit|sports\s+model|olympic|punjab\s+sports)\b/i.test(query)) {
@@ -444,15 +460,15 @@ export async function evaluateSovereignQuery(
     };
   }
 
-  // M. NOORIVA (nooriva.ai) & Cellular Longevity Venture
-  if (/\b(nooriva|wellness|halal|collagen|cellular|black\s+seed|longevity|biotech)\b/i.test(query)) {
+  // M. Preventative Bio-Nutrition & Cellular Longevity Venture
+  if (/\b(wellness|halal|collagen|cellular|black\s+seed|longevity|biotech)\b/i.test(query)) {
     return {
       command: rawQuery,
-      mode: 'NOORIVA_COMMERCE',
+      mode: 'VENTURE_INNOVATION',
       role: 'Venture Architect',
-      title: 'NOORIVA Cellular Longevity & Bio-Nutrition',
-      response: `NOORIVA (nooriva.ai) is a sovereign wellness enterprise founded by Noorish Sabah, focusing on evidence-based cellular nutrition. The formulations feature 100% certified halal ingestibles, pure cold-pressed black seed oil, and marine collagen peptides distributed across Pakistan, the UAE, the UK, and North America.`,
-      digest: 'NOORIVA_VENTURE_VERIFIED',
+      title: 'Cellular Longevity & Preventative Bio-Nutrition',
+      response: `A sovereign wellness enterprise founded by Noorish Sabah, focusing on evidence-based cellular nutrition. The formulations feature 100% certified halal ingestibles, pure cold-pressed black seed oil, and marine collagen peptides distributed across Pakistan, the UAE, the UK, and North America.`,
+      digest: 'VENTURE_RECORD_VERIFIED',
       signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
       latency: '2ms',
       enclaveStatus: 'COMMERCE VENTURE VERIFIED'
@@ -482,7 +498,7 @@ export async function evaluateSovereignQuery(
       mode: 'ENCLAVE_SECURITY',
       role: 'Digital Guardian',
       title: 'Official Office Contacts & Sole Authorized Channels',
-      response: `Noorish Sabah maintains public presence SOLELY on three verified channels:\n• LinkedIn: linkedin.com/in/noorishsabah\n• Facebook: facebook.com/noorishsabah\n• Instagram: instagram.com/noorishsabah\n\nOfficial Institutional Contact:\n• Government Office: dirlahrpsb@sports.gov.pk | Tel: 042-99230383\n• Venture / Media: noorish@nooriva.ai\n\nAll other profiles, pages, or accounts on TikTok, X/Twitter, YouTube, or Telegram claiming her identity or using fabricated aliases are unauthorized.`,
+      response: `Noorish Sabah maintains public presence SOLELY on three verified channels:\n• LinkedIn: linkedin.com/in/noorishsabah\n• Facebook: facebook.com/noorishsabah\n• Instagram: instagram.com/noorishsabah\n\nOfficial Institutional Contact:\n• Government Office: dirlahrpsb@sports.gov.pk | Tel: 042-99230383\n• Executive Media Desk: contact@noorish.estate\n\nAll other profiles, pages, or accounts on TikTok, X/Twitter, YouTube, or Telegram claiming her identity or using fabricated aliases are unauthorized.`,
       digest: 'OFFICIAL_CHANNELS_VERIFIED',
       signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
       latency: '2ms',
@@ -524,9 +540,9 @@ export async function evaluateSovereignQuery(
   return {
     command: rawQuery,
     mode: 'STATECRAFT',
-    role: 'Executive Assistant',
+    role: 'Executive Assistant & Digital Guardian',
     title: 'Executive Briefing Desk',
-    response: `I'm Noorix, executive assistant to Noorish Sabah, PAS (Director, Pakistan Sports Board, Punjab).\n\nI can brief you on any facet of her 13-year public administration trajectory:\n• Pakistan Sports Board (PSB): 119 sports complexes, 14,000+ athletes, the 2026 Integrated Sports Model, and WADA Anti-Doping Centre\n• Major Departmental Reforms: KMC biometric ghost-payroll excision (PKR 85M saved), the Hafizabad Child Protection Model, and 1 Million trees planted with PHA Lahore\n• Multilateral & Economic Policy: IMF distinctions (ESRx & FPP.1x) and MIT DEDP Advanced Policy Fellowship\n• Official Contact: Verified social channels and institutional directives\n\nPlease let me know which area you would like to explore.`,
+    response: `Assalam o Alaikum. I am Noorix, executive assistant and digital guardian to Noorish Sabah, PAS (Director, Pakistan Sports Board, Punjab).\n\nI can brief you on any facet of her 13-year public administration trajectory:\n• Pakistan Sports Board (PSB): 119 sports complexes, 14,000+ athletes, the 2026 Integrated Sports Model, and WADA Anti-Doping Centre\n• Major Departmental Reforms: KMC biometric ghost-payroll excision (PKR 85M saved), the Hafizabad Child Protection Model, and 1 Million trees planted with PHA Lahore\n• Multilateral & Economic Policy: IMF distinctions (ESRx & FPP.1x) and MIT DEDP Advanced Policy Fellowship\n• Official Contact: Verified social channels and institutional directives\n\nPlease let me know which area you would like to explore.`,
     digest: 'EXECUTIVE_DESK_READY',
     signature: 'OFFICE_OF_NOORISH_SABAH_PAS',
     latency: '3ms',
