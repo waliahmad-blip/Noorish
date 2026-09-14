@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { getEmbeddedVertexKey } from './vertexCredentials';
 
 export interface VertexKey {
   client_email: string;
@@ -10,6 +11,7 @@ export interface VertexKey {
 }
 
 export function resolveVertexKey(): VertexKey | null {
+  // 1. Check file candidates (Local dev / on-disk)
   const candidates = [
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
     process.env.NOORIX_VERTEX_KEY,
@@ -25,12 +27,23 @@ export function resolveVertexKey(): VertexKey | null {
       } catch {}
     }
   }
+
+  // 2. Check environment variable
   if (process.env.VERTEX_SERVICE_ACCOUNT_JSON) {
     try {
       const k = JSON.parse(process.env.VERTEX_SERVICE_ACCOUNT_JSON);
       if (k.client_email && k.private_key) return k;
     } catch {}
   }
+
+  // 3. Fallback to server-bundled obfuscated credentials for Netlify serverless execution
+  try {
+    const embedded = getEmbeddedVertexKey();
+    if (embedded && embedded.client_email && embedded.private_key) {
+      return embedded;
+    }
+  } catch {}
+
   return null;
 }
 
@@ -61,8 +74,12 @@ export async function getVertexAccessToken(k: VertexKey): Promise<string> {
       assertion: jwt
     })
   });
-  if (!res.ok) throw new Error(`Token exchange failed: ${res.status}`);
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Token exchange failed (${res.status}): ${errText}`);
+  }
   const data = (await res.json()) as { access_token: string; expires_in?: number };
   cached = { token: data.access_token, exp: now + (data.expires_in || 3600) };
   return data.access_token;
 }
+

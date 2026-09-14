@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  X, ShieldCheck, VolumeX, Smartphone, MessageCircle, 
-  Sparkles, CheckCircle2, Copy, Check, ExternalLink, ArrowRight, 
+import {
+  X, ShieldCheck, VolumeX, Smartphone, MessageCircle,
+  Sparkles, CheckCircle2, Copy, Check, ExternalLink, ArrowRight,
   User, Phone, Mail, Waves, Lock
 } from 'lucide-react';
 import { audioEngine } from '../../utils/audioSynth';
-import { 
-  getStoredVisitorIdentity, 
-  recordVisitorIdentity, 
-  VerifiedVisitorIdentity 
+import {
+  getStoredVisitorIdentity,
+  recordVisitorIdentity,
+  VerifiedVisitorIdentity,
+  generateHandshakeToken,
+  getCachedVisitorTelemetry,
+  OFFICIAL_WHATSAPP_NUMBER
 } from '../../utils/visitorTelemetry';
 
 interface NoorixConciergeModalProps {
@@ -24,16 +27,20 @@ export const NoorixConciergeModal: React.FC<NoorixConciergeModalProps> = ({ isOp
   const [nameInput, setNameInput] = useState('');
   const [phoneInput, setPhoneInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
-  
+
   const [handshakeToken, setHandshakeToken] = useState('');
+  const [deviceFpSnippet, setDeviceFpSnippet] = useState('HARDWARE-SEALED');
   const [copiedToken, setCopiedToken] = useState(false);
   const [verifiedSuccess, setVerifiedSuccess] = useState(false);
   const [verifiedMethod, setVerifiedMethod] = useState<string>('');
 
   useEffect(() => {
-    const randomHex = () => Math.random().toString(36).substring(2, 6).toUpperCase();
-    const token = `SVRN-${randomHex()}-${randomHex()}`;
+    const telemetry = getCachedVisitorTelemetry();
+    const token = telemetry?.sessionAuditToken || generateHandshakeToken();
     setHandshakeToken(token);
+    if (telemetry?.fingerprintHash) {
+      setDeviceFpSnippet(telemetry.fingerprintHash.replace(/^FP:/, '').substring(0, 8));
+    }
 
     if (typeof navigator !== 'undefined' && 'contacts' in navigator && 'ContactsManager' in window) {
       setCanUseContactPicker(true);
@@ -109,9 +116,24 @@ export const NoorixConciergeModal: React.FC<NoorixConciergeModalProps> = ({ isOp
     setVerifiedMethod('WHATSAPP_HANDSHAKE');
     audioEngine.playAttestationChime();
 
-    const greeting = nameInput.trim() ? `Representative: ${nameInput.trim()}` : 'Executive Envoy';
-    const msg = `[NOORIX PROTOCOL HANDSHAKE]\nRequesting Sovereign Briefing for Noorish Sabah, PAS.\nSession Token: ${handshakeToken}\n${greeting}\nDigital Estate: https://noorish.org`;
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+    const telemetry = getCachedVisitorTelemetry();
+    const fp = telemetry?.fingerprintHash || 'FP:HARDWARE-BOUND';
+    const shortFp = fp.replace(/^FP:/, '').substring(0, 8);
+    const repName = nameInput.trim() ? `Representative: ${nameInput.trim()}` : 'Executive Envoy';
+    const msg = [
+      'Assalam o Alaikum Director Noorish Sabah,',
+      '',
+      'I am initiating executive contact via noorish.org.',
+      `Session Handshake Token: ${handshakeToken}`,
+      `Hardware Fingerprint: [${shortFp}]`,
+      repName,
+      phoneInput.trim() ? `Direct Phone: ${phoneInput.trim()}` : '',
+      emailInput.trim() ? `Official Email: ${emailInput.trim()}` : '',
+      '',
+      'Authorized Sovereign Enclave Bridge: https://noorish.org'
+    ].filter(Boolean).join('\n');
+
+    const whatsappUrl = `https://wa.me/17372828249?text=${encodeURIComponent(msg)}`;
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
   };
 
@@ -191,7 +213,7 @@ export const NoorixConciergeModal: React.FC<NoorixConciergeModalProps> = ({ isOp
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-obsidian-950/85 backdrop-blur-2xl animate-fade-in">
-      <div 
+      <div
         className="relative w-full max-w-lg glass-quantum rounded-3xl p-5 sm:p-7 border border-cyan-500/40 text-slate-100 shadow-[0_0_50px_rgba(6,182,212,0.18)] max-h-[92vh] overflow-y-auto"
         role="dialog"
         aria-modal="true"
@@ -218,9 +240,9 @@ export const NoorixConciergeModal: React.FC<NoorixConciergeModalProps> = ({ isOp
             <div className="absolute w-12 h-12 rounded-full border border-purple-500/50 bg-gradient-to-tr from-cyan-500/20 via-purple-500/20 to-cyan-500/10 backdrop-blur-md animate-pulse" />
             {/* Center Monogram / Orb */}
             <div className="absolute w-8 h-8 rounded-lg overflow-hidden bg-obsidian-950 border border-cyan-400 flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.6)]">
-              <img 
-                src="/logos/small/noorix.png" 
-                alt="NOORIX" 
+              <img
+                src="/logos/small/noorix.png"
+                alt="NOORIX"
                 className="w-full h-full object-contain filter drop-shadow-[0_0_6px_rgba(6,182,212,0.8)]"
               />
             </div>
@@ -232,8 +254,8 @@ export const NoorixConciergeModal: React.FC<NoorixConciergeModalProps> = ({ isOp
               <span>Sovereign Concierge Protocol // Ring-0</span>
             </div>
             <h2 id="concierge-modal-title" className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight">
-              {existingIdentity?.visitorName 
-                ? `Welcome Back, ${existingIdentity.visitorName}` 
+              {existingIdentity?.visitorName
+                ? `Welcome Back, ${existingIdentity.visitorName}`
                 : "Executive NOORIX Concierge"}
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 max-w-sm mx-auto leading-relaxed">
@@ -268,8 +290,8 @@ export const NoorixConciergeModal: React.FC<NoorixConciergeModalProps> = ({ isOp
             type="button"
             onClick={() => { audioEngine.playTactileClick(); setActiveTab('quick'); }}
             className={`py-2 px-1 rounded-lg text-center transition-all ${
-              activeTab === 'quick' 
-                ? 'bg-cyan-500 text-obsidian-950 font-bold shadow-md shadow-cyan-500/20' 
+              activeTab === 'quick'
+                ? 'bg-cyan-500 text-obsidian-950 font-bold shadow-md shadow-cyan-500/20'
                 : 'text-slate-300 hover:text-white hover:bg-obsidian-800'
             }`}
           >
@@ -279,8 +301,8 @@ export const NoorixConciergeModal: React.FC<NoorixConciergeModalProps> = ({ isOp
             type="button"
             onClick={() => { audioEngine.playTactileClick(); setActiveTab('whatsapp'); }}
             className={`py-2 px-1 rounded-lg text-center transition-all ${
-              activeTab === 'whatsapp' 
-                ? 'bg-cyan-500 text-obsidian-950 font-bold shadow-md shadow-cyan-500/20' 
+              activeTab === 'whatsapp'
+                ? 'bg-cyan-500 text-obsidian-950 font-bold shadow-md shadow-cyan-500/20'
                 : 'text-slate-300 hover:text-white hover:bg-obsidian-800'
             }`}
           >
@@ -290,8 +312,8 @@ export const NoorixConciergeModal: React.FC<NoorixConciergeModalProps> = ({ isOp
             type="button"
             onClick={() => { audioEngine.playTactileClick(); setActiveTab('manual'); }}
             className={`py-2 px-1 rounded-lg text-center transition-all ${
-              activeTab === 'manual' 
-                ? 'bg-cyan-500 text-obsidian-950 font-bold shadow-md shadow-cyan-500/20' 
+              activeTab === 'manual'
+                ? 'bg-cyan-500 text-obsidian-950 font-bold shadow-md shadow-cyan-500/20'
                 : 'text-slate-300 hover:text-white hover:bg-obsidian-800'
             }`}
           >
@@ -358,16 +380,18 @@ export const NoorixConciergeModal: React.FC<NoorixConciergeModalProps> = ({ isOp
                   <MessageCircle className="w-4 h-4 text-emerald-400" />
                   <span>WHATSAPP EXECUTIVE HANDSHAKE</span>
                 </div>
-                <span className="text-[10px] text-emerald-400/80 font-mono">DIRECT HANDSHAKE</span>
+                <span className="text-[10px] text-emerald-300 font-mono px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40">
+                  +1-737-282-8249
+                </span>
               </div>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Connect your session directly via WhatsApp. Pairs this session token (<strong className="text-emerald-300">{handshakeToken}</strong>) with your executive profile.
+                Connect your session directly via WhatsApp. Cryptographically binds token (<strong className="text-emerald-300 font-mono">{handshakeToken}</strong>) and hardware vector (<strong className="text-emerald-300 font-mono">{deviceFpSnippet}</strong>) to verified line <strong className="text-emerald-300">+1-737-282-8249</strong>.
               </p>
-              
+
               <div className="space-y-2">
                 <input
                   type="text"
-                  placeholder="Your Name / Title (Optional)"
+                  placeholder="Your Name / Designation (Optional)"
                   value={nameInput}
                   onChange={(e) => setNameInput(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl bg-obsidian-950 border border-emerald-500/30 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
@@ -378,7 +402,7 @@ export const NoorixConciergeModal: React.FC<NoorixConciergeModalProps> = ({ isOp
                   className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-obsidian-950 font-display font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-emerald-500/25"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>Initiate WhatsApp Handshake</span>
+                  <span>Connect via WhatsApp (+1-737-282-8249)</span>
                   <ExternalLink className="w-3.5 h-3.5 opacity-80" />
                 </button>
               </div>

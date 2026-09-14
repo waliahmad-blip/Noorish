@@ -3,11 +3,23 @@
 
 import { sendTelemetryToSupabase, updateVisitorIdentityInSupabase } from '../config/supabase';
 
+export const OFFICIAL_WHATSAPP_NUMBER = '17372828249'; // +1-737-282-8249
+
 export interface NetworkProfile {
   downlink?: number;
   effectiveType?: string;
   rtt?: number;
   saveData?: boolean;
+  canvasFingerprint?: string;
+  webglVendor?: string;
+  webglRenderer?: string;
+  devicePixelRatio?: number;
+  colorDepth?: number;
+  touchPoints?: number;
+  hardwareConcurrency?: number;
+  deviceMemory?: string;
+  handshakeStatus?: string;
+  [key: string]: unknown;
 }
 
 export type BotThreatCategory = 'BENIGN_VERIFIED' | 'PASSIVE_TELEMETRY' | 'SUSPECT_AUTOMATION' | 'HOSTILE_SCRAPER';
@@ -82,6 +94,27 @@ export async function sha256(input: string): Promise<string> {
   return Math.abs(hash).toString(16).padStart(64, '0');
 }
 
+export function generateHandshakeToken(): string {
+  const seg1 = Math.random().toString(36).substring(2, 6).toUpperCase();
+  const seg2 = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `SVRN-AUTH-${seg1}-${seg2}`;
+}
+
+export function getWhatsAppHandshakeUrl(token: string, fp: string, customMessage?: string): string {
+  const shortFp = fp.replace(/^FP:/, '').substring(0, 8);
+  const text = customMessage || [
+    'Assalam o Alaikum Director Noorish Sabah,',
+    '',
+    'I am initiating executive contact via noorish.org.',
+    `Session Handshake Token: ${token}`,
+    `Device Fingerprint: [${shortFp}]`,
+    '',
+    'Authorized Sovereign Enclave Bridge'
+  ].join('\n');
+
+  return `https://wa.me/${OFFICIAL_WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+}
+
 function getOrCreateSessionId(): string {
   if (typeof window === 'undefined') return 'SVRN-SRV-INIT';
   try {
@@ -93,6 +126,52 @@ function getOrCreateSessionId(): string {
     return sid;
   } catch {
     return 'SVRN-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-MEM';
+  }
+}
+
+// 2D Canvas High-Entropy Hardware Fingerprinting
+export function computeCanvasFingerprint(): string {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return 'CANVAS:SRV';
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 240;
+    canvas.height = 60;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return 'CANVAS:UNSUPPORTED';
+
+    // Color gradient
+    const gradient = ctx.createLinearGradient(0, 0, 240, 60);
+    gradient.addColorStop(0, '#06b6d4');
+    gradient.addColorStop(0.5, '#3b82f6');
+    gradient.addColorStop(1, '#10b981');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 240, 60);
+
+    // Text rendering with emoji and varying alpha
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '14px "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+    ctx.fillText('NOORISH-PAS🏛️🦅2026', 10, 28);
+    ctx.fillStyle = 'rgba(255, 215, 0, 0.85)';
+    ctx.font = '12px monospace';
+    ctx.fillText('SVRN-HARDWARE-SEAL', 15, 48);
+
+    // Geometric curve
+    ctx.beginPath();
+    ctx.arc(200, 30, 18, 0, Math.PI * 2, true);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    const dataUrl = canvas.toDataURL();
+    // 32-bit FNV-1a hash
+    let hash = 2166136261;
+    for (let i = 0; i < dataUrl.length; i++) {
+      hash ^= dataUrl.charCodeAt(i);
+      hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+    }
+    return `CANVAS:${(hash >>> 0).toString(16).toUpperCase()}`;
+  } catch {
+    return 'CANVAS:PROTECTED';
   }
 }
 
@@ -340,23 +419,27 @@ export async function initializeVisitorTelemetry(): Promise<VisitorRecord> {
   const ref = typeof document !== 'undefined' ? (document.referrer || 'DIRECT_TRAFFIC') : 'DIRECT';
   const concurrency = typeof navigator !== 'undefined' ? (navigator.hardwareConcurrency || 4) : 4;
   const memory = typeof navigator !== 'undefined' && 'deviceMemory' in navigator ? `${(navigator as unknown as { deviceMemory: number }).deviceMemory}GB` : 'UNKNOWN';
+  const pixelRatio = typeof window !== 'undefined' ? (window.devicePixelRatio || 1) : 1;
+  const touchPoints = typeof navigator !== 'undefined' ? (navigator.maxTouchPoints || 0) : 0;
 
-  // Hardware Profiling
+  // Deep Hardware Profiling
   const gpuInfo = extractGpuInfo();
+  const canvasFp = computeCanvasFingerprint();
   const audioDacPromise = extractAudioDacFingerprint();
   const botThreat = calculateBotThreatScore(ua);
   const netProfile = extractNetworkProfile();
 
-  // Primary Forensic Geolocation & Carrier Ingestion with fallback
+  // Multi-Provider Forensic Geolocation & Carrier Ingestion with resilient fallback
   let detectedIp = '127.0.0.1';
   let detectedIsp = 'CELLULAR_TELECOM_UNRESOLVED';
   let detectedAsn = 'AS_UNKNOWN';
   let detectedCity = 'COGNITIVE_PERIMETER';
   let detectedCountry = 'SOVEREIGN_ZONE';
 
+  // 1. Primary GeoIP Provider: ipwho.is
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 2200);
+    const timer = setTimeout(() => controller.abort(), 2000);
     const res = await fetch('https://ipwho.is/', { signal: controller.signal });
     clearTimeout(timer);
     if (res.ok) {
@@ -374,42 +457,71 @@ export async function initializeVisitorTelemetry(): Promise<VisitorRecord> {
       }
     }
   } catch {
-    // Secondary fallback to ipify for raw IP
+    // 2. Secondary GeoIP Provider: ipapi.co
     try {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 1500);
-      const res = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
+      const timer = setTimeout(() => controller.abort(), 1800);
+      const res = await fetch('https://ipapi.co/json/', { signal: controller.signal });
       clearTimeout(timer);
       if (res.ok) {
         const data = await res.json();
-        if (data && data.ip) detectedIp = data.ip;
+        if (data && data.ip) {
+          detectedIp = data.ip;
+          detectedCity = data.city || detectedCity;
+          detectedCountry = data.country_name || detectedCountry;
+          detectedIsp = data.org || detectedIsp;
+          detectedAsn = data.asn || detectedAsn;
+        }
       }
     } catch {
-      detectedIp = `10.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+      // 3. Raw IP fallback: api.ipify.org
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 1500);
+        const res = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
+        clearTimeout(timer);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.ip) detectedIp = data.ip;
+        }
+      } catch {
+        detectedIp = `10.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+      }
     }
   }
 
   const [ipHash, fpHash, audioDac] = await Promise.all([
     sha256(`SOVEREIGN_SALT:${detectedIp}`),
-    sha256(`${ua}:${screenRes}:${tz}:${platform}:${lang}:${concurrency}:${gpuInfo.renderer}`),
+    sha256(`${ua}:${screenRes}:${tz}:${platform}:${lang}:${concurrency}:${gpuInfo.renderer}:${canvasFp}:${pixelRatio}:${touchPoints}`),
     audioDacPromise
   ]);
 
-  const auditTokenRaw = await sha256(`${sessionId}:${ipHash}:${fpHash}:${audioDac}:${Date.now()}`);
-  const sessionAuditToken = `SVRN-AUTH-${auditTokenRaw.substring(0, 24).toUpperCase()}`;
+  const sessionAuditToken = generateHandshakeToken();
 
-  const securityRing: SecurityRing = botThreat.score >= 50 
-    ? 'RING-2 QUARANTINED' 
-    : botThreat.score >= 20 
-      ? 'RING-1 ATTESTED-ENCLAVE' 
+  const securityRing: SecurityRing = botThreat.score >= 50
+    ? 'RING-2 QUARANTINED'
+    : botThreat.score >= 20
+      ? 'RING-1 ATTESTED-ENCLAVE'
       : 'RING-0 HARDWARE-SEALED';
+
+  const enrichedNetworkProfile: NetworkProfile = {
+    ...netProfile,
+    canvasFingerprint: canvasFp,
+    webglVendor: gpuInfo.vendor,
+    webglRenderer: gpuInfo.renderer,
+    devicePixelRatio: pixelRatio,
+    touchPoints,
+    hardwareConcurrency: concurrency,
+    deviceMemory: memory,
+    handshakeStatus: 'TELEMETRY_INITIALIZED'
+  };
 
   const record: VisitorRecord = {
     sessionId,
     timestamp: new Date().toISOString(),
     rawIp: detectedIp,
     ipHash: `SHA256:${ipHash.substring(0, 16)}...${ipHash.substring(48)}`,
-    fingerprintHash: `FP:${fpHash.substring(0, 16)}`,
+    fingerprintHash: `FP:${fpHash.substring(0, 16).toUpperCase()}`,
     sessionAuditToken,
     userAgent: ua,
     screenResolution: screenRes,
@@ -424,7 +536,7 @@ export async function initializeVisitorTelemetry(): Promise<VisitorRecord> {
     audioDacHash: audioDac,
     botThreatScore: botThreat.score,
     botThreatCategory: botThreat.category,
-    networkProfile: netProfile,
+    networkProfile: enrichedNetworkProfile,
     securityRing,
     clearanceStatus: botThreat.score >= 70 ? 'RECORDED_INTRUSION' : 'SOVEREIGN_AUDIT_LOGGED',
     isp: detectedIsp,
