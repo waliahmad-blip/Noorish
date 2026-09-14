@@ -123,6 +123,82 @@ function renderFormattedMessage(content: string): React.ReactNode {
   });
 }
 
+function cleanTextForSpeech(text: string): string {
+  return text
+    // Strip markdown headings
+    .replace(/^#{1,6}\s+(.*)$/gm, '$1. ')
+    // Convert bullets and list markers into natural pauses
+    .replace(/^[\*\-\•]\s+(.*)$/gm, '$1. ')
+    .replace(/^\d+\.\s+(.*)$/gm, '$1. ')
+    // Strip bold, italics, backticks
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/__(.*?)__/g, '$1')
+    .replace(/_(.*?)_/g, '$1')
+    .replace(/`{1,3}(.*?)`{1,3}/g, '$1')
+    // Convert markdown links [label](url) -> label
+    .replace(/\[(.*?)\]\((.*?)\)/g, '$1')
+    // Remove raw URLs
+    .replace(/https?:\/\/\S+/g, '')
+    // Acronym expansions for natural, dignified phonetic clarity
+    .replace(/\bPAS\b/g, 'P A S')
+    .replace(/\bPSB\b/g, 'Pakistan Sports Board')
+    .replace(/\bKMC\b/g, 'K M C')
+    .replace(/\bPHA\b/g, 'P H A')
+    .replace(/\bWADA\b/g, 'Wada')
+    .replace(/\bIMF\b/g, 'I M F')
+    .replace(/\bMIT\b/g, 'M I T')
+    .replace(/\bDEDP\b/g, 'D E D P')
+    .replace(/\bPKR\b/g, 'Pakistani Rupees')
+    // Remove extraneous symbols/brackets
+    .replace(/[\[\]{}()<>|•]/g, ' ')
+    // Normalize punctuation, newlines and spaces
+    .replace(/\n+/g, '. ')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\.\s*\./g, '.')
+    .trim();
+}
+
+function selectArticulateVoice(): SpeechSynthesisVoice | null {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return null;
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices || voices.length === 0) return null;
+
+  const preferredNames = [
+    'Google UK English Female',
+    'Microsoft Jenny Online (Natural) - English (United States)',
+    'Microsoft Aria Online (Natural) - English (United States)',
+    'Microsoft Zira Online (Natural) - English (United States)',
+    'Microsoft Zira Desktop - English (United States)',
+    'Microsoft Zira',
+    'Google US English',
+    'Samantha',
+    'Victoria',
+    'Karen',
+    'Serena',
+    'Moira',
+    'Fiona'
+  ];
+
+  for (const pref of preferredNames) {
+    const match = voices.find(v => v.name.toLowerCase().includes(pref.toLowerCase()));
+    if (match) return match;
+  }
+
+  // Any English female voice
+  const female = voices.find(v => 
+    v.lang.toLowerCase().startsWith('en') && 
+    /(female|woman|zira|samantha|jenny|aria|karen|victoria)/i.test(v.name)
+  );
+  if (female) return female;
+
+  // Any English voice
+  const anyEn = voices.find(v => v.lang.toLowerCase().startsWith('en'));
+  if (anyEn) return anyEn;
+
+  return voices[0] || null;
+}
+
 interface NoorixChatCockpitProps {
   visitor?: VisitorRecord | null;
   compact?: boolean;
@@ -144,15 +220,113 @@ export const NoorixChatCockpit: React.FC<NoorixChatCockpitProps> = ({
   const [queryCount, setQueryCount] = useState<number>(0);
   const [isPrivileged, setIsPrivileged] = useState<boolean>(false);
 
-  // Audio & Speech Synthesis States
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  // Audio & Dynamic Speech Synthesis States
+  const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
   const [isListeningSpeech, setIsListeningSpeech] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
 
   // References
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const speechRecognizerRef = useRef<any>(null);
+  const speechCancellationRef = useRef<boolean>(false);
+
+  // Initialize Speech Synthesis Voices & Clean Up
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      const loadVoices = () => {
+        window.speechSynthesis.getVoices();
+      };
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    return () => {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  // Stop Active Speech Synthesis
+  const stopActiveSpeech = () => {
+    speechCancellationRef.current = true;
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    setSpeakingMsgId(null);
+  };
+
+  // Dynamic Word-for-Word Voice Synthesis Briefing
+  const toggleSpeechForMessage = (msgId: string, rawText: string) => {
+    audioEngine.playTactileClick();
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+
+    // Toggle off if currently speaking this message
+    if (speakingMsgId === msgId) {
+      stopActiveSpeech();
+      return;
+    }
+
+    // Cancel any previous speech
+    stopActiveSpeech();
+    speechCancellationRef.current = false;
+
+    const cleaned = cleanTextForSpeech(rawText);
+    if (!cleaned) return;
+
+    // Split into natural sentence chunks for reliable cross-browser streaming synthesis
+    const rawSentences = cleaned.split(/(?<=[.!?])\s+/);
+    const chunks: string[] = [];
+    let current = '';
+
+    for (const s of rawSentences) {
+      if (!s.trim()) continue;
+      if ((current + ' ' + s).trim().length > 180) {
+        if (current.trim()) chunks.push(current.trim());
+        current = s;
+      } else {
+        current = current ? `${current} ${s}` : s;
+      }
+    }
+    if (current.trim()) {
+      chunks.push(current.trim());
+    }
+
+    const sentencesToSpeak = chunks.length > 0 ? chunks : [cleaned];
+    let sentenceIndex = 0;
+    const voice = selectArticulateVoice();
+
+    const speakNext = () => {
+      if (speechCancellationRef.current) return;
+      if (sentenceIndex >= sentencesToSpeak.length) {
+        setSpeakingMsgId(null);
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(sentencesToSpeak[sentenceIndex]);
+      if (voice) {
+        utterance.voice = voice;
+      }
+      utterance.rate = 0.95; // Calm, measured executive cadence
+      utterance.pitch = 1.0;
+
+      utterance.onend = () => {
+        if (!speechCancellationRef.current) {
+          sentenceIndex++;
+          speakNext();
+        }
+      };
+
+      utterance.onerror = () => {
+        setSpeakingMsgId(null);
+      };
+
+      window.speechSynthesis.speak(utterance);
+    };
+
+    setSpeakingMsgId(msgId);
+    speakNext();
+  };
 
   // Initialize Quota & Sovereign Clearance
   useEffect(() => {
@@ -210,28 +384,6 @@ export const NoorixChatCockpit: React.FC<NoorixChatCockpitProps> = ({
     scrollToContainerBottom();
   }, [messages.length, isProcessing]);
 
-  // Audio Voice Sample Toggle
-  const toggleVoiceSample = () => {
-    audioEngine.playTactileClick();
-    if (!audioRef.current) {
-      audioRef.current = new Audio('/audio/noorix_voice.mp3');
-      audioRef.current.onended = () => setIsPlayingAudio(false);
-      audioRef.current.onerror = () => setIsPlayingAudio(false);
-    }
-
-    if (isPlayingAudio) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      setIsPlayingAudio(false);
-    } else {
-      audioRef.current.play().then(() => {
-        setIsPlayingAudio(true);
-      }).catch(() => {
-        setIsPlayingAudio(false);
-      });
-    }
-  };
-
   // Microphone Speech Recognition Toggle
   const toggleSpeechRecognition = () => {
     audioEngine.playTactileClick();
@@ -260,6 +412,7 @@ export const NoorixChatCockpit: React.FC<NoorixChatCockpitProps> = ({
   };
 
   const handleModeSwitch = (mode: DispatchMode) => {
+    stopActiveSpeech();
     audioEngine.playTactileClick();
     setActiveMode(mode);
     const dispatch = SOVEREIGN_DISPATCHES[mode];
@@ -280,6 +433,7 @@ export const NoorixChatCockpit: React.FC<NoorixChatCockpitProps> = ({
   const remainingQueries = Math.max(0, MAX_SESSION_QUERIES - queryCount);
 
   const resetVisitorQuota = () => {
+    stopActiveSpeech();
     audioEngine.playTactileClick();
     sessionStorage.removeItem(STORAGE_KEY_QUERY_COUNT);
     setQueryCount(0);
@@ -303,6 +457,7 @@ export const NoorixChatCockpit: React.FC<NoorixChatCockpitProps> = ({
       return;
     }
 
+    stopActiveSpeech();
     audioEngine.playTactileClick();
 
     // Increment and record quota
@@ -486,35 +641,33 @@ export const NoorixChatCockpit: React.FC<NoorixChatCockpitProps> = ({
                         Office of Noorish Sabah, PAS
                       </span>
 
-                      {/* Authentic Voice Sample Audio Trigger */}
-                      {msg.hasVoiceBrief && (
-                        <button
-                          onClick={toggleVoiceSample}
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono border transition-all ${
-                            isPlayingAudio 
-                              ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400 animate-pulse'
-                              : 'bg-obsidian-900 border-cyan-500/30 text-cyan-400 hover:border-cyan-400 hover:text-white'
-                          }`}
-                          title="Listen to authentic Noorix Voice Briefing"
-                        >
-                          {isPlayingAudio ? (
-                            <>
-                              <VolumeX className="w-3 h-3 text-cyan-300" />
-                              <span>Pause Audio</span>
-                              <span className="flex items-end gap-0.5 h-2.5 ml-1">
-                                <span className="w-0.5 bg-cyan-400 h-2 animate-pulse" />
-                                <span className="w-0.5 bg-mint-400 h-3 animate-pulse [animation-duration:500ms]" />
-                                <span className="w-0.5 bg-violet-400 h-1.5 animate-pulse [animation-duration:350ms]" />
-                              </span>
-                            </>
-                          ) : (
-                            <>
-                              <Volume2 className="w-3 h-3 text-cyan-400" />
-                              <span>Listen to Voice Brief</span>
-                            </>
-                          )}
-                        </button>
-                      )}
+                      {/* Dynamic Speech Synthesis Briefing - 100% Synced Word-for-Word with Message Text */}
+                      <button
+                        onClick={() => toggleSpeechForMessage(msg.id, msg.text)}
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono border transition-all ${
+                          speakingMsgId === msg.id 
+                            ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400 ring-1 ring-cyan-500/50 animate-pulse'
+                            : 'bg-obsidian-900 border-cyan-500/30 text-cyan-400 hover:border-cyan-400 hover:text-white'
+                        }`}
+                        title={speakingMsgId === msg.id ? "Stop voice briefing" : "Listen to dynamic voice briefing"}
+                      >
+                        {speakingMsgId === msg.id ? (
+                          <>
+                            <VolumeX className="w-3 h-3 text-cyan-300" />
+                            <span>Stop Audio</span>
+                            <span className="flex items-end gap-0.5 h-2.5 ml-1">
+                              <span className="w-0.5 bg-cyan-400 h-2 animate-pulse" />
+                              <span className="w-0.5 bg-mint-400 h-3 animate-pulse [animation-duration:500ms]" />
+                              <span className="w-0.5 bg-violet-400 h-1.5 animate-pulse [animation-duration:350ms]" />
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <Volume2 className="w-3 h-3 text-cyan-400" />
+                            <span>Listen to Voice Brief</span>
+                          </>
+                        )}
+                      </button>
                     </div>
 
                     <button

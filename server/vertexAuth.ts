@@ -14,8 +14,8 @@ export function resolveVertexKey(): VertexKey | null {
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
     process.env.NOORIX_VERTEX_KEY,
     path.resolve(process.cwd(), 'noorix-vertex-key.json'),
-    'C:\\Nooriva\\noorix-vertex-key.json',
-    'C:\\Noorix\\noorix-vertex-key.json'
+    path.resolve(__dirname, '..', 'noorix-vertex-key.json'),
+    path.resolve(__dirname, 'noorix-vertex-key.json')
   ];
   for (const p of candidates) {
     if (p && fs.existsSync(p)) {
