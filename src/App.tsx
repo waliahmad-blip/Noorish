@@ -29,6 +29,16 @@ export const App: React.FC = () => {
   const [isConciergeOpen, setIsConciergeOpen] = useState(false);
 
   useEffect(() => {
+    // Build-time pre-render guard. During the headless pre-render pass we must
+    // not initialise visitor telemetry (it would write a phantom visitor record
+    // to Supabase on every production build) and must not arm the auto-greeting
+    // timer, which would otherwise capture an open modal into the static HTML.
+    const isPrerenderPass =
+      typeof window !== "undefined" &&
+      (window as unknown as { __NOORISH_PRERENDER__?: boolean }).__NOORISH_PRERENDER__ === true;
+
+    if (isPrerenderPass) return;
+
     initializeVisitorTelemetry();
 
     // Diplomatic auto-greeting for first-time visitors
@@ -62,6 +72,11 @@ export const App: React.FC = () => {
       setActiveFacet("convergence");
     } else if (sectionId === "nooriva" && activeFacet !== "convergence" && activeFacet !== "founder") {
       setActiveFacet("convergence");
+    }
+    // Reflect the target in the address bar so every section is a shareable,
+    // crawlable deep link (sitemap.xml advertises these anchors).
+    if (typeof window !== "undefined" && window.history && window.history.replaceState) {
+      window.history.replaceState(null, "", `#${sectionId}`);
     }
     setTimeout(() => {
       const el = document.getElementById(sectionId);

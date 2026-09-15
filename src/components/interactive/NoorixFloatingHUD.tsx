@@ -54,9 +54,13 @@ export const NoorixFloatingHUD: React.FC<NoorixFloatingHUDProps> = ({ visitor })
 
   return (
     <>
-      {/* Floating HUD Launcher Elevated Action Pill/Orb (16px above Mobile Command Dock) */}
+      {/* Floating HUD Launcher — stacked above the Mobile Command Dock.
+          z-50 (not z-40) so the dock can never paint over it; equal z-index is
+          resolved by DOM order, and this drawer follows the dock in App.tsx,
+          which also keeps CertificateModal and NoorixConciergeModal on top.
+          `md:` (not `sm:`) because the dock stays visible until the md breakpoint. */}
       {!isOpen && (
-        <div className="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom,0px))] right-3 sm:bottom-6 sm:right-6 z-40 transition-all duration-300">
+        <div className="fixed bottom-[calc(var(--dock-band)+0.75rem+env(safe-area-inset-bottom,0px))] right-3 md:bottom-6 md:right-6 z-50 transition-all duration-300">
           <button
             onClick={toggleOpen}
             aria-label="Ask NOORIX AI"

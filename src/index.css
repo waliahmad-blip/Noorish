@@ -10,6 +10,34 @@
   }
 }
 
+/* ── Mobile Command Dock geometry ────────────────────────────────────────────
+   Single source of truth for the fixed bottom command dock, so the dock and any
+   floating control stacked above it can never drift into one another again.
+     --dock-height : rendered height of the dock at each width step
+     --dock-gutter : the dock's own bottom offset (previously the `bottom-4` class)
+     --dock-band   : total viewport space the dock occupies
+   Floating controls must be positioned at:
+     bottom-[calc(var(--dock-band)+<gap>)]
+   Values below are measured, not guessed, and each carries ~5px of headroom over
+   the real height so a wrapped facet label can never push the dock into them.
+   ───────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Narrowest phones: two facet labels wrap to a second line. Measured 95px. */
+  --dock-height: 6.25rem;
+  --dock-gutter: 1rem;
+  --dock-band: calc(var(--dock-height) + var(--dock-gutter));
+}
+
+@media (min-width: 390px) {
+  /* Labels now fit on one line. Measured 82px. */
+  :root { --dock-height: 5.5rem; }
+}
+
+@media (min-width: 640px) {
+  /* Dock is wider still. Measured 67px. */
+  :root { --dock-height: 4.75rem; }
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

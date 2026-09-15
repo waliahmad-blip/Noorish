@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Mail, Globe, ArrowUp, Linkedin, Facebook, Instagram, ShieldAlert } from 'lucide-react';
+import { ShieldCheck, Mail, Globe, ArrowUp, Linkedin, Facebook, Instagram, ShieldAlert, Landmark } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const scrollToTop = () => {
@@ -82,6 +82,12 @@ export const Footer: React.FC = () => {
                 <a href="https://nooriva.ai" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors flex items-center gap-2">
                   <Globe className="w-4 h-4 text-violet-400/80" />
                   <span>Venture Node: nooriva.ai</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://sports.gov.pk" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors flex items-center gap-2">
+                  <Landmark className="w-4 h-4 text-mint-400/80" />
+                  <span>Institution: Pakistan Sports Board</span>
                 </a>
               </li>
               <li>

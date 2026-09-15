@@ -39,7 +39,15 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
         {/* Sovereign Monogram Brand */}
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+        <a
+          href="/"
+          aria-label="Noorish Sabah, PAS — return to top"
+          className="flex items-center gap-3 cursor-pointer"
+          onClick={(event) => {
+            event.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        >
           <div className="w-10 h-10 rounded-xl border border-cyan-500/50 bg-obsidian-900 flex items-center justify-center text-cyan-400 font-display font-bold text-lg shadow-lg shadow-cyan-500/10">
             NS
           </div>
@@ -51,14 +59,16 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
               SOVEREIGN DIGITAL ESTATE
             </div>
           </div>
-        </div>
+        </a>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-300">
+        <nav className="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-300" aria-label="Primary navigation">
           {navLinks.map((link) => (
-            <button
+            <a
               key={link.id}
-              onClick={() => {
+              href={`#${link.id}`}
+              onClick={(event) => {
+                event.preventDefault();
                 audioEngine.playTactileClick();
                 onNavigate(link.id);
               }}
@@ -66,7 +76,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
             >
               <link.icon className="w-4 h-4 text-cyan-400/80" />
               <span>{link.label}</span>
-            </button>
+            </a>
           ))}
         </nav>
 
@@ -141,9 +151,11 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
       {mobileMenuOpen && (
         <div className="lg:hidden glass-quantum border-b border-cyan-500/20 px-4 pt-3 pb-6 space-y-2">
           {navLinks.map((link) => (
-            <button
+            <a
               key={link.id}
-              onClick={() => {
+              href={`#${link.id}`}
+              onClick={(event) => {
+                event.preventDefault();
                 audioEngine.playTactileClick();
                 onNavigate(link.id);
                 setMobileMenuOpen(false);
@@ -152,7 +164,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
             >
               <link.icon className="w-4 h-4 text-cyan-400" />
               <span>{link.label}</span>
-            </button>
+            </a>
           ))}
         </div>
       )}
